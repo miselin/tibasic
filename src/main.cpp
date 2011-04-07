@@ -23,6 +23,8 @@
 #include <iostream>
 #include <string>
 
+#include <string.h>
+
 #include "tibasic.h"
 
 #ifdef _WIN32

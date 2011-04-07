@@ -17,6 +17,8 @@
 #include <map>
 #include <string>
 
+#include <string.h>
+
 #include "tibasic.h"
 
 using namespace std;
@@ -79,7 +81,7 @@ void initialiseTokens()
     }
 
     // Now iterate the two-byte tokens.
-    for(size_t i = 0; i < (sizeof CalcVars / sizeof Token); i++)
+    for(size_t i = 0; i < (sizeof(CalcVars) / sizeof(Token)); i++)
     {
         token_t value;
         value.token = CalcVars[i].data;

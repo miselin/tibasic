@@ -20,6 +20,7 @@
 #include <string>
 
 #include <stdio.h>
+#include <string.h>
 
 #include "tibasic.h"
 
@@ -44,7 +45,7 @@ size_t Compiler::sumBytes(const char *data, size_t len)
 
 bool Compiler::compile(string inFile, string outFile)
 {
-    ifstream f(inFile);
+    ifstream f(inFile.c_str(), ifstream::in);
     
     string tmpLine;
 
