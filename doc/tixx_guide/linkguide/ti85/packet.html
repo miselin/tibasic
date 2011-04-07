@@ -1,0 +1,389 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN"> 
+<HTML> 
+ 
+<HEAD> 
+	<META NAME="GENERATOR" Content="Visual Page 1.0 for Windows"> 
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1"> 
+	<TITLE>TI-85 Link Protocol Guide - Packet formats</TITLE> 
+</HEAD> 
+ 
+<BODY BGCOLOR="#FFFFE8"> 
+ 
+<P><B>TI-85 Link Protocol Guide v1.0</B> - Packet formats</P> 
+<CENTER> 
+<H2> 
+<HR ALIGN="CENTER"> 
+Packet Formats</H2> 
+</CENTER> 
+<P>Texas Instruments calculators always send data and responses in self-contained &quot;packets.&quot;<BR> 
+Packets have the following format:<BR> 
+<I>Note - all 2-byte integers are transmitted little-endian Intel-style (least significant byte first).</I></P> 
+<P> 
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="92%"> 
+	<TR> 
+		<TH WIDTH="7%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Offset</FONT></TH> 
+		<TH WIDTH="8%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Length</FONT></TH> 
+		<TH WIDTH="85%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Description</FONT></TH> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">0</TD> 
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">1 byte</TD> 
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Machine ID byte</TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">1</TD> 
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">1 byte</TD> 
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Command ID byte</TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">2</TD> 
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">2 bytes</TD> 
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Length of data (see note below)</TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">4</TD> 
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF"><I>n</I> bytes</TD> 
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Data (if attached)</TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">4+<I>n</I></TD> 
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">2 bytes</TD> 
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Checksum (if data is attached)</TD> 
+	</TR> 
+</TABLE> 
+<I>Note - The &quot;Length of data&quot; element may not be equal to zero if the packet contains no data. In this 
+case, the Command ID byte will indicate that the packet contains no data.</I><p></P> 
+<H4>The Machine ID Byte</H4> 
+<P>The Machine ID byte identifies the machine that is sending the packet. It can have one of the following values: 
+ 
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="66%"> 
+	<TR> 
+		<TH WIDTH="13%" BGCOLOR="#DDDDDD">Value</TH> 
+		<TH BGCOLOR="#DDDDDD">Description</TH> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">05h</TD> 
+		<TD>Computer sending TI-85 data</TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">85h</TD> 
+		<TD>TI-85</TD> 
+	</TR> 
+</TABLE> 
+<p></P> 
+<H4>The Command ID Byte</H4> 
+<P>The Command ID byte identifies the request or response that the machine is sending. It can have one of the following 
+values:</P> 
+<P> 
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="66%"> 
+	<TR> 
+		<TH WIDTH="22%" BGCOLOR="#DDDDDD">Value</TH> 
+		<TH WIDTH="259" BGCOLOR="#DDDDDD">Description</TH> 
+		<TH BGCOLOR="#DDDDDD">Data Included</TH> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="22%">06h</TD> 
+		<TD WIDTH="259">Variable Header (VAR)</TD> 
+		<TD>A standard <A HREF="#varheader">variable header</A></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="22%">09h</TD> 
+		<TD WIDTH="259">Clear to send (CTS)</TD> 
+		<TD><I>None</I></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="22%">15h</TD> 
+		<TD WIDTH="259">Data packet (DATA)</TD> 
+		<TD>Screenshot/variable/backup data</TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="22%">36h</TD> 
+		<TD WIDTH="259">Skip/Exit (SKIP/EXIT)</TD> 
+		<TD>A one-byte rejection code (see codes below)</TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="22%">56h</TD> 
+		<TD WIDTH="259">Acknowledge (ACK)</TD> 
+		<TD><I>None</I></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="22%">5Ah</TD> 
+		<TD WIDTH="259">Checksum Error (ERR)<BR> 
+			The previous packet must be sent again.</TD> 
+		<TD><I>None</I></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="22%">6Dh</TD> 
+		<TD WIDTH="259"><I>Silent</I> - Request Screenshot (SCR)</TD> 
+		<TD><I>None</I></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="22%">92h</TD> 
+		<TD WIDTH="259">End of Transmission (EOT)</TD> 
+		<TD><I>None</I></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="22%">A2h</TD> 
+		<TD WIDTH="259"><I>Silent</I> - Request Variable (REQ)</TD> 
+		<TD>A NUL padded (fixed-length) <A HREF="#varheader">variable header</A></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="22%">C9h</TD> 
+		<TD WIDTH="259"><I>Silent</I> - Request to Send Variable (RTS)</TD> 
+		<TD>A SPC padded (fixed-length) <A HREF="#varheader">variable header</A></TD> 
+	</TR> 
+</TABLE> 
+<p></P> 
+<P>Rejection codes (used with Command ID 36h) can have one of the following values:</P> 
+<P> 
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="66%"> 
+	<TR> 
+		<TH WIDTH="13%" BGCOLOR="#DDDDDD">Value</TH> 
+		<TH BGCOLOR="#DDDDDD">Description</TH> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">01h</TD> 
+		<TD>EXIT - The entire transmission has been cancelled.</TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">02h</TD> 
+		<TD>SKIP - The current variable has been skipped.</TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">03h</TD> 
+		<TD>OUT OF MEMORY (silent transmissions only) - The receiving calculator is out of memory.</TD> 
+	</TR> 
+</TABLE> 
+<p></P> 
+<H4>The Checksum</H4> 
+<P>The checksum is a 16-bit value used to verify the integrity of the data in the packet. It only present if data 
+is present.<BR> 
+The checksum is calculated by taking the lower 16 bits of the sum of the data bytes, as shown below:</P> 
+<PRE>int calculateChecksum(unsigned char* data, unsigned short datalength) { 
+   unsigned short x, checksum; 
+   for(x=0; x&lt;datalength; x++) { 
+      checksum+=data[x];  //overflow automatically limits to 16 bits 
+   } 
+   return checksum; 
+}</PRE> 
+<CENTER> 
+<H3> 
+<HR ALIGN="CENTER"> 
+<A NAME="varheader"></A>Variable Headers</H3> 
+</CENTER> 
+<P>A Variable header contains information about one variable in the calculator.<BR> 
+Standard and padded variable headers have the following format:</P> 
+<P> 
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="92%"> 
+	<TR> 
+		<TH WIDTH="7%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Offset</FONT></TH> 
+		<TH WIDTH="8%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Length</FONT></TH> 
+		<TH WIDTH="85%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Description</FONT></TH> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">0</TD> 
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">2 bytes</TD> 
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Size of actual variable data, in bytes</TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">2</TD> 
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">1 byte</TD> 
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Type ID Byte (see type ID's below)</TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">3</TD> 
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">1 byte</TD> 
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Size of variable name, in characters</TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">4</TD> 
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF"><I>n</I> bytes</TD> 
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Variable name (not zero-terminated)</TD> 
+	</TR> 
+</TABLE> 
+<I>Note: These bytes only make up the &quot;data&quot; section of the packet.</I><p></P> 
+ 
+<P>A padded variable header will always be 12 bytes long. The unused bytes at the end are padded with space characters 
+(20h) or NULLs (0h). The standard and padded formats for variable headers are interchangeable.</P> 
+<H4><A NAME="vartypes"></A>The Type ID Byte</H4> 
+<P>The type ID byte specifies the type of variable that is being transmitted. It can have one of the following 
+values:</P> 
+<P> 
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="66%"> 
+	<TR> 
+		<TH WIDTH="13%" BGCOLOR="#DDDDDD">Value</TH> 
+		<TH BGCOLOR="#DDDDDD">Description (click for variable format)</TH> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">00h</TD> 
+		<TD><A HREF="vars.html#real">Real Number</A></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">01h</TD> 
+		<TD><A HREF="vars.html#complex">Complex Number</A></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">02h</TD> 
+		<TD><A HREF="vars.html#vector">Real Vector</A></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">03h</TD> 
+		<TD><A HREF="vars.html#vector">Complex Vector</A></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">04h</TD> 
+		<TD><A HREF="vars.html#list">Real List</A></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">05h</TD> 
+		<TD><A HREF="vars.html#list">Complex List</A></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">06h</TD> 
+		<TD><A HREF="vars.html#matrix">Real Matrix</A></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">07h</TD> 
+		<TD><A HREF="vars.html#matrix">Complex Matrix</A></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">08h</TD> 
+		<TD><A HREF="vars.html#constant">Real Constant</A></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">09h</TD> 
+		<TD><A HREF="vars.html#constant">Complex Constant</A></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">0Ah</TD> 
+		<TD><A HREF="vars.html#equation">Equation</A></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">0Ch</TD> 
+		<TD><A HREF="vars.html#string">String</A></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">0Dh</TD> 
+		<TD><A HREF="vars.html#gdb">Function GDB</A></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">0Eh</TD> 
+		<TD><A HREF="vars.html#gdb">Polar GDB</A></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">0Fh</TD> 
+		<TD><A HREF="vars.html#gdb">Parametric GDB</A></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">10h</TD> 
+		<TD><A HREF="vars.html#gdb">Differential Equation GDB</A></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">11h</TD> 
+		<TD><A HREF="vars.html#picture">Picture</A></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">12h</TD> 
+		<TD><A HREF="vars.html#program">Program</A></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">14h</TD> 
+		<TD>Screenshot sent by PrtScrn <I>(See note below)</I></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">17h</TD> 
+		<TD><A HREF="vars.html#window">Func: Function Window Settings</A><I> (See note below)</I></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">18h</TD> 
+		<TD><A HREF="vars.html#window">Pol: Polar Window Settings</A><I> (See note below)</I></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">19h</TD> 
+		<TD><A HREF="vars.html#window">Param: Parametric Window Settings</A><I> (See note below)</I></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">1Ah</TD> 
+		<TD><A HREF="vars.html#window">DifEq: Differential Equation Window Settings</A><I> (See note below)</I></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">1Bh</TD> 
+		<TD><A HREF="vars.html#window">ZRCL: Saved Window Settings</A><I> (See note below)</I></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">1Dh</TD> 
+		<TD>Backup <I>(No meaningful name)</I></TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="13%">1Eh</TD> 
+		<TD>Unknown (only used when requesting variables of unknown type)</TD> 
+	</TR> 
+</TABLE> 
+<I>Note - If the Type ID is in the range 14h - 1Bh, then the name length byte has a value of 0 and the name field 
+consists of a single 0 byte.</I><p></P> 
+<H4><A NAME="backup"></A>Backup Header Format</H4> 
+<P>If the type ID byte specifies a backup, the variable header takes the following 9-byte format:</P> 
+<P> 
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="92%"> 
+	<TR> 
+		<TH WIDTH="7%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Offset</FONT></TH> 
+		<TH WIDTH="8%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Length</FONT></TH> 
+		<TH WIDTH="85%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Description</FONT></TH> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">0</TD> 
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">2 bytes</TD> 
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Size of first backup section, in bytes</TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">2</TD> 
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">1 byte</TD> 
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Type ID Byte (1Dh in this case)</TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">3</TD> 
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">2 bytes</TD> 
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Size of second backup section, in bytes</TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">5</TD> 
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">2 bytes</TD> 
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Size of third backup section, in bytes</TD> 
+	</TR> 
+	<TR> 
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">7</TD> 
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">2 bytes</TD> 
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Memory address of second section</TD> 
+	</TR> 
+</TABLE> 
+<p></P> 
+ 
+<P> 
+<TABLE BORDER="0" CELLSPACING="0" WIDTH="100%"> 
+	<TR> 
+		<TD WIDTH="32%"> 
+			<P ALIGN="CENTER"><A HREF="cable.html"><IMG SRC="graphics/prevpage.gif" WIDTH="32" HEIGHT="32" ALIGN="BOTTOM" ALT="[previous page]" 
+			BORDER="2"><BR> 
+			Link Cables</A> 
+		</TD> 
+		<TD WIDTH="34%"> 
+			<P ALIGN="CENTER"><A HREF="index.html"><IMG SRC="graphics/home.gif" WIDTH="32" HEIGHT="32" ALIGN="BOTTOM" ALT="[home]" 
+			BORDER="2"><BR> 
+			Table of Contents</A> 
+		</TD> 
+		<TD WIDTH="34%"> 
+			<P ALIGN="CENTER"><A HREF="screenshot.html"><IMG SRC="graphics/nextpage.gif" WIDTH="32" HEIGHT="32" ALIGN="BOTTOM" 
+			ALT="[next page]" BORDER="2"><BR> 
+			Screenshots</A> 
+		</TD> 
+	</TR> 
+</TABLE> 
+ 
+<HR ALIGN="CENTER"> 
+<I>Site maintained by Romain Li&eacute;vin (</I><A HREF="mailto:roms@lpg.ticalc.org"><I>roms@lpg.ticalc.org</I></A><I>) 
+and Tim Singer (</I><A HREF="mailto:tsinger@gladstone.uoregon.edu"><I>tsinger@gladstone.uoregon.edu</I></A><I>)</I> 
+ 
+ 
+</BODY> 
+ 
+</HTML>

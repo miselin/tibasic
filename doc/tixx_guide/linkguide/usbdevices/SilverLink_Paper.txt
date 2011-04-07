@@ -1,0 +1,133 @@
+			+------------------------------------------+
+			| TI-GRAPH LINK USB cable (aka SilverLink) |
+			|		Informations		   |
+			+------------------------------------------+
+
+
+
+Link cable characteristics:
+---------------------------
+
+- Name: 'TI-GRAPH LINK USB'
+- Manufacturer: 'Texas Instruments Corporated'
+- VID/PID: 0x0451/0xe001
+- Firmware revision: 1.03
+- Internal µC: CY7C64013 (Cypress Semiconductors)
+
+
+USB related things:
+-------------------
+
+The cable is a full-speed (FS, 12Mbit/s) device, USB1.1 compliant, under a 
+proprietary class. It does not fit into any existing class (HID, printer, ...)
+then it requires a specific device driver.
+
+The device uses 'Bulk' mode for data transfers. There are two bulk endpoints 
+(IN & OUT) and one control endpoint (mandatory). Transfers are achieved by 
+packets. The endpoints advertise a maximum packet size of 32 bytes but data
+are usually transfered as 256-bytes chunks (URBs) by TI-Connect.
+
+
+Ti-Connect behaviour:
+---------------------
+
+The TI-Connect software systematically do the following sequence:
+	- reset both pipes (IN & OUT),
+	- try to read 1024 bytes (probably for flushing IN pipe),
+	- reset the pipes again (URB_FUNCTION_RESET_PIPE)
+before transfering anything.
+This information was got by sniffing with UsbSnoopy/SniffUSB.
+
+The TI's driver does not use Power Management.
+
+
+Link cable and/or driver behaviour:
+-----------------------------------
+
+This section aims to give some importants informations. Without them, the driver will
+be working badly and/or poorly. This cable has a specific behaviour which appeared to be the 
+same on both Linux & Windows.
+
+Although the maximum packet size is 32 bytes, you can not read/write bytes as you want.
+
+1°) reset: it's better to close and reopen driver after each transfer or 
+	resets both pipes before each transfer (see TI-Connect behaviour).
+
+2°) read: you have to systematically read an 32-bytes block even if you know that you
+	just need to get 4 bytes. A shorter read will lost the other bytes.
+	=> solution: bufferize reading by getting a 32 byte block and processing it.
+
+3°) quirk: the read (Linux) or the ReadFile (Win32) function can sometimes returns with 
+	neither data nor error. This quirk randomly appears in transfers but almost occurs
+	when getting the TI89 ID-LIST. A guy told me it was specific to Cypress devices.
+	=> solution: retry a read/ReadFile access.
+
+[ 4°) write: you can send how many bytes you want: from 1 to 32 bytes.
+	Theoritically, it is better to send a block of bytes rather than byte per
+	byte. This is less CPU consuming for USB layers & OS.
+	Practically, transfers are more reliable if we send byte per byte because the
+	calc have enough time for replying. But, the transfer rate decreases significantly 
+	(1KB/s instead of 5KB/s when sending FLASH app/os).
+	Using full transfer triggers some transfer interruptions.	
+	=> solution: bufferize writing by sending block at once if it's full and sending it byte per byte
+		when the block is incomplete. Exception: if this block is the last one of a transfer 
+		(just before switching in receive mode), send it byte per byte. ] -> not true any longer
+
+By following these 4 rules, I got good drivers for both Linux & Windows.
+
+
+Identity card (Linux log):
+--------------------------
+
+Manufacturer: Texas Instruments Incorporated
+Product: TI-GRAPH LINK USB
+usb.c: unhandled interfaces on device
+usb.c: USB device 2 (vend/prod 0x451/0xe001) is not claimed by any active driver.
+  Length              = 18
+  DescriptorType      = 01
+  USB version         = 1.10
+  Vendor:Product      = 0451:e001
+  MaxPacketSize0      = 8
+  NumConfigurations   = 1
+  Device version      = 1.03
+  Device Class:SubClass:Protocol = 00:00:00
+    Per-interface classes
+Configuration:
+  bLength             =    9
+  bDescriptorType     =   02
+  wTotalLength        = 0020
+  bNumInterfaces      =   01
+  bConfigurationValue =   01
+  iConfiguration      =   00
+  bmAttributes        =   a0
+  MaxPower            =  100mA
+
+  Interface: 0
+  Alternate Setting:  0
+    bLength             =    9
+    bDescriptorType     =   04
+    bInterfaceNumber    =   00
+    bAlternateSetting   =   00
+    bNumEndpoints       =   02
+    bInterface Class:SubClass:Protocol =   ff:00:00
+    iInterface          =   00
+    Endpoint:
+      bLength             =    7
+      bDescriptorType     =   05
+      bEndpointAddress    =   81 (in)
+      bmAttributes        =   02 (Bulk)
+      wMaxPacketSize      = 0020
+      bInterval           =   00
+    Endpoint:
+      bLength             =    7
+      bDescriptorType     =   05
+      bEndpointAddress    =   02 (out)
+      bmAttributes        =   02 (Bulk)
+      wMaxPacketSize      = 0020
+      bInterval           =   00
+      
+Author:
+-------
+
+(C) Romain Liévin, developer of TiLP & TiEmu.
+July the 23th, 2005

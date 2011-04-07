@@ -1,0 +1,1263 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META NAME="GENERATOR" Content="Visual Page 1.0 for Windows">
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<TITLE>TI-73 Link Protocol Guide - Variable formats</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFE8">
+
+<P><B>TI-73 Link Protocol Guide v1.0</B> - Variable formats (<i>to do...</i>)</P>
+<CENTER>
+<H2>
+<HR ALIGN="CENTER">
+Variable Formats</H2>
+</CENTER>
+<P>A TI-73 variable has two parts: a header and a data section. While the header may be different, the format
+of the data section never changes whether the variable is in a file, in a transfer packet, or in the calculator's
+memory. This section describes the format of the data section for most types of variables. The format for the header
+is described in the <A HREF="packet.html#varheader">packet format</A> and the <A HREF="fformat.html#varheader">file
+format</A> section.</P>
+<H4>Variable Types</H4>
+<P>There are several types of variables that the TI-73 uses.</P>
+
+<P><A HREF="#real">Real Numbers</A> are basic floating-point numbers.<BR>
+<A HREF="#complex">Complex Numbers</A> are basic complex numbers with real and imaginary floating-point components.<BR>
+<A HREF="#list">Lists</A> are sequences of real or complex numbers used in statistical calculations.<BR>
+<A HREF="#matrix">Matrices</A> are two-dimensional matrices with real or complex components.<BR>
+<A HREF="#equation">Y-Variables</A> are functions that evaluate based on the values of one or more variables.<BR>
+<A HREF="#string">Strings</A> are sequences of text characters.<BR>
+<A HREF="#gdb">Graphics Databases (GDB's)</A> are stored sets of graphing functions.<BR>
+<A HREF="#picture">Pictures</A> are stored bitmaps of the graph screen.<BR>
+<A HREF="#program">Programs</A> are sequences of commands.<BR>
+<A HREF="#window">Window Settings</A> are stored sets of graph screen range parameters.<BR>
+<A HREF="#table">Table Settings</A> are stored sets of table screen parameters.
+<H4><A NAME="real"></A>Real Numbers</H4>
+<P>The TI-73's representation of a real number has the following format:</P>
+
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="92%">
+	<TR>
+		<TH WIDTH="7%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Offset</FONT></TH>
+		<TH WIDTH="8%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Length</FONT></TH>
+		<TH WIDTH="85%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Description</FONT></TH>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">0</TD>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Flags (see table below)</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">1</TD>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">1 bytes</TD>
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Base-10 exponent</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">2</TD>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">7 bytes</TD>
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Mantissa</TD>
+	</TR>
+</TABLE>
+<p></P>
+
+<P>The flags byte has the following format:</P>
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="66%">
+	<TR>
+		<TH WIDTH="13%" BGCOLOR="#DDDDDD">Bit (Mask)</TH>
+		<TH BGCOLOR="#DDDDDD">Description</TH>
+	</TR>
+	<TR>
+		<TD WIDTH="13%">1 (02h)</TD>
+		<TD>If this bit is set, the number is undefined (used for initial sequence values)</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="13%">2 (04h)</TD>
+		<TD ROWSPAN="2">If both bits 2 and 3 are set and bit 1 is clear, the number is half of a complex variable.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="13%">3 (08h)</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="13%">6 (40h)</TD>
+		<TD>Uncertain. Most likely if set, the number has not been modified since the last graph.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="13%">7 (80h)</TD>
+		<TD>Sign bit: If set, the number is negative.</TD>
+	</TR>
+</TABLE>
+<p></P>
+<P>The exponent is a 8-bit unsigned binary number normalized at 80h. The real exponent can be computed by subtracting
+80h from the value stored here. Valid exponents are in the range -99 to 99.</P>
+<P>The mantissa is stored as a 14-digit unsigned binary-coded-decimal number. The most significant digit is first
+and the implied decimal point is always between the first two digits. Every nybble (4 bits or half a byte) contains
+one digit, according to the following table:</P>
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="24%">
+	<TR>
+		<TH WIDTH="45%" BGCOLOR="#DDDDDD">Binary&nbsp;Value</TH>
+		<TH BGCOLOR="#DDDDDD">Decimal&nbsp;Digit</TH>
+	</TR>
+	<TR>
+		<TD WIDTH="45%">
+			<P ALIGN="CENTER">0000
+		</TD>
+		<TD>
+			<P ALIGN="CENTER">0
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="45%">
+			<P ALIGN="CENTER">0001
+		</TD>
+		<TD>
+			<P ALIGN="CENTER">1
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="45%">
+			<P ALIGN="CENTER">0010
+		</TD>
+		<TD>
+			<P ALIGN="CENTER">2
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="45%">
+			<P ALIGN="CENTER">0011
+		</TD>
+		<TD>
+			<P ALIGN="CENTER">3
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="45%">
+			<P ALIGN="CENTER">0100
+		</TD>
+		<TD>
+			<P ALIGN="CENTER">4
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="45%">
+			<P ALIGN="CENTER">0101
+		</TD>
+		<TD>
+			<P ALIGN="CENTER">5
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="45%">
+			<P ALIGN="CENTER">0110
+		</TD>
+		<TD>
+			<P ALIGN="CENTER">6
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="45%">
+			<P ALIGN="CENTER">0111
+		</TD>
+		<TD>
+			<P ALIGN="CENTER">7
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="45%">
+			<P ALIGN="CENTER">1000
+		</TD>
+		<TD>
+			<P ALIGN="CENTER">8
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="45%">
+			<P ALIGN="CENTER">1001
+		</TD>
+		<TD>
+			<P ALIGN="CENTER">9
+		</TD>
+	</TR>
+</TABLE>
+<p></P>
+<H4><A NAME="complex"></A>Complex Numbers</H4>
+<P>A complex number is represented as a two real numbers, both with flag bits 2 and 3 set. The format is shown
+below.</P>
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="92%">
+	<TR>
+		<TH WIDTH="7%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Offset</FONT></TH>
+		<TH WIDTH="8%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Length</FONT></TH>
+		<TH WIDTH="85%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Description</FONT></TH>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">0</TD>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A> describing the &quot;real&quot; component of the complex number.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">9</TD>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A> describing the &quot;imaginary&quot; component of the complex number.</TD>
+	</TR>
+</TABLE>
+<p></P>
+<H4><A NAME="list"></A>Lists</H4>
+<P>A list is represented as a sequence of numbers. The format is shown below.</P>
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="92%">
+	<TR>
+		<TH WIDTH="7%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Offset</FONT></TH>
+		<TH WIDTH="8%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Length</FONT></TH>
+		<TH WIDTH="85%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Description</FONT></TH>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">0</TD>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">2 bytes</TD>
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Number of elements in the list</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">1</TD>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF"><I>n</I> bytes</TD>
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Element values, one by one, first to last. Each element is a 9-byte <A HREF="#real">real number</A>.</TD>
+	</TR>
+</TABLE>
+<p></P>
+<H4><A NAME="matrix"></A>Matrices</H4>
+<P>A matrix is represented as a two-dimensional array of numbers. The format is shown below.</P>
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="92%">
+	<TR>
+		<TH WIDTH="7%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Offset</FONT></TH>
+		<TH WIDTH="8%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Length</FONT></TH>
+		<TH WIDTH="85%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Description</FONT></TH>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">0</TD>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Number of columns in the matrix (no more than 255)</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">1</TD>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Number of rows in the matrix (no more than 255)</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">1</TD>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF"><I>n</I> bytes</TD>
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Element values, one by one (see explanation below). Each element is a 9-byte <A HREF="#real">real number</A>.</TD>
+	</TR>
+</TABLE>
+<p></P>
+<P>The element values are arranged in row definitions from top to bottom. Each row consists of a number of real
+or complex elements from left to right. Under this scheme, <IMG SRC="graphics/matrix.gif" WIDTH="38" HEIGHT="35"
+ALIGN="BOTTOM" ALT="[ [ 1, 2 ] [ 3, 4 ] ]" BORDER="0"> would be ordered (1,2,3,4) in memory.</P>
+<H4><A NAME="equation"></A>Y-Variables</H4>
+<P>Y-Variables are represented as a sequence of tokens following a length word. <A HREF="tokens.html">Click here</A>
+for a table of token definitions.</P>
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="92%">
+	<TR>
+		<TH WIDTH="7%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Offset</FONT></TH>
+		<TH WIDTH="8%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Length</FONT></TH>
+		<TH WIDTH="85%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Description</FONT></TH>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">0</TD>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">2 bytes</TD>
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Number of token bytes in the Y-Variable. Note that some tokens use two bytes.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">2</TD>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF"><I>n</I> bytes</TD>
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Tokens, first to last.</TD>
+	</TR>
+</TABLE>
+<p></P>
+<H4><A NAME="string"></A>Strings</H4>
+<P>Strings are represented in the same way as Y-Variables, but they cannot be evaluated.</P>
+<H4><A NAME="gdb"></A>Graphics Databases (GDB's)</H4>
+<P>A GDB is a stored database of functions and range parameters. GDB formats are different for each graphing mode
+(function, parametric, polar or sequence).</P>
+<P>A function-mode GDB has the following format:</P>
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="92%">
+	<TR>
+		<TH WIDTH="12%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Offset</FONT></TH>
+		<TH WIDTH="5%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Length</FONT></TH>
+		<TH WIDTH="83%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Description</FONT></TH>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">0</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">2 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Length, in bytes, of GDB, minus two.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">2</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Unknown</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">3</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Graphing Mode ID. This byte has a value of 10h for function GDB's.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">4</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Mode settings (see <A HREF="#mode">mode setting table</A> below)</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">5</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Unused - has a value of 80h.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">6</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Extended mode settings (see <A HREF="#extmode">extended mode setting table</A> below)</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">7</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Xmin</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">16&nbsp;(10h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Xmax</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">25&nbsp;(19h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Xscl</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">34&nbsp;(22h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Ymin</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">43&nbsp;(2Bh)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Ymax</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">52&nbsp;(34h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Yscl</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">61 (3Dh)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Xres</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">70 (46h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">10&nbsp;bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Ten style bytes, for Y<FONT SIZE="1">1</FONT>, Y<FONT SIZE="1">2</FONT>, Y<FONT SIZE="1">3</FONT>, Y<FONT SIZE="1">4</FONT>,
+			Y<FONT SIZE="1">5</FONT>, Y<FONT SIZE="1">6</FONT>, Y<FONT SIZE="1">7</FONT>, Y<FONT SIZE="1">8</FONT>, Y<FONT
+			SIZE="1">9</FONT> and Y<FONT SIZE="1">0</FONT>, respectively (see <A HREF="#style">style table</A> below).</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">80 (50h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF"><I>n</I> bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Ten functions, for Y<FONT SIZE="1">1</FONT>, Y<FONT SIZE="1">2</FONT>, Y<FONT SIZE="1">3</FONT>, Y<FONT SIZE="1">4</FONT>,
+			Y<FONT SIZE="1">5</FONT>, Y<FONT SIZE="1">6</FONT>, Y<FONT SIZE="1">7</FONT>, Y<FONT SIZE="1">8</FONT>, Y<FONT
+			SIZE="1">9</FONT> and Y<FONT SIZE="1">0</FONT>, respectively (see <A HREF="#function">function table</A> below).</TD>
+	</TR>
+</TABLE>
+<p></P>
+<P>A parametric-mode GDB has the following format:</P>
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="92%">
+	<TR>
+		<TH WIDTH="12%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Offset</FONT></TH>
+		<TH WIDTH="5%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Length</FONT></TH>
+		<TH WIDTH="83%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Description</FONT></TH>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">0</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">2 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Length, in bytes, of GDB, minus two.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">2</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Unknown - has a value of 0h.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">3</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Graphing Mode ID. This byte has a value of 40h for parametric GDB's.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">4</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Mode settings (see <A HREF="#mode">mode setting table</A> below)</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">5</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Unused - has a value of 80h.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">6</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Extended mode settings (see <A HREF="#extmode">extended mode setting table</A> below)</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">7</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Xmin</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">16&nbsp;(10h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Xmax</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">25&nbsp;(19h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Xscl</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">34&nbsp;(22h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Ymin</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">43&nbsp;(2Bh)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Ymax</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">52&nbsp;(34h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Yscl</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">61 (3Dh)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Tmin</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">70 (46h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Tmax</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">79&nbsp;(4Fh)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Tstep</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">70 (46h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">6&nbsp;bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Six style bytes, for X<FONT SIZE="1">1T</FONT>/Y<FONT SIZE="1">1T</FONT>, X<FONT SIZE="1">2T</FONT>/Y<FONT SIZE="1">2T</FONT>,
+			X<FONT SIZE="1">3T</FONT>/Y<FONT SIZE="1">3T</FONT>, X<FONT SIZE="1">4T</FONT>/Y<FONT SIZE="1">4T</FONT>, X<FONT
+			SIZE="1">5T</FONT>/Y<FONT SIZE="1">5T</FONT> and X<FONT SIZE="1">6T</FONT>/Y<FONT SIZE="1">6T</FONT>, respectively
+			(see <A HREF="#style">style table</A> below).</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">76 (4Ch)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF"><I>n</I> bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Twelve functions, for X<FONT SIZE="1">1T</FONT>, Y<FONT SIZE="1">1T</FONT>, X<FONT SIZE="1">2T</FONT>, Y<FONT SIZE="1">2T</FONT>,
+			X<FONT SIZE="1">3T</FONT>, Y<FONT SIZE="1">3T</FONT>, X<FONT SIZE="1">4T</FONT>, Y<FONT SIZE="1">4T</FONT>, X<FONT
+			SIZE="1">5T</FONT>, Y<FONT SIZE="1">5T</FONT>, X<FONT SIZE="1">6T</FONT> and Y<FONT SIZE="1">6T</FONT>, respectively
+			(see <A HREF="#function">function table</A> below).</TD>
+	</TR>
+</TABLE>
+<p></P>
+<P>A polar-mode GDB has the following format:</P>
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="92%">
+	<TR>
+		<TH WIDTH="12%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Offset</FONT></TH>
+		<TH WIDTH="5%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Length</FONT></TH>
+		<TH WIDTH="83%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Description</FONT></TH>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">0</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">2 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Length, in bytes, of GDB, minus two.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">2</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Unknown - has a value of 0h.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">3</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Graphing Mode ID. This byte has a value of 20h for polar GDB's.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">4</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Mode settings (see <A HREF="#mode">mode setting table</A> below)</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">5</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Unused - has a value of 80h.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">6</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Extended mode settings (see <A HREF="#extmode">extended mode setting table</A> below)</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">7</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Xmin</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">16&nbsp;(10h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Xmax</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">25&nbsp;(19h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Xscl</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">34&nbsp;(22h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Ymin</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">43&nbsp;(2Bh)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Ymax</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">52&nbsp;(34h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Yscl</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">61 (3Dh)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: <IMG SRC="graphics/theta.gif" WIDTH="7" HEIGHT="11" ALIGN="BOTTOM" ALT="[theta]"
+			BORDER="0">min</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">70 (46h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: <IMG SRC="graphics/theta.gif" WIDTH="7" HEIGHT="11" ALIGN="BOTTOM" ALT="[theta]"
+			BORDER="0">max</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">79&nbsp;(4Fh)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: <IMG SRC="graphics/theta.gif" WIDTH="7" HEIGHT="11" ALIGN="BOTTOM" ALT="[theta]"
+			BORDER="0">step</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">70 (46h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">6&nbsp;bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Six style bytes, for r<FONT SIZE="1">1</FONT>, r<FONT SIZE="1">2</FONT>, r<FONT SIZE="1">3</FONT>, r<FONT SIZE="1">4</FONT>,
+			r<FONT SIZE="1">5</FONT> and r<FONT SIZE="1">6</FONT>, respectively (see <A HREF="#style">style table</A> below).</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">76 (4Ch)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF"><I>n</I> bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Six functions, for r<FONT SIZE="1">1</FONT>, r<FONT SIZE="1">2</FONT>, r<FONT SIZE="1">3</FONT>, r<FONT SIZE="1">4</FONT>,
+			r<FONT SIZE="1">5</FONT> and r<FONT SIZE="1">6</FONT>, respectively (see <A HREF="#function">function table</A>
+			below).</TD>
+	</TR>
+</TABLE>
+<p></P>
+<P>A sequence-mode GDB has the following format:</P>
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="92%">
+	<TR>
+		<TH WIDTH="12%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Offset</FONT></TH>
+		<TH WIDTH="5%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Length</FONT></TH>
+		<TH WIDTH="83%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Description</FONT></TH>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">0</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">2 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Length, in bytes, of GDB, minus two.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">2</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Unknown - has a value of 0h.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">3</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Graphing Mode ID. This byte has a value of 80h for sequence GDB's.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">4</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Mode settings (see <A HREF="#mode">mode setting table</A> below)</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">5</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Sequence mode settings (see <A HREF="#seqmode">sequence mode setting table</A> below)</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">6</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Extended mode settings (see <A HREF="#extmode">extended mode setting table</A> below)</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">7</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Xmin</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">16&nbsp;(10h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Xmax</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">25&nbsp;(19h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Xscl</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">34&nbsp;(22h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Ymin</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">43&nbsp;(2Bh)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Ymax</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">52&nbsp;(34h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Yscl</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">61 (3Dh)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: PlotStart</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">70 (46h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: <I>n</I>Max</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">79&nbsp;(4Fh)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: u(<I>n</I>Min), first element</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">88 (58h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: v(<I>n</I>Min), first element</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">97 (61h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: <I>n</I>Min</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">106 (6Ah)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: u(<I>n</I>Min), second element</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">115 (73h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: v(<I>n</I>Min), second element</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">124 (7Ch)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: w(<I>n</I>Min), first element</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">133 (85h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: PlotStep</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">142 (8Eh)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: w(<I>n</I>Min), second element</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">151 (97h)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">3&nbsp;bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Three style bytes, for u, v and w, respectively (see <A HREF="#style">style table</A> below).</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="12%" BGCOLOR="#FFFFFF">154 (9Ah)</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF"><I>n</I> bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Three functions, for u, v, and w, respectively (see <A HREF="#function">function table</A> below).</TD>
+	</TR>
+</TABLE>
+<p></P>
+<P><A NAME="mode"></A>The mode setting byte has the following format:</P>
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="66%">
+	<TR>
+		<TH WIDTH="16%" BGCOLOR="#DDDDDD">Bit (Mask)</TH>
+		<TH WIDTH="40%" BGCOLOR="#DDDDDD">Mode if set (1)</TH>
+		<TH WIDTH="44%" BGCOLOR="#DDDDDD">Mode if clear (0)</TH>
+	</TR>
+	<TR>
+		<TD WIDTH="16%">0 (01h)</TD>
+		<TD WIDTH="40%">Dot</TD>
+		<TD WIDTH="44%">Connected</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="16%">1 (02h)</TD>
+		<TD WIDTH="40%">Simul</TD>
+		<TD WIDTH="44%">Sequential</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="16%">2 (04h)</TD>
+		<TD WIDTH="40%">GridOn</TD>
+		<TD WIDTH="44%">GridOff</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="16%">3 (08h)</TD>
+		<TD WIDTH="40%">PolarGC</TD>
+		<TD WIDTH="44%">RectGC</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="16%">4 (10h)</TD>
+		<TD WIDTH="40%">CoordOff</TD>
+		<TD WIDTH="44%">CoordOn</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="16%">5 (20h)</TD>
+		<TD WIDTH="40%">AxesOff</TD>
+		<TD WIDTH="44%">AxesOn</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="16%">6 (40h)</TD>
+		<TD WIDTH="40%">LabelOn</TD>
+		<TD WIDTH="44%">LabelOff</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="16%">7 (80h)</TD>
+		<TD COLSPAN="2">This bit is always clear.</TD>
+	</TR>
+</TABLE>
+<BR>
+<A NAME="extmode"></A>The extended mode setting byte has the following format:<p></P>
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="66%">
+	<TR>
+		<TH WIDTH="16%" BGCOLOR="#DDDDDD">Bit (Mask)</TH>
+		<TH WIDTH="40%" BGCOLOR="#DDDDDD">Mode if set (1)</TH>
+		<TH WIDTH="44%" BGCOLOR="#DDDDDD">Mode if clear (0)</TH>
+	</TR>
+	<TR>
+		<TD WIDTH="16%">0 (01h)</TD>
+		<TD WIDTH="40%">ExprOff</TD>
+		<TD WIDTH="44%">ExprOn</TD>
+	</TR>
+</TABLE>
+<p></P>
+<P><A NAME="seqmode"></A>The sequence mode setting byte has the following format:</P>
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="66%">
+	<TR>
+		<TH WIDTH="16%" BGCOLOR="#DDDDDD">Bit (Mask)</TH>
+		<TH WIDTH="40%" BGCOLOR="#DDDDDD">Mode if set (1)</TH>
+		<TH WIDTH="44%" BGCOLOR="#DDDDDD">Mode if clear (0)</TH>
+	</TR>
+	<TR>
+		<TD WIDTH="16%">0 (01h)</TD>
+		<TD WIDTH="40%">Web</TD>
+		<TD WIDTH="44%">Time, uv, vw or uw</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="16%">1 (02h)</TD>
+		<TD COLSPAN="2">This bit is always clear.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="16%">2 (04h)</TD>
+		<TD WIDTH="40%">uv</TD>
+		<TD WIDTH="44%">Time, web, vw or uw</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="16%">3 (08h)</TD>
+		<TD WIDTH="40%">vw</TD>
+		<TD WIDTH="44%">Time, web, uv or uw</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="16%">4 (10h)</TD>
+		<TD WIDTH="40%">uw</TD>
+		<TD WIDTH="44%">Time, web, uv or vw</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="16%">5 (20h)</TD>
+		<TD ROWSPAN="2" COLSPAN="2">These bits are always clear.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="16%">6 (40h)</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="16%">7 (80h)</TD>
+		<TD COLSPAN="2">This bit is always set.</TD>
+	</TR>
+</TABLE>
+<I>Note: If bits 0-4 are all clear, the graphing mode is &quot;Time.&quot;</I><p></P>
+<P><A NAME="style"></A> Each style byte has the following format: 
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="29%">
+	<TR>
+		<TH WIDTH="45%" BGCOLOR="#DDDDDD">Value</TH>
+		<TH BGCOLOR="#DDDDDD">Graph Style</TH>
+	</TR>
+	<TR>
+		<TD WIDTH="45%">
+			<P ALIGN="CENTER">0
+		</TD>
+		<TD>
+			<P ALIGN="CENTER">[solid line]
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="45%">
+			<P ALIGN="CENTER">1
+		</TD>
+		<TD>
+			<P ALIGN="CENTER">[thick line]
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="45%">
+			<P ALIGN="CENTER">2
+		</TD>
+		<TD>
+			<P ALIGN="CENTER">[shade above]
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="45%">
+			<P ALIGN="CENTER">3
+		</TD>
+		<TD>
+			<P ALIGN="CENTER">[shade below]
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="45%">
+			<P ALIGN="CENTER">4
+		</TD>
+		<TD>
+			<P ALIGN="CENTER">[trace]
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="45%">
+			<P ALIGN="CENTER">5
+		</TD>
+		<TD>
+			<P ALIGN="CENTER">[animate]
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="45%">
+			<P ALIGN="CENTER">6
+		</TD>
+		<TD>
+			<P ALIGN="CENTER">[dotted line]
+		</TD>
+	</TR>
+</TABLE>
+<p></P>
+<P><A NAME="function"></A>Function definitions have the following format:</P>
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="92%">
+	<TR>
+		<TH WIDTH="7%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Offset</FONT></TH>
+		<TH WIDTH="8%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Length</FONT></TH>
+		<TH WIDTH="85%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Description</FONT></TH>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">0</TD>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">Flags - For selected functions, this byte is 23h. For deselected or undefined functions, this byte is 03h.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">1</TD>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF"><I>n</I> bytes</TD>
+		<TD WIDTH="85%" BGCOLOR="#FFFFFF">A <A HREF="#equation">Y-Variable</A> defining the function. Undefined functions have a token byte length of 0.</TD>
+	</TR>
+</TABLE>
+<p></P>
+<H4><A NAME="picture"></A>Pictures</H4>
+<P>Pictures are 96x63-pixel bitmaps. They have the following format:</P>
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="92%">
+	<TR>
+		<TH WIDTH="7%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Offset</FONT></TH>
+		<TH WIDTH="14%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Length</FONT></TH>
+		<TH WIDTH="79%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Description</FONT></TH>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">0</TD>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">2 bytes</TD>
+		<TD WIDTH="79%" BGCOLOR="#FFFFFF">Size of picture data (always 2F4h)</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">2</TD>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">1008&nbsp;(3F0h)&nbsp;bytes</TD>
+		<TD WIDTH="79%" BGCOLOR="#FFFFFF">1-bit-per-pixel bitmap data, arranged top-to-bottom in rows. Each row is defined left-to-right. (See figure below)</TD>
+	</TR>
+</TABLE>
+<p></P>
+<P>The following figure demonstrates byte ordering of the pixels if the bitmap is in a 756-element array data[]:</P>
+<P><IMG SRC="graphics/image.gif" WIDTH="345" HEIGHT="271" ALIGN="BOTTOM" ALT="[pixel grid diagram]" BORDER="0"></P>
+<H4><A NAME="program"></A>Programs</H4>
+<P>Programs share the same format as <A HREF="#equation">Y-Variables</A>, but are executed rather than evaluated.</P>
+<P>TI-BASIC programs are always tokenized, and can be edit-locked or edit-unlocked, depending on the type ID.<BR>
+<A HREF="tokens.html">Click here</A> for a table of token definitions.</P>
+<P>Z80 Assembly programs are made up of an ASCII string of hexadecimal digits following the length word. The characters
+0-9, A-F, and the hard return character (D6h) are valid. At the end of the program come these three tokenized lines:<BR>
+<TT>:End<BR>
+:0000<BR>
+:End</TT></P>
+<H4><A NAME="window"></A>Window Settings</H4>
+<P>Unlike GDB's, window setting formats do not vary with graphing mode. Rather, one window setting structure serves
+for all graphing modes. An additional window setting structure is saved in the calculator memory for later recall
+with the name &quot;RclWindow&quot;. This special window setting structure does not have the unknown byte that
+is included in the normal window setting structure.</P>
+<P>A normal window setting structure has the following format:</P>
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="92%">
+	<TR>
+		<TH WIDTH="14%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Offset</FONT></TH>
+		<TH WIDTH="3%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Length</FONT></TH>
+		<TH WIDTH="83%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Description</FONT></TH>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">0</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">2 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Always has a value of D0h.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">2</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Unknown - value is 00h.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">3</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Xmin</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">12&nbsp;(Ch)</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Xmax</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">21&nbsp;(15h)</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Xscl</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">30 (1Eh)</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Ymin</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">39&nbsp;(27h)</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Ymax</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">48&nbsp;(30h)</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Yscl</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">57 (39h)</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: <IMG SRC="graphics/theta.gif" WIDTH="7" HEIGHT="11" ALIGN="BOTTOM" ALT="[theta]"
+			BORDER="0">min</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">66&nbsp;(42h)</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: <IMG SRC="graphics/theta.gif" WIDTH="7" HEIGHT="11" ALIGN="BOTTOM" ALT="[theta]"
+			BORDER="0">max</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">75 (4Bh)</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: <IMG SRC="graphics/theta.gif" WIDTH="7" HEIGHT="11" ALIGN="BOTTOM" ALT="[theta]"
+			BORDER="0">step</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">84 (54h)</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Tmin</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">93&nbsp;(5Dh)</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Tmax</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">102&nbsp;(66h)</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Tstep</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">111 (6Fh)</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: PlotStart</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">120&nbsp;(78h)</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: <I>n</I>Max</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">129&nbsp;(81h)</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: u(<I>n</I>Min), first element</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">138 (89h)</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: v(<I>n</I>Min), first element</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">147&nbsp;(93h)</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: <I>n</I>Min</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">156&nbsp;(9Ch)</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: u(<I>n</I>Min), second element</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">165 (A5h)</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: v(<I>n</I>Min), second element</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">174 (AEh)</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: w(<I>n</I>Min), first element</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">183&nbsp;(B7h)</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: PlotStep</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">192&nbsp;(C0h)</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Xres</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="14%" BGCOLOR="#FFFFFF">201 (C9h)</TD>
+		<TD WIDTH="3%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: w(<I>n</I>Min), second element</TD>
+	</TR>
+</TABLE>
+<p></P>
+<P>A saved window setting structure has the following format:</P>
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="92%">
+	<TR>
+		<TH WIDTH="15%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Offset</FONT></TH>
+		<TH WIDTH="2%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Length</FONT></TH>
+		<TH WIDTH="83%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Description</FONT></TH>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">0</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">2 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Always has a value of CFh.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">2</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Xmin</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">11&nbsp;(Bh)</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Xmax</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">20&nbsp;(14h)</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Xscl</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">29 (1Dh)</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Ymin</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">38&nbsp;(26h)</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Ymax</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">47&nbsp;(2Fh)</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Yscl</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">56 (38h)</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: <IMG SRC="graphics/theta.gif" WIDTH="7" HEIGHT="11" ALIGN="BOTTOM" ALT="[theta]"
+			BORDER="0">min</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">65&nbsp;(41h)</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: <IMG SRC="graphics/theta.gif" WIDTH="7" HEIGHT="11" ALIGN="BOTTOM" ALT="[theta]"
+			BORDER="0">max</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">74 (4Ah)</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: <IMG SRC="graphics/theta.gif" WIDTH="7" HEIGHT="11" ALIGN="BOTTOM" ALT="[theta]"
+			BORDER="0">step</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">83 (53h)</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Tmin</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">92&nbsp;(5Ch)</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Tmax</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">101&nbsp;(65h)</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Tstep</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">110 (6Eh)</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: PlotStart</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">119&nbsp;(77h)</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: <I>n</I>Max</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">128&nbsp;(80h)</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: u(<I>n</I>Min), first element</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">137 (88h)</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: v(<I>n</I>Min), first element</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">146&nbsp;(92h)</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: <I>n</I>Min</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">155&nbsp;(9Bh)</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: u(<I>n</I>Min), second element</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">164 (A4h)</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: v(<I>n</I>Min), second element</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">173 (ADh)</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: w(<I>n</I>Min), first element</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">182&nbsp;(B6h)</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: PlotStep</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">191&nbsp;(BFh)</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: Xres</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="15%" BGCOLOR="#FFFFFF">200 (C8h)</TD>
+		<TD WIDTH="2%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: w(<I>n</I>Min), second element</TD>
+	</TR>
+</TABLE>
+
+<H4><A NAME="table"></A>Table Settings</H4>
+<P>A Table Setting structure stores the table screen parameters. Table settings follow this format:</P>
+
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="92%">
+	<TR>
+		<TH WIDTH="9%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Offset</FONT></TH>
+		<TH WIDTH="8%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Length</FONT></TH>
+		<TH WIDTH="83%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Description</FONT></TH>
+	</TR>
+	<TR>
+		<TD WIDTH="9%" BGCOLOR="#FFFFFF">0</TD>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">2 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">Always has a value of 12h.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="9%" BGCOLOR="#FFFFFF">2</TD>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: TblMin</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="9%" BGCOLOR="#FFFFFF">10&nbsp;(Ah)</TD>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">9 bytes</TD>
+		<TD WIDTH="83%" BGCOLOR="#FFFFFF">A <A HREF="#real">real number</A>: <IMG SRC="graphics/delta.gif" WIDTH="8" HEIGHT="11" ALIGN="BOTTOM" ALT="[Delta]"
+			BORDER="0">Tbl</TD>
+	</TR>
+</TABLE>
+<BR>
+
+<TABLE BORDER="0" CELLSPACING="0" WIDTH="100%">
+	<TR>
+		<TD WIDTH="32%">
+			<P ALIGN="CENTER"><A HREF="backup.html"><IMG SRC="graphics/prevpage.gif" WIDTH="32" HEIGHT="32" ALIGN="BOTTOM"
+			ALT="[previous page]" BORDER="2"><BR>
+			Backups</A>
+		</TD>
+		<TD WIDTH="34%">
+			<P ALIGN="CENTER"><A HREF="index.html"><IMG SRC="graphics/home.gif" WIDTH="32" HEIGHT="32" ALIGN="BOTTOM" ALT="[home]"
+			BORDER="2"><BR>
+			Table of Contents</A>
+		</TD>
+		<TD WIDTH="34%">
+			<P ALIGN="CENTER"><A HREF="fformat.html"><IMG SRC="graphics/nextpage.gif" WIDTH="32" HEIGHT="32" ALIGN="BOTTOM"
+			ALT="[next page]" BORDER="2"><BR>
+			File Formats</A>
+		</TD>
+	</TR>
+</TABLE>
+
+<HR ALIGN="CENTER">
+<I>Site maintained by Romain Li&eacute;vin (</I><A HREF="mailto:roms@lpg.ticalc.org"><I>roms@lpg.ticalc.org</I></A><I>)
+and Tim Singer (</I><A HREF="mailto:tsinger@gladstone.uoregon.edu"><I>tsinger@gladstone.uoregon.edu</I></A><I>)</I>
+
+
+</BODY>
+
+</HTML>

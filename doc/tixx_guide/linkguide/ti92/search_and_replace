@@ -1,0 +1,10 @@
+#!/bin/sh
+# Search and replace script
+#
+# Replace in *.* files TI-92 by TI-92
+#
+for I in *; do \
+sed -e 's/TI-92/TI-92/g' < $I > $I.tmp; \
+#echo $I; \
+mv $I.tmp $I; \
+done

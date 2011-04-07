@@ -1,0 +1,828 @@
+The TI-84 Plus USB Protocol
+Benjamin Moody (and some updates by R. Liévin)
+March 31, 2006
+
+The TI-89 Titanium USB Protocol
+Romain Liévin
+May 2, 2006
+======================================================================
+
+1  Introduction
+---------------
+
+ This represents my current understanding of the protocol used to
+ communicate with the OS and boot code of the TI-84 Plus.  It is based
+ mainly on:
+
+  - Logs of the communication between the calculator and TI-Connect,
+    obtained by Romain Liévin and Dan Englender;
+
+  - My own analysis of the boot code and OS of the TI-84 Plus SE.
+
+ I've been investigating the 84 Plus because that's the calculator I'm
+ more familiar with.  Nevertheless it looks like a lot of this is
+ applicable to the TI-89 Titanium as well.
+
+ Since I don't, as of this writing, have one of these calculators to
+ play with, I haven't personally tested any of this!
+
+ Now, on with the protocol...
+
+
+2  Raw Packets
+--------------
+
+ All data sent over USB is encoded as part of a "raw packet."  These
+ packets have a fixed maximum size specified by the calculator: 255
+ bytes for the 84 Plus, or 1023 bytes for the Titanium.  It seems that
+ a raw packet may or may not be sent as a single USB transfer (but
+ sending more than one raw packet as a single transfer is probably not
+ wise.)
+
+ Raw packets have a five-byte header followed by an n-byte data
+ section:
+
+  LL LL LL LL   TT   DD ...
+
+ where
+
+  LLLLLLLL = length of the data section;
+  TT = packet type;
+  DD = data bytes (LLLLLLLL of them.)
+
+ It should be noted that, unlike the DBUS protocol, the length is
+ transmitted in big endian order (most significant byte first.)  In
+ fact, all 16- and 32-bit numbers sent as part of the USB protocol
+ (with the exception of numbers that are actually part of variable
+ data) are transmitted in big-endian order.
+
+ For example,
+
+   0x00000004  0x01  0x00 0x00 0x04 0x00
+
+   0x00000002  0x05  0xE0 0x00
+
+   0x00000010  0x04  0x00 0x00 0x00 0x0A 0x00 0x01 0x00 0x03
+                     0x00 0x01 0x00 0x00 0x00 0x00 0x07 0xD0
+
+ are all valid and complete raw packets.
+
+ There are five types of raw packets, indicated by the TT field:
+
+   TT = 1: Buffer Size Request
+   TT = 2: Buffer Size Allocation
+   TT = 3: Virtual Packet Data with Continuation
+   TT = 4: Virtual Packet Data Final
+   TT = 5: Virtual Packet Data Acknowledgement
+
+ Each of these plays its own crucial role in the protocol, and each
+ will be discussed in the following sections.
+
+
+3  Buffer Size Negotiation
+--------------------------
+
+ Before any real communication can take place, one crucial question
+ must be settled: how big can a single raw packet be?  At the moment
+ the TI-84 Plus limits incoming and outgoing raw packets to 255 bytes,
+ and the 89 Titanium limits them to 1023 bytes, yet that may change in
+ the future.
+
+ The device wishing to initiate communication, therefore, begins by
+ sending a type 1 (Buffer Size Request) raw packet.  The contents of
+ this packet are a 32-bit integer (big endian, remember) which is the
+ largest size of raw packet the device is willing to handle.  Note
+ that this length does not include the header; so the TI-84 Plus,
+ which can handle a total raw packet size of 255 bytes, sends the
+ number 0xFA, or 250. 
+ 
+ The Titanium sends the number 0x3FF or 1023 but acts slightly differently.
+ It should handle 1028 bytes but instead sends 5 bytes of header and next,
+ 1023 bytes.
+
+ The receiving device must then decide whether the chosen buffer size
+ is acceptable, or whether it must be made smaller still.  (For
+ example, TI-Connect gives a maximum packet size of one kilobyte,
+ which is too large for the TI-84 Plus to handle.)  The receiving
+ device chooses a buffer size acceptable to both parties and sends a
+ type 2 (Buffer Size Allocation) raw packet, whose contents are a
+ 32-bit integer equal to the chosen size.
+
+ The complete negotiation between TI-Connect and a TI-84 Plus thus
+ goes as follows:
+
+ TI-Connect sends 9 bytes stating that it can send and receive packets
+ up to one kilobyte:
+
+  PC->TI: 0x00000004  0x01  0x00000400
+
+ The calculator requires a smaller buffer, and replies:
+
+  TI->PC: 0x00000004  0x02  0x000000FA
+
+ Now both parties have agreed on a buffer size (0xFA.)  Of course,
+ both devices should now take care not to send packets larger than
+ this size.
+
+ It seems that this negotiation must be done at the start of every
+ "operation;" after the communication is finished, the calculator will
+ forget about the previously established buffer size.
+
+
+4  Virtual Packets
+------------------
+
+ 250 bytes is never enough, though.  To actually send data back and
+ forth we want to be able to send blocks of arbitrary size.  This is
+ where virtual packets come in.
+
+ A virtual packet is always sent as the payload of one or more raw
+ packets.  Specifically, it is sent as the payload of zero or more
+ type 3 (Virtual Packet Data with Continuation) raw packets followed
+ by a single type 4 (Virtual Packet Data Final) raw packet.  Only one
+ virtual packet may be sent at a time; each virtual packet thus ends
+ with its own type 4 raw packet.  The virtual packet is then obtained
+ by concatenating the contents of the raw packets, in order.
+
+ So what is the actual structure of a virtual packet?  Very much like
+ the structure of a raw packet, yet subtly different.  It has a
+ six-byte header instead of five:
+
+  LL LL LL LL   TT TT   DD ...
+
+ where, like a raw packet,
+
+  LLLLLLLL = length of the data section;
+  TTTT = packet type;
+  DD = data bytes (LLLLLLLL of them.)
+
+ Thus there can potentially be as many as 65536 different virtual
+ packet types defined.  At the moment there are only about 22 of them,
+ yet there is room for expansion.
+
+ An example is sorely needed at this point.  Here is a fairly common
+ packet, the standard "ping," as it would be sent in a single type 4
+ raw packet:
+
+  0x00000010  0x04
+   0x0000000A  0x0001
+    0x00 0x03 0x00 0x01 0x00 0x00 0x00 0x00 0x07 0xD0
+
+ Note that the length of this virtual packet's data section is 10, or
+ 0x0A.  But the header is an additional 6 bytes, which brings the
+ total size of the raw packet's data section to 0x10.
+
+ The same virtual packet could also be sent (though it generally
+ isn't) as a type 3 followed by a type 4:
+
+  0x00000008  0x03
+   0x0000000A  0x0001
+    0x00 0x03
+
+  0x00000008  0x04
+    0x00 0x01 0x00 0x00 0x00 0x00 0x07 0xD0
+
+ The actual distribution of data between the raw packets is not
+ important; in either case the calculator will "unwrap" the same 16
+ bytes.
+
+ Finally, each type 3 or type 4 raw packet must be acknowledged by the
+ receiving device; this acknowledgement takes the form of a type 5
+ (Virtual Packet Data Acknowledgement) raw packet.  The contents of
+ this packet are always the 16-bit number 0xE000.  I have no idea why.
+
+ So the complete transmission of a 10-byte ping, beginning with the
+ buffer size negotiation, looks like this:
+
+  PC->TI: 0x00000004  0x01  0x00000400
+
+  TI->PC: 0x00000004  0x02  0x000000FA
+
+  PC->TI: 0x00000010  0x04
+           0x0000000A  0x0001
+            0x00 0x03 0x00 0x01 0x00 0x00 0x00 0x00 0x07 0xD0
+
+  TI->PC: 0x00000002  0x05  0xE000
+
+ From now on I will ignore all of these details.  Where I write that
+ the calculator "sends a virtual packet with XXXX as its contents"
+ this implies that the appropriate data will be encoded and sent as a
+ series of type 3 and 4 raw packets, and of course the PC will
+ acknowledge each one.
+
+
+5  Virtual Packet Types
+-----------------------
+
+ The following are the types of virtual packets I have been able to
+ identify thus far.  There may be more out there.
+
+  TTTT      Description
+  0x0001    Ping / Set Mode
+  0x0002    Begin OS Transfer
+  0x0003    Acknowledgement of OS Transfer
+  0x0004	OS Header (signature)
+  0x0005    OS Data
+  0x0006    Acknowledgement of EOT
+  0x0007    Parameter Request
+  0x0008    Parameter Data
+  0x0009    Request Directory Listing
+  0x000A    Variable Header
+  0x000B    Request to Send
+  0x000C    Request Variable
+  0x000D    Variable Contents
+  0x000E    Parameter Set
+  0x0010    Delete Variable
+  0x0011    Unknown
+  0x0012    Acknowledgement of Mode Setting
+  0xAA00    Acknowledgement of Data
+  0xBB00    Delay Acknowledgement
+  0xDD00    End of Transmission
+  0xEE00    Error
+
+
+ Type 0x0001: Ping / Set Mode
+ ----------------------------
+
+  The "ping" packet is sent to begin every transmission, immediately
+  following the buffer size negotiation.  In fact, it must always be
+  the first packet sent, as it determines the set of commands the
+  calculator will accept.  The contents of this packet are:
+
+   MM MM MM MM MM MM XX XX XX XX
+
+  MMMMMMMMMMMM = mode ID;
+  XXXXXXXX = unknown.
+
+  The 84 Plus checks XXXXXXXX to be between 2000 and 131071
+  (inclusive.)  I have no idea what this represents.  If it is too
+  small, an 0x001C error is sent; if it is too big, an 0x001D error is
+  sent.
+
+  Next, MMMMMMMMMMMM is checked.  This determines what types of
+  packets will be allowed in the following transmission.  The
+  following mode ID's are accepted by the 84 Plus OS:
+
+   0x000100010000  Startup mode; only ping is accepted.
+
+   0x000200010000  Basic mode; ping, OS transfer, and parameter
+                   request are accepted.
+
+   0x000300010000  Normal operation mode; ping, parameter request,
+		   directory listing, request to send, request
+		   variable, parameter set, variable delete, and
+		   command 0x0011 are accepted.
+
+  The 84 Plus boot code only accepts the first two mode ID's.
+
+  If the mode ID is acceptable, a type 0x0012 (Acknowledgement of Mode
+  Setting) is sent in response.  This contains the value of XXXXXXXX.
+
+
+ Type 0x0002: Begin OS Transfer
+ ------------------------------
+
+  This packet begins an OS transfer (or maybe also a certificate
+  transfer?)  It's only accepted in mode 2.  An 0x0003
+  (Acknowledgement of OS Transfer) is sent in response.  
+  
+  The contents of this packet are:
+
+	XX XX XX XX XX XX XX HH HL LH LL
+
+  XXXXXXXX = unknown.
+  HHHLLHLL = size of OS data plus header (page, offset and flag), TI84+ only
+  HHHLLHLL = size of OS data, Titanium only
+
+
+ Type 0x0003: Acknowledgement of OS Transfer
+ -------------------------------------------
+
+  This packet is sent in response to an 0x0002 packet.  Its contents
+  is the following:
+
+   HH HL LH LL 00 00 00 00
+
+  where HHHLLHLL is the maximum allowed size of an 0x0005 packet.
+
+
+ Type 0x0004: OS Header ?
+ ------------------------
+
+  This packet is sent before sending OS data. It may contains the header.
+  Same format as packet type 0x0005.
+
+
+ Type 0x0005: OS Data
+ --------------------
+
+  This packet contains OS data.  It is analogous to a combination of
+  the VAR and XDP packets in the DBUS protocol.  Its contents are:
+
+   AA AA PP FF DD ...
+
+  AAAA = Z80 logical address to write data (zero for header and
+         signature)
+  PP = page to write data (zero for header and signature)
+  FF = flag (zero for normal data, 0x80 for header or signature)
+  DD = OS data, up to 256 bytes.
+
+
+ Type 0x0006: Acknowledgement of EOT
+ -----------------------------------
+
+  This packet is sent in response to an 0xdd00 (End of Transmission)
+  packet.  It seems it is only sent in Flash transfers.  Its first
+  byte is 1 if validation succeeded, or 0 if it failed.
+
+
+ Type 0x0007: Parameter Request
+ ------------------------------
+
+  This packet requests calculator "parameters". This packet's contents are
+
+  NN NN ( II II ) ...
+
+  NNNN = number of parameters requested;
+  IIII = 16-bit ID of each parameter requested.
+
+  For example, sending a type 0x0007 packet containing
+	0x0001 0x0002
+  requests parameter number 2, which happens to be the product name.
+
+
+ Type 0x0008: Parameter Data
+ ---------------------------
+
+  This packet is sent in response to an 0x0007 (Parameter Request)
+  packet, whose contents are:
+
+  NN NN ( II II VV [ LL LL DD ... ] ) ...
+
+  NNNN = number of parameters requested;
+  for each parameter:
+   IIII = 16-bit parameter ID;
+   VV = 0 if the given parameter ID is valid, 1 if it isn't;
+	and if VV = 0:
+    LLLL = length of the parameter data;
+    DD = parameter data (LLLL bytes.)
+
+  So for parameter 0x0002, the calculator might reply with a type
+  0x0008 packet containing:
+
+   0x0001                    (one parameter requested)
+    0x0002                   (parameter number 2)
+    0x00                     (parameter is valid)
+    0x0019                   (parameter data is 0x19 bytes long)
+
+    0x54 0x49 0x2D 0x38      (parameter data: in this case, an
+    0x34 0x20 0x50 0x6C	     ASCII string)
+    0x75 0x73 0x20 0x53
+    0x69 0x6C 0x76 0x65
+    0x72 0x20 0x45 0x64
+    0x69 0x74 0x69 0x6F
+    0x6E
+
+  Multiple parameters can be requested at once; for example a type
+  0x0007 packet could contain:
+
+  0x0004 0x0002 0x000E 0x0011 0x0025
+
+  if you wanted to retrieve not only the product name, but also the
+  amount of free RAM, free archive space, and the current time from the
+  calculator's clock.
+
+
+ Type 0x0009: Request Directory Listing
+ --------------------------------------
+
+  This packet requests a directory listing.  Each packet sent in reply
+  will contain both the variable name and certain variable attributes;
+  this packet allows you to specify which attributes you're interested
+  in.  Its contents should be:
+
+   NN NN NN NN ( II II ) ... 0x00 0x01 0x00 0x01 0x00 0x01 0x01
+                             \---------- ?????????? ----------/
+
+  NNNNNNNN = number of variable attributes requested;
+  IIII = 16-bit ID of each attribute requested.
+
+  The calculator will reply with a series of 0x000A packets, each
+  containing a variable name and the requested attributes.
+
+
+ Type 0x000A: Variable Header
+ ----------------------------
+
+  This packet is sent either
+   (a) as part of a directory listing; or
+   (b) in response to an 0x000C (Request Variable) packet.
+
+  In addition to the name, it can contain zero or more variable
+  "attributes," which can be any sort of variable metadata (type,
+  size, archived state, perhaps the folder name...)
+
+  The contents of this packet are (TI84+):
+
+   LL LL UU ... 0x00 | NN NN ( II II VV [ JJ JJ DD ... ] ) ...
+                \__/
+				 |
+				 NULL terminator
+
+  The contents of this packet are (Titanium):
+
+   LL UU ... 0x00 LL UU ... 0x00 | NN NN ( II II VV [ JJ JJ DD ... ] ) ...
+      \_________/    \_________/
+	    folder		   varname
+
+  Note that the header changes between TI84+ & Titanium (vars only, FLASH app follows the
+  same scheme as TI84+). The same header apply for 0x000B, 0x000C and 0x0010 packets. 
+  You will have to update them consequently...
+
+  Kevin Kofler says that a generic format for all hand-helds could be:
+
+   LL MM UU ... 0x00 | NN NN ( II II VV [ JJ JJ DD ... ] ) ... 
+     
+   LL UU ... 0x00 MM UU ... 0x00 | NN NN ( II II VV [ JJ JJ DD ... ] ) ...
+
+
+  LLLL = length of variable's name;
+  UU = variable name in UTF-8 (LLLL bytes);
+  NNNN = number of variable attributes;
+  for each attribute:
+   IIII = 16-bit attribute ID;
+   VV = 0 if attribute is valid;
+   and if VV = 0:
+    JJJJ = length of attribute data;
+    DD = attribute data (JJJJ bytes.)
+
+  For example:
+
+  0x0001 0x41   (Variable name: "A")
+  0x00          (???)
+  0x0006        (6 attributes present)
+  0x0002        (Attribute number 2 / data type:)
+   0x00 0x0004  (Attribute is valid, data is 4 bytes)
+   0xF0070000   (Data type.)
+  0x0003        (Attribute number 3 / is variable archived?:)
+   0x00 0x0001  (Attribute is valid, data is 1 byte)
+   0x00         (Variable is not archived.)
+  0x0005        (Attribute number 5)
+   0x01         (Attribute is invalid)
+  0x0001        (Attribute number 1 / variable data size:)
+   0x00 0x0004  (Attribute is valid, data is 4 bytes)
+   0x00000009   (Variable data is 9 bytes.)
+  0x0041        (Attribute number 41)
+   0x01         (Attribute is invalid)
+  0x0042        (Attribute number 42)
+   0x01         (Attribute is invalid)
+
+  Known attributes:
+   0x0001	4 bytes	Variable size
+   0x0002	4 bytes	Variable type
+   0x0003	1 byte	Is archived / in Flash
+   0x0004	1 byte	Unknown (always 0).
+   0x0005	4 bytes	First four bytes of an AppVar. By TI's convention, the first four
+					bytes identify the program that created the AppVar.
+   0x0008	1 byte	Variable "version".  This is 0 for most variables, but 1 for programs
+					that include 83+-specific functions (and thus won't work on an 82 or 83.) 
+					It's probably increased for 84+-specific functions as well.
+   0x0008	4 bytes Set to 1 when sending app on Titanium (Titanium only).
+   0x0011	4 bytes	Variable type : used for requesting variables instead of type 0x0002.
+   0x0013	1 byte	Unknown (always 0, used for deleting of variable)
+   0x0041	1 byte	Is locked
+   0x0042	1 byte	Unknown
+
+  A variable type is the standard type ID plus either 0xF0030000,
+  0xF0070000, or 0xF00B0000.  (Perhaps this varies with the device
+  type.)
+  Titanium: 0xF00C0000.
+
+
+ Type 0x000B: Request to Send
+ ----------------------------
+
+  This is a variation of the variable header packet.  Its contents are:
+
+   LL LL UU ... 00 | 00 00 00 09 01 NN NN ( II II JJ JJ DD ... ) ...
+			    \/   \_varsize_/ \?/
+			    |
+				NULL terminator			 
+
+
+  LLLL = length of name;
+  UU = variable name in UTF-8 (LLLL bytes);
+  NNNN = number of attributes;
+  and for each attribute:
+   IIII = 16-bit attribute ID (see above);
+   JJJJ = length of attribute data;
+   DD = attribute data (JJJJ bytes.)
+
+  Note the lack of VV bytes, as all attributes the PC is sending are
+  presumably valid.
+
+
+ Type 0x000C: Variable Request
+ -----------------------------
+
+  This is also a variation of the variable header packet.  It requests
+  both a variable header and the variable contents, so it includes
+  BOTH a list of attributes the PC provides (data type) and a list of
+  attributes the calculator needs to provide (variable size, is it
+  archived?)  Its contents are:
+
+                       /----- ?????????? -----\
+   LL LL UU ... 0x00 | 0x01 0xFF 0xFF 0xFF 0xFF
+   NN NN ( II II ) ...
+   MM MM ( II II JJ JJ DD ... ) 0x00 0x00
+                                \- ??? -/
+
+  LLLL = length of name;
+  UU = variable name in UTF-8 (LLLL bytes);
+  NNNN = number of attributes requested;
+  for each attribute:
+   IIII = 16-bit attribute ID;
+  MMMM = number of attributes specified;
+  for each attribute:
+   IIII = 16-bit attribute ID;
+   JJJJ = length of attribute data;
+   DD = attribute data (JJJJ bytes.)
+
+  Note: When you specify the variable type, you must use attribute
+  0x0011 rather than 0x0002.  I don't know why.
+
+
+ Type 0x000D: Variable Contents
+ ------------------------------
+
+  This packet simply contains the contents of the variable previously
+  agreed upon.  All meta-data is sent as part of the 0x000A or 0x000B
+  packet.
+
+
+ Type 0x000E: Parameter Set
+ --------------------------
+
+  This packet attempts to set a parameter value.
+  You can also remotely assign values to certain parameters.  (This is
+  the way to set the clock, for instance.)  To set a parameter, send an
+  0x000E packet containing:
+
+   II II LL LL DD ...
+
+  The calculator will either acknowledge with 0xAA00, or return an
+  0x0022 error if the parameter ID is invalid.  Note that only one
+  parameter can be set at once.
+
+
+ Type 0x0010: Delete Variable
+ ----------------------------
+
+  This is yet another variation of the variable header packet.  Its
+  contents are:
+
+   LL LL UU ... 0x00 | NN NN ( II II JJ JJ DD ... ) ...
+   0x01 0x00 0x00 0x00 0x00
+
+  LLLL = length of name;
+  UU = variable name in UTF-8 (LLLL bytes);
+  NNNN = number of attributes;
+  and for each attribute:
+   IIII = 16-bit attribute ID (see above);
+   JJJJ = length of attribute data;
+   DD = attribute data (JJJJ bytes.)
+
+  If successful, the calculator sends an 0xAA00 (Acknowledgement of
+  Data) packet in response.
+
+
+ Type 0x0012: Acknowledgement of Mode Setting
+ --------------------------------------------
+
+  This packet is sent in response to a ping.  Its contents are four
+  bytes: the same XXXXXXXX value sent in the ping.
+
+
+ Type 0xAA00: Acknowledgement of Data
+ ------------------------------------
+
+  This packet is sent to acknowledge many different commands.  Its
+  contents are a single byte, which always appears to be 1.
+
+
+ Type 0xBB00
+ -----------
+
+  This is a strange one.  The calculator appears to ignore this packet
+  when it is received.  Sometimes it is sent after an 0x0007 packet is
+  received; sometimes it isn't.  It usually contains the number
+  0x0001d4c0 (120000) or 0x00057E40 (360000).
+
+  [Incidentally, I have an idea about the BB00 packet.  Its contents seem to
+	be used as a timeout.  Perhaps it simply means "wait for X milliseconds
+	for the next packet," and it's sent whenever the calculator expects to
+	take a long time to respond.  That would seem to make sense in the
+	contexts where it is used.]
+
+
+ Type 0xDD00: End of Transmission
+ --------------------------------
+
+  This packet is sent when an OS transfer or directory listing is
+  done.
+
+
+ Type 0xEE00: Error
+ ------------------
+
+  This packet indicates an error; the contents are a 2-byte error
+  code.
+
+  Error codes include:
+    00 04 = invalid argument or name
+	00 06 = can't delete app
+	00 08 = transmission error or invalid code
+	00 09 = using basic mode while being in boot mode
+	00 0c = out of memory
+	00 0e = invalid name
+	00 12 = can't overwrite, variable is locked/archived
+	00 1c = mode token too small
+	00 1d = mode token too large
+	00 22 = invalid parameter ID
+	00 2b = battery low (sending OS)
+	00 34 = invalid FLASH app?
+
+
+6  Variable Transfers
+---------------------
+
+ Transferring variable data is done by the same overall method used in
+ the DBUS protocol.  Before sending or requesting a variable, you may
+ want to retrieve a directory listing, which is done as follows:
+
+  PC->TI: Request Directory Listing (0x0009)
+  TI->PC: Variable Header (0x000A)
+  TI->PC: Variable Header (0x000A)
+  ...
+  TI->PC: End of Transmission (0xDD00)  
+
+ To request a variable to be sent:
+
+  PC->TI: Request Variable (0x000C)
+  TI->PC: Variable Header (0x000A)
+  TI->PC: Variable Contents (0x000D)
+
+ To request to send a variable (silently):
+
+  PC->TI: Request to Send (0x000B)
+  TI->PC: Acknowledge (0xAA00)
+  PC->TI: Variable Contents (0x000D)
+  TI->PC: Acknowledge (0xAA00)
+  PC->TI: End of Transmission (0xDD00)
+
+ To request that a variable be deleted:
+
+  PC->TI: Delete Variable (0x0010)
+  TI->PC: Acknowledge (0xBB00), Titanium only or TI84+ when deleting FLASH app (garbage collecing).
+  TI->PC: Acknowledge (0xAA00)
+
+
+7  Flash Transfers
+------------------
+
+ Transferring FLASH apps is done by the same overall method used in
+ the DBUS protocol.  
+
+ To request a FLASH app to be sent (same as requesting of var):
+
+  PC->TI: Request Variable (0x000C)
+  TI->PC: Variable Header (0x000A)
+  TI->PC: Variable Contents (0x000D)
+
+ To request to send a FLASH app:
+
+  PC->TI: Request to Send (0x000B)
+  TI->PC: Acknowledge (0xBB00)
+  TI->PC: Acknowledge (0xAA00)
+
+  PC->TI: Variable Contents (0x000D)
+  TI->PC: Acknowledge (0xBB00)
+  TI->PC: Acknowledge (0xAA00)
+
+  PC->TI: End of Transmission (0xDD00)
+
+
+8 OS Transfers
+--------------
+
+ Transferring FLASH OS is done on the following scheme:
+  
+  PC->TI: Ping / Set Mode (to basic mode)
+  TI->PC: Acknowledge (0x0012)
+
+  PC->TI: Begin OS Transfer (0x0002)
+	  TI->PC: Buffer Size Request (size = 256 + 10 bytes)	(*)
+	  PC->TI: Buffer Size Negotiation						(*)
+  TI->PC: Acknowledge of OS Transfer (0x0003)
+
+  PC->TI: OS Header (0x0004)
+  TI->PC: Acknowledge (0xBB00), Titanium only
+  TI->PC: Acknowledge of OS Transfer (0x0003)
+
+  PC->TI: OS Data (0x0005)
+  TI->PC: Acknowledge (0xBB00), Titanium only
+  TI->PC: Acknowledge (0xAA00)
+	...
+  PC->TI: OS Data (0x0005)
+  TI->PC: Acknowledge (0xBB00), Titanium only
+  TI->PC: Acknowledge (0xAA00)
+
+  PC->TI: End Of Transmission (0xDD00)
+  TI->PC: Acknowledge (0xBB00), TI84+ only
+  TI->PC: Acknowledge of EOT (0x0006)
+
+  Note (TI84+): 
+	OS header and first packet have AAAA=4000, PP=7A, FF=80.
+	Last packet has AAAA=4100, PP=7A, FF=80. 
+	Others begins with AAAA=4000 and FF=00.
+
+  Note (Titanium):
+    OS header contains the certificate part.
+	Other packets are raw data.
+
+  (*) the negotiation takes place on the first transfer attempt. If transfer failed (hand-held
+  in boot mode, waiting for OS receival), then this step is skipped.
+
+
+9  Calculator Parameters
+------------------------
+
+ A great deal of non-variable data (much more than was ever available
+ through the DBUS protocol) is available in the form of "parameters."
+ These are simply strings of binary data which can be read from (and
+ some written to) the calculator.
+
+ The following parameters are present on the TI-84 Plus as of OS 2.40
+ and Titanium as of OS 3.00:
+
+ (B = parameter available in boot mode; W = parameter writable.)
+
+ ID    B  W  Type       Description
+
+ 0001  *     Int32      Product number? (0x0000000A for the 84 Plus)
+ 0002  *     String     Product name, e.g. "TI-84 Plus Silver Edition"
+ 0003  *     5 bytes    Main part of calculator ID in binary (TI84+), Full part of ID-LIST in ASCII (Titanium)
+ 0004  *     Int16      Hardware version
+ 0005     *  Unknown    Unknown (TI84+), 18-bytes ID-LIST (Titanium)
+ 0006        Byte       Language ID
+ 0007        Byte       Sub-Language ID
+ 0008  *     Int16      DBUS device type (0x0073 for the 84 Plus, 0x98 for the Titanium)
+ 0009  *     4 bytes    Boot Version (16 bit major, 8 bit minor, 8 bit micro)
+ 000A  *     Byte       0 = no OS loaded (boot mode), 1 = OS loaded
+ 000B        4 bytes    OS Version (16 bit major, 8 bit minor, 8 bit micro)
+ 000C  *     Int64      Amount of RAM physically present
+ 000D  *     Int64      Maximum amount of RAM available to user
+ 000E        Int64      Amount of RAM currently free
+ 000F  *     Int64      Amount of FlashROM physically present
+ 0010  *     Int64      Maximum amount of Flash available to user
+ 0011        Int64      Amount of Flash currently free
+ 0012        Int64      Maximum number of App pages available
+ 0013        Int64      Number of App pages free
+ 0019        Byte       Unknown (always 1)
+ 001A        Byte       Unknown (always 0)
+ 001B        Byte       Unknown (always 0)
+ 001C        Byte       Unknown (always 1)
+ 001D        Byte       Unknown (always 1)
+ 001E        Int16      LCD width?
+ 001F        Int16      LCD height?
+ 0022        768 bytes  LCD contents
+ 0023        Byte       Unknown (always 1)
+ 0024     *  Byte       0 = clock off, 1 = clock on
+ 0025     *  Int32      Clock (seconds since 1997 Jan 1)
+ 0027     *  Byte       0 = Y/M/D, 1 = M/D/Y, 2 = D/M/Y | 3 = M.D.Y, 4 = D.M.Y, 5 = Y.M.D, 6 = M-D-Y, 7 = D-M-Y, 8 = Y-M-D (Titanium date style)
+ 0028     *  Byte       0 = 12 hour, 1 = 24 hour mode
+ 0029        Byte       Unknown (always 0)
+ 002D  *     Byte       0 = battery low, 1 = battery good
+ 0030     *  32 bytes   Unknown
+ 0031        Unknown    List of Certificates
+ 0032     *  Byte       Unknown (0 or 1 according to system flag 5,(iy+51))
+ 0036        16 bytes   Calculator ID, maybe?
+ 0037     *  Byte       0 = not at homescreen, 1 = at homescreen
+ 0038        Byte       Unknown (always 0)
+ 0039        Byte       0 = screen not split, 1 = screen split
+
+ To request a parameter to be sent
+
+  PC->TI: Request Parameter (0x0007)
+  TI->PC: Acknowledge (0xBB00), TI84+ only
+  TI->PC: Parameter Data (0x0008)
+
+ To request to send a parameter
+
+  PC->TI: Parameter Set (0x000E)
+  TI->PC: Acknowledge (0xAA00)
+  
+---
+$Id
+Available on TiLP CVS at <http://svn.tilp.info/cgi-bin/viewcvs.cgi/linkguide/trunk/usb-protocol.txt?rev=2245&root=tilp&view=auto>
+

@@ -1,0 +1,115 @@
+			+------------------------------------------+
+			| TI-GRAPH LINK USB cable (aka SilverLink) |
+			|		Informations					  							 |
+			+------------------------------------------+
+
+
+
+Link cable characteristics:
+---------------------------
+
+- Name: 'TI-84 Plus Silver Edition'
+- Manufacturer: 'Texas Instruments Corporated'
+- VID/PID: 0x0451/0xe008
+- Firmware revision: 1.00 (HW revision or OS version ??)
+- bus or self powered (unused) with remote wake-up
+
+
+USB related things:
+-------------------
+
+The cable is a full-speed (FS, 12Mbit/s) device, USB2.0 compliant, under a 
+proprietary class. It does not fit into any existing class (HID, printer, ...)
+then it requires a specific device driver.
+
+The device uses 'Bulk' mode for data transfers. There are two bulk endpoints 
+(IN & OUT) and one control endpoint (mandatory). Transfers are achieved by 
+packets. The endpoints advertise a maximum packet size of 64 bytes.
+
+Unlike SilverLink, it seems to have a sub-class.
+
+
+Identity card (Linux log):
+--------------------------
+
+T:  Bus=02 Lev=02 Prnt=02 Port=02 Cnt=02 Dev#= 11 Spd=12  MxCh= 0
+D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
+P:  Vendor=0451 ProdID=e008 Rev= 1.00
+S:  Manufacturer=Texas Instruments Incorporated
+S:  Product=TI-84 Plus Silver Edition
+C:* #Ifs= 1 Cfg#= 1 Atr=e0 MxPwr=  0mA
+I:  If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=01 Prot=00 Driver=(none)
+E:  Ad=81(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+
+Bus 001 Device 003: ID 0451:e008 Texas Instruments, Inc. TI-84 Plus Silver Calculator
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               2.00
+  bDeviceClass            0 (Defined at Interface level)
+  bDeviceSubClass         0 
+  bDeviceProtocol         0 
+  bMaxPacketSize0        64
+  idVendor           0x0451 Texas Instruments, Inc.
+  idProduct          0xe008 TI-84 Plus Silver Calculator
+  bcdDevice            1.10
+  iManufacturer           1 Texas Instruments Incorporated
+  iProduct                2 TI-84 Plus Silver Edition
+  iSerial                 0 
+  bNumConfigurations      1
+OTG Descriptor:
+  bLength                 3
+  bDescriptorType         9
+  bmAttributes         0x03
+    SRP (Session Request Protocol)
+    HNP (Host Negotiation Protocol)
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           35
+    bNumInterfaces          1
+    bConfigurationValue     1
+    iConfiguration          0 
+    bmAttributes         0xc0
+      Self Powered
+    MaxPower                0mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           2
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      1 
+      bInterfaceProtocol      0 
+      iInterface              0 
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0040  1x 64 bytes
+        bInterval               0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0040  1x 64 bytes
+        bInterval               0
+Device Status:     0x0000
+  (Bus Powered)
+
+      
+Author:
+-------
+
+(c) 2004, Romain Liévin
+Developer of TiLP & TiEmu.

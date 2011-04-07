@@ -1,0 +1,2263 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META NAME="GENERATOR" Content="Visual Page 1.0 for Windows">
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<TITLE>TI-82 Link Protocol Guide - Tokens and Characters</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFE8">
+
+<P><B>TI-82 Link Protocol Guide v1.0</B> - Tokens and Character Codes</P>
+<CENTER>
+<H2>
+<HR ALIGN="CENTER">
+Tokens and Character Codes</H2>
+</CENTER>
+<H3>TI-82 Tokens</H3>
+<P>In order to save space and execution time, the TI-82 tokenizes all BASIC programs, equations and commands before
+running or evaluating them. Rather than trying to interpret multiple-character command names in real-time, all
+simple commands are compressed down to one or two bytes. All possible tokens that can exist in a program are shown
+below. Blue-colored squares link to a note describing the token's function. Red-colored squares link to a separate
+table of two-byte tokens starting with the original byte (5Ch, 5Dh, 5Eh, 60h, 61h, 62h, 63h or 7Eh). Black-colored
+squares have no known function.</P>
+
+<P>Underscore characters signify space characters.</P>
+
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="100%">
+	<TR>
+		<TH BGCOLOR="#008800"><FONT COLOR="#FFFFFF">TI-86 Tokens</FONT></TH>
+		<TH COLSPAN="17" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Least Significant Digit</FONT></TH>
+	</TR>
+	<TR>
+		<TH ROWSPAN="17" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Most<BR>
+			<BR>
+			Significant<BR>
+			<BR>
+			Digit</FONT></TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">&nbsp;</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">0</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">1</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">2</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">3</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">4</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">5</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">6</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">7</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">8</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">9</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">A</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">B</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">C</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">D</TH>
+		<TH WIDTH="9%" BGCOLOR="#DDDDDD">E</TH>
+		<TH WIDTH="1%" BGCOLOR="#DDDDDD">F</TH>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">0</TH>
+		<TD WIDTH="5%" BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/convert.gif" WIDTH="5" HEIGHT="11" ALIGN="BOTTOM" ALT=">" BORDER="0">DMS
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/convert.gif" WIDTH="5" HEIGHT="11" ALIGN="BOTTOM" ALT=">" BORDER="0">Dec
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/convert.gif" WIDTH="5" HEIGHT="11" ALIGN="BOTTOM" ALT=">" BORDER="0">Frac
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/store.gif" WIDTH="8" HEIGHT="11" ALIGN="BOTTOM" ALT="->" BORDER="0">
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">BoxPlot
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">[
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">]
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">{
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">}
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><FONT SIZE="2"><SUP>r</SUP></FONT>
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">&deg;
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><FONT SIZE="2"><SUP>-1</SUP></FONT>
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><FONT SIZE="2"><SUP>2</SUP></FONT>
+		</TD>
+		<TD WIDTH="9%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><FONT SIZE="2"><SUP>T</SUP></FONT>
+		</TD>
+		<TD WIDTH="1%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><FONT SIZE="2"><SUP>3</SUP></FONT>
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">1</TH>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">)
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">round(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">pxl-Test(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">augment(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">rowSwap(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">row+(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">*row(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">*row+(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">max(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">min(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">R<IMG SRC="graphics/convert.gif" WIDTH="5" HEIGHT="11" ALIGN="BOTTOM" ALT=">" BORDER="0">Pr(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">R<IMG SRC="graphics/convert.gif" WIDTH="5" HEIGHT="11" ALIGN="BOTTOM" ALT=">" BORDER="0">P<IMG
+			SRC="graphics/theta.gif" WIDTH="7" HEIGHT="11" ALIGN="BOTTOM" ALT="[theta]" BORDER="0">(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">P<IMG SRC="graphics/convert.gif" WIDTH="5" HEIGHT="11" ALIGN="BOTTOM" ALT=">" BORDER="0">Rx(
+		</TD>
+		<TD WIDTH="9%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">P<IMG SRC="graphics/convert.gif" WIDTH="5" HEIGHT="11" ALIGN="BOTTOM" ALT=">" BORDER="0">Ry(
+		</TD>
+		<TD WIDTH="1%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">median(
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">2</TH>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">randM(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">mean(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">solve(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">seq(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">fnInt(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">nDeriv(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">fMin(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">fMax(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">&quot;
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">,
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">!
+		</TD>
+		<TD WIDTH="9%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">CubicReg_
+		</TD>
+		<TD WIDTH="1%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">QuartReg_
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">3</TH>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">0
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">1
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">2
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">3
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">4
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">5
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">6
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">7
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">8
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">9
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">.
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">&nbsp;<FONT SIZE="1">E</FONT>&nbsp;
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">_or_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">_xor_
+		</TD>
+		<TD WIDTH="9%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">:
+		</TD>
+		<TD WIDTH="1%" BGCOLOR="#99CCFF">
+			<P ALIGN="CENTER"><A HREF="#note1"><I>note</I></A>
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">4</TH>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">and
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">A
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">B
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">C
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">D
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">E
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">F
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">G
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">H
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">I
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">J
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">K
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">L
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">M
+		</TD>
+		<TD WIDTH="9%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">N
+		</TD>
+		<TD WIDTH="1%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">O
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">5</TH>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">P
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Q
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">R
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">S
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">T
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">U
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">V
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">W
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">X
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Y
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Z
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/theta.gif" WIDTH="7" HEIGHT="11" ALIGN="BOTTOM" ALT="[theta]" BORDER="0">
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFCCCC">
+			<P ALIGN="CENTER"><A HREF="#sysvar"><I>more</I></A>
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFCCCC">
+			<P ALIGN="CENTER"><A HREF="#sysvar"><I>more</I></A>
+		</TD>
+		<TD WIDTH="9%" BGCOLOR="#FFCCCC">
+			<P ALIGN="CENTER"><A HREF="#sysvar"><I>more</I></A>
+		</TD>
+		<TD WIDTH="1%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">prgm
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">6</TH>
+		<TD WIDTH="5%" BGCOLOR="#FFCCCC">
+			<P ALIGN="CENTER"><A HREF="#sysvar"><I>more</I></A>
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFCCCC">
+			<P ALIGN="CENTER"><A HREF="#sysvar"><I>more</I></A>
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFCCCC">
+			<P ALIGN="CENTER"><A HREF="#sysvar"><I>more</I></A>
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFCCCC">
+			<P ALIGN="CENTER"><A HREF="#sysvar"><I>more</I></A>
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Radian
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Degree
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Normal
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Sci
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Eng
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Float
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">=
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">&lt;
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">&gt;
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/ltequal.gif" WIDTH="8" HEIGHT="11" ALIGN="BOTTOM" ALT="<=" BORDER="0">
+		</TD>
+		<TD WIDTH="9%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/gtequal.gif" WIDTH="8" HEIGHT="11" ALIGN="BOTTOM" ALT=">=" BORDER="0">
+		</TD>
+		<TD WIDTH="1%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/notequal.gif" WIDTH="10" HEIGHT="11" ALIGN="BOTTOM" ALT="=/=" BORDER="0">
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">7</TH>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">+
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">-
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Ans
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Fix_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Split
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">FullScreen
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Func
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Param
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Polar
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Seq
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">IndpntAuto
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">IndpntAsk
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">DependAuto
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">DependAsk
+		</TD>
+		<TD WIDTH="9%" BGCOLOR="#FF9999">
+			<P ALIGN="CENTER"><A HREF="#7e"><I>more</I></A>
+		</TD>
+		<TD WIDTH="1%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/box.gif" WIDTH="7" HEIGHT="11" ALIGN="BOTTOM" ALT="[box]" BORDER="0">
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">8</TH>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/cross.gif" WIDTH="7" HEIGHT="11" ALIGN="BOTTOM" ALT="[cross]" BORDER="0">
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/dot.gif" WIDTH="7" HEIGHT="11" ALIGN="BOTTOM" ALT="[dot]" BORDER="0">
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">*
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">/
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Trace
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ClrDraw
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ZStandard
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ZTrig
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ZBox
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Zoom_In
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Zoom_Out
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ZSquare
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ZInteger
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ZPrevious
+		</TD>
+		<TD WIDTH="9%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ZDecimal
+		</TD>
+		<TD WIDTH="1%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ZoomStat
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">9</TH>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ZoomRcl
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">PrintScreen
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ZoomSto
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Text(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">_nPr_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">_nCr_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">FnOn_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">FnOff_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">StorePic_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">RecallPic_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">StoreGDB_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">RecallGDB_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Line(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Vertical_
+		</TD>
+		<TD WIDTH="9%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Pt-On(
+		</TD>
+		<TD WIDTH="1%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Pt-Off(
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">A</TH>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Pt-Change(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Pxl-On(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Pxl-Off(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Pxl-Change(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Shade(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Circle(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Horizontal_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Tangent(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">DrawInv_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">DrawF_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">rand
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/pi.gif" WIDTH="9" HEIGHT="11" ALIGN="BOTTOM" ALT="[pi]" BORDER="0">
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">getKey
+		</TD>
+		<TD WIDTH="9%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">'
+		</TD>
+		<TD WIDTH="1%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">?
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">B</TH>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><FONT SIZE="2"><SUP>-</SUP></FONT>
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">int_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">abs_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">det_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">identity_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">dim_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">sum_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">prod_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">not_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">iPart_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">fPart_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/sqrroot.gif" WIDTH="8" HEIGHT="11" ALIGN="BOTTOM" ALT="[square root]" BORDER="0">
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><FONT SIZE="2"><SUP>3<IMG SRC="graphics/sqrroot.gif" WIDTH="8" HEIGHT="11" ALIGN="BOTTOM" ALT="[square root]"
+			BORDER="0"></SUP></FONT>
+		</TD>
+		<TD WIDTH="9%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ln_
+		</TD>
+		<TD WIDTH="1%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">e^
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">C</TH>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">log_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><FONT SIZE="1">10</FONT>^
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">sin_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">sin<FONT SIZE="2"><SUP>-1</SUP></FONT>_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">cos_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">cos<FONT SIZE="2"><SUP>-1</SUP></FONT>_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">tan_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">tan<FONT SIZE="2"><SUP>-1</SUP></FONT>_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">sinh_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">sinh<FONT SIZE="2"><SUP>-1</SUP></FONT>_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">cosh_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">cosh<FONT SIZE="2"><SUP>-1</SUP></FONT>_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">tanh_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">tanh<FONT SIZE="2"><SUP>-1</SUP></FONT>_
+		</TD>
+		<TD WIDTH="9%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">If_
+		</TD>
+		<TD WIDTH="1%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Then
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">D</TH>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Else
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">While_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Repeat_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">For(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">End
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Return
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Lbl_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Goto_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Pause_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Stop
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">IS&gt;(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">DS&gt;(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Input_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Prompt_
+		</TD>
+		<TD WIDTH="9%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Disp_
+		</TD>
+		<TD WIDTH="1%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">DispGraph
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">E</TH>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Output(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ClrHome
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Fill(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">SortA(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">SortD(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">DispTable
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Menu(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Send(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Get(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">PlotsOn_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">PlotsOff_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Plot1(
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Plot2(
+		</TD>
+		<TD WIDTH="9%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Plot3(
+		</TD>
+		<TD WIDTH="1%" BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">F</TH>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">^
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/xthroot.gif" WIDTH="9" HEIGHT="11" ALIGN="BOTTOM" ALT="[xth root]" BORDER="0">
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">1-Var_Stats_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">2-Var_Stats_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">LinReg(a+bx)_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ExpReg_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">LnReg_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">PwrReg_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Med-Med_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">QuadReg_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ClrList_
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ClrTable
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Histogram
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">xyLine
+		</TD>
+		<TD WIDTH="9%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Scatter
+		</TD>
+		<TD WIDTH="1%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">LinReg(ax+b)_
+		</TD>
+	</TR>
+</TABLE>
+<A NAME="note1"></A><I>Note:</I> Token 3Fh is the hard return character.</P>
+
+<P><A NAME="sysvars"></A> 
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="100%">
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#FFCCCC">System&nbsp;Variables</TH>
+		<TH COLSPAN="8" BGCOLOR="#FFCCCC">First Byte</TH>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" ROWSPAN="53" BGCOLOR="#FFCCCC">Second Byte</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">&nbsp;</TH>
+		<TH BGCOLOR="#DDDDDD">5C</TH>
+		<TH BGCOLOR="#DDDDDD">5D</TH>
+		<TH BGCOLOR="#DDDDDD">5E</TH>
+		<TH BGCOLOR="#DDDDDD">60</TH>
+		<TH BGCOLOR="#DDDDDD">61</TH>
+		<TH BGCOLOR="#DDDDDD">62</TH>
+		<TH WIDTH="140" BGCOLOR="#DDDDDD">63</TH>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">00</TH>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">[A]
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">L<FONT SIZE="1">1</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Pic1
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">GDB1
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ZXscl
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">01</TH>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">[B]
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">L<FONT SIZE="1">2</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Pic2
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">GDB2
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">RegEq
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ZYscl
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">02</TH>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">[C]
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">L<FONT SIZE="1">3</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Pic3
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">GDB3
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">n
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Xscl&nbsp;
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">03</TH>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">[D]
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">L<FONT SIZE="1">4</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Pic4
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">GDB4
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/xmean.gif" WIDTH="8" HEIGHT="11" ALIGN="BOTTOM" ALT="[x-mean]" BORDER="0">
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Yscl
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">04</TH>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">[E]
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">L<FONT SIZE="1">5</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Pic5
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">GDB5
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/sigma.gif" WIDTH="8" HEIGHT="11" ALIGN="BOTTOM" ALT="[Sigma]" BORDER="0">x
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">U<I>n</I>Start
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">05</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">L<FONT SIZE="1">6</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Pic6
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">GDB6
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/sigma.gif" WIDTH="8" HEIGHT="11" ALIGN="BOTTOM" ALT="[Sigma]" BORDER="0">x<FONT
+			SIZE="1"><SUP>2</SUP></FONT>
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">V<I>n</I>Start
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">06</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Sx
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">U<I>n</I>-<FONT SIZE="1">1</FONT>
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">07</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/sigmalow.gif" WIDTH="8" HEIGHT="11" ALIGN="BOTTOM" ALT="[sigma]" BORDER="0">x
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">V<I>n</I>-<FONT SIZE="1">1</FONT>
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">08</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">minX
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ZU<I>n</I>Start
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">09</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">maxX
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ZV<I>n</I>Start
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">0A</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">minY
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Xmin
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">0B</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">maxY
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Xmax
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">0C</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/ymean.gif" WIDTH="8" HEIGHT="11" ALIGN="BOTTOM" ALT="[y-mean]" BORDER="0">
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Ymin
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">0D</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/sigma.gif" WIDTH="8" HEIGHT="11" ALIGN="BOTTOM" ALT="[Sigma]" BORDER="0">y
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Ymax
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">0E</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/sigma.gif" WIDTH="8" HEIGHT="11" ALIGN="BOTTOM" ALT="[Sigma]" BORDER="0">y<FONT
+			SIZE="1"><SUP>2</SUP></FONT>
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Tmin
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">0F</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Sy
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Tmax
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">10</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Y<FONT SIZE="1">1</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/sigmalow.gif" WIDTH="8" HEIGHT="11" ALIGN="BOTTOM" ALT="[sigma]" BORDER="0">y
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/theta.gif" WIDTH="7" HEIGHT="11" ALIGN="BOTTOM" ALT="[theta]" BORDER="0">min
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">11</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Y<FONT SIZE="1">2</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/sigma.gif" WIDTH="8" HEIGHT="11" ALIGN="BOTTOM" ALT="[Sigma]" BORDER="0">xy
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/theta.gif" WIDTH="7" HEIGHT="11" ALIGN="BOTTOM" ALT="[theta]" BORDER="0">max
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">12</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Y<FONT SIZE="1">3</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">r
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ZXmin
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">13</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Y<FONT SIZE="1">4</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Med
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ZXmax
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">14</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Y<FONT SIZE="1">5</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Q<FONT SIZE="1">1</FONT>
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ZYmin
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">15</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Y<FONT SIZE="1">6</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Q<FONT SIZE="1">3</FONT>
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ZYmax
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">16</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Y<FONT SIZE="1">7</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">a
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Z<IMG SRC="graphics/theta.gif" WIDTH="7" HEIGHT="11" ALIGN="BOTTOM" ALT="[theta]" BORDER="0">min
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">17</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Y<FONT SIZE="1">8</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">b
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Z<IMG SRC="graphics/theta.gif" WIDTH="7" HEIGHT="11" ALIGN="BOTTOM" ALT="[theta]" BORDER="0">max
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">18</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Y<FONT SIZE="1">9</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">c
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ZTmin
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">19</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Y<FONT SIZE="1">0</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">d
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ZTmax
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">1A</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">e
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">TblMin
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">1B</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">x<FONT SIZE="1">1</FONT>
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><I>n</I>Min
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">1C</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">x<FONT SIZE="1">2</FONT>
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Z<I>n</I>Min
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">1D</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">x<FONT SIZE="1">3</FONT>
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><I>n</I>Max
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">1E</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">y<FONT SIZE="1">1</FONT>
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Z<I>n</I>Max
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">1F</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">y<FONT SIZE="1">2</FONT>
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><I>n</I>Start
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">20</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">X<FONT SIZE="1">1T</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">y<FONT SIZE="1">3</FONT>
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Z<I>n</I>Start
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">21</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Y<FONT SIZE="1">1T</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><I>n</I>
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/delta.gif" WIDTH="8" HEIGHT="11" ALIGN="BOTTOM" ALT="[Delta]" BORDER="0">Tbl
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">22</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">X<FONT SIZE="1">2T</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Tstep
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">23</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Y<FONT SIZE="1">2T</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/theta.gif" WIDTH="7" HEIGHT="11" ALIGN="BOTTOM" ALT="[theta]" BORDER="0">step
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">24</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">X<FONT SIZE="1">3T</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">ZTstep
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">25</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Y<FONT SIZE="1">3T</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Z<IMG SRC="graphics/theta.gif" WIDTH="7" HEIGHT="11" ALIGN="BOTTOM" ALT="[theta]" BORDER="0">step
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">26</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">X<FONT SIZE="1">4T</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/delta.gif" WIDTH="8" HEIGHT="11" ALIGN="BOTTOM" ALT="[Delta]" BORDER="0">X
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">27</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Y<FONT SIZE="1">4T</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/delta.gif" WIDTH="8" HEIGHT="11" ALIGN="BOTTOM" ALT="[Delta]" BORDER="0">Y
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">28</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">X<FONT SIZE="1">5T</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">XFact
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">29</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Y<FONT SIZE="1">5T</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">YFact
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">2A</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">X<FONT SIZE="1">6T</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">TblInput
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">2B</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Y<FONT SIZE="1">6T</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">40</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">r<FONT SIZE="1">1</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">41</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">r<FONT SIZE="1">2</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">42</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">r<FONT SIZE="1">3</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">43</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">r<FONT SIZE="1">4</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">44</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">r<FONT SIZE="1">5</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">45</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">r<FONT SIZE="1">6</FONT>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">80</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">U<I>n</I>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">81</TH>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">V<I>n</I>
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+		<TD WIDTH="140" BGCOLOR="#000000">
+			<P ALIGN="CENTER">&nbsp;
+		</TD>
+	</TR>
+</TABLE>
+</P>
+<P><A NAME="#8e"></A> 
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="100%">
+	<TR>
+		<TH BGCOLOR="#FF9999">7E XX Tokens</TH>
+		<TH COLSPAN="17" BGCOLOR="#FF9999">Least Significant Digit (second byte)</TH>
+	</TR>
+	<TR>
+		<TH ROWSPAN="2" BGCOLOR="#FF9999">Most<BR>
+			Significant<BR>
+			Digit</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">&nbsp;</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">0</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">1</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">2</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">3</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">4</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">5</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">6</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">7</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">8</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">9</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">A</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">B</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">C</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">D</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">E</TH>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">F</TH>
+	</TR>
+	<TR>
+		<TH WIDTH="5%" BGCOLOR="#DDDDDD">0</TH>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Sequential
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Simul
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">PolarGC
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">RectGC
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">CoordOn
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">CoordOff
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Connected
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Dot
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">AxesOn
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">AxesOff
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">GridOn
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">GridOff
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">LabelOn
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">LabelOff
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Web
+		</TD>
+		<TD WIDTH="5%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">Time
+		</TD>
+	</TR>
+</TABLE>
+
+<H3>TI-82 Character Codes</H3>
+<P>The TI-82 follows the ASCII standard for most of the normal printable characters - those in the range 32 (20h)
+to 126 (7Eh) - with the exception of the left bracket. All other possible characters take the place of control
+characters (0 to 31) and extended ASCII characters (127 to 255).</P>
+<P>All characters and their character codes in the TI-82 6x8-pixel home screen font are shown here:</P>
+<P><IMG SRC="graphics/chars6x8.gif" WIDTH="357" HEIGHT="459" ALIGN="BOTTOM" ALT="[6x8-pixel character map]" BORDER="0"></P>
+<P><BR>
+All characters and their character codes in the TI-82 6x6-pixel graph screen font are shown here:</P>
+<P><IMG SRC="graphics/chars6x6.gif" WIDTH="357" HEIGHT="363" ALIGN="BOTTOM" ALT="[6x6-pixel character map]" BORDER="0"></P>
+
+<P><BR>
+
+<TABLE BORDER="0" CELLSPACING="0" WIDTH="100%">
+	<TR>
+		<TD WIDTH="32%">
+			<P ALIGN="CENTER"><A HREF="fformat.html"><IMG SRC="graphics/prevpage.gif" WIDTH="32" HEIGHT="32" ALIGN="BOTTOM"
+			ALT="[previous page]" BORDER="2"><BR>
+			File Formats</A>
+		</TD>
+		<TD WIDTH="34%">
+			<P ALIGN="CENTER"><A HREF="index.html"><IMG SRC="graphics/home.gif" WIDTH="32" HEIGHT="32" ALIGN="BOTTOM" ALT="[home]"
+			BORDER="2"><BR>
+			Table of Contents</A>
+		</TD>
+		<TD WIDTH="34%"></TD>
+	</TR>
+</TABLE>
+
+<HR ALIGN="CENTER">
+<I>Site maintained by Romain Li&eacute;vin (</I><A HREF="mailto:roms@lpg.ticalc.org"><I>roms@lpg.ticalc.org</I></A><I>)
+and Tim Singer (</I><A HREF="mailto:tsinger@gladstone.uoregon.edu"><I>tsinger@gladstone.uoregon.edu</I></A><I>)</I>
+
+</BODY>
+
+</HTML>

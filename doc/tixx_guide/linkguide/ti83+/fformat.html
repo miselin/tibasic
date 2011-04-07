@@ -1,0 +1,619 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+  <meta name="GENERATOR" content="Visual Page 1.0 for Windows">
+  <meta http-equiv="Content-Type" content="text/html;CHARSET=iso-8859-1">
+  <title>TI-83 Link Protocol Guide - File formats</title>
+</head>
+<body bgcolor="#ffffe8">
+<p><b>TI-83+ Link Protocol Guide v1.1</b> - File formats</p>
+<center>
+<h2>
+<hr align="center"> File Formats</h2>
+</center>
+<p>The TI-83+ Graph Link software stores variables in several types of
+files. Single variables are stored in files that have an extension that
+corresponds with their type. Groups of variables are stored in files
+with the extension ".8Xg". However, all of these file types have a
+common format.</p>
+<p>The different file types and contents that the TI-83+ Graph Link
+software
+can read and write are shown below.</p>
+<p>
+<table border="1" cellspacing="0" width="66%">
+  <tbody>
+    <tr>
+      <th bgcolor="#dddddd" width="13%">Extension</th>
+      <th bgcolor="#dddddd">Description</th>
+    </tr>
+    <tr>
+      <td width="13%">
+      <p align="center">.8Xc </p>
+      </td>
+      <td>TI-83+ complex number</td>
+    </tr>
+    <tr>
+      <td width="13%">
+      <p align="center">.8Xd </p>
+      </td>
+      <td>TI-83+ GDB (function, polar, parametric or sequence)</td>
+    </tr>
+    <tr>
+      <td width="13%">
+      <p align="center">.8Xg </p>
+      </td>
+      <td>Multiple TI-83+ variables of varying types (group)</td>
+    </tr>
+    <tr>
+      <td width="13%">
+      <div align="center">.8Xgrp</div>
+      </td>
+      <td>TiLP only: TI83+ 'group' variable</td>
+    </tr>
+    <tr>
+      <td width="13%">
+      <p align="center">.8Xi </p>
+      </td>
+      <td>TI-83+ picture (image)</td>
+    </tr>
+    <tr>
+      <td width="13%">
+      <p align="center">.8Xk </p>
+      </td>
+      <td>TI-83+ FLASH application</td>
+    </tr>
+    <tr>
+      <td width="13%">
+      <p align="center">.8Xl </p>
+      </td>
+      <td>TI-83+ list</td>
+    </tr>
+    <tr>
+      <td width="13%">
+      <p align="center">.8Xm </p>
+      </td>
+      <td>TI-83+ matrix</td>
+    </tr>
+    <tr>
+      <td width="13%">
+      <p align="center">.8Xn </p>
+      </td>
+      <td>TI-83+ real number</td>
+    </tr>
+    <tr>
+      <td width="13%">
+      <p align="center">.8Xp </p>
+      </td>
+      <td>TI-83+ program</td>
+    </tr>
+    <tr>
+      <td width="13%">
+      <p align="center">.8Xq </p>
+      </td>
+      <td>TI-83+ FLASH certificate</td>
+    </tr>
+    <tr>
+      <td width="13%">
+      <p align="center">.8Xs </p>
+      </td>
+      <td>TI-83+ string</td>
+    </tr>
+    <tr>
+      <td width="13%">
+      <p align="center">.8Xt </p>
+      </td>
+      <td>TI-83+ table setup</td>
+    </tr>
+    <tr>
+      <td width="13%">
+      <p align="center">.8Xu </p>
+      </td>
+      <td>TI-83+ FLASH Operating System</td>
+    </tr>
+    <tr>
+      <td width="13%">
+      <p align="center">.8Xv </p>
+      </td>
+      <td>TI-83+ Application Variable</td>
+    </tr>
+    <tr>
+      <td width="13%">
+      <p align="center">.8Xw </p>
+      </td>
+      <td>TI-83+ window settings (Window or RclWindow)</td>
+    </tr>
+    <tr>
+      <td width="13%">
+      <p align="center">.8Xy </p>
+      </td>
+      <td>TI-83+ Y-Variable (equation)</td>
+    </tr>
+    <tr>
+      <td width="13%">
+      <p align="center">.8Xz </p>
+      </td>
+      <td>TI-83+ zoom (saved window settings)</td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<p></p>
+<p> </p>
+<hr align="center">
+<p></p>
+<h3>The TI-83+ variable file format</h3>
+<p>The TI-83+ variable file format has two parts: a header and several
+variable
+entries.</p>
+<p>The header appears at the beginning of the file and takes the
+following
+format:<br>
+<i>Note - All 2-byte integers are stored little-endian Intel-style
+(least
+significant byte first).</i></p>
+<p>
+<table border="1" cellspacing="0" width="92%">
+  <tbody>
+    <tr>
+      <th bgcolor="#008800" width="8%"><font color="#ffffff">Offset</font></th>
+      <th bgcolor="#008800" width="11%"><font color="#ffffff">Length</font></th>
+      <th bgcolor="#008800" width="81%"><font color="#ffffff">Description</font></th>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">0</td>
+      <td bgcolor="#ffffff" width="11%">8 bytes</td>
+      <td bgcolor="#ffffff" width="81%">8-character signature. The
+signature
+is always "<tt>**TI83F*</tt>".</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">8</td>
+      <td bgcolor="#ffffff" width="11%">3 bytes</td>
+      <td bgcolor="#ffffff" width="81%">3-byte further signature. These
+three
+bytes always contain {1Ah, 0Ah, 00h} = {26, 10, 0}</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">11 (Bh)</td>
+      <td bgcolor="#ffffff" width="11%">42&nbsp;(2Ah)&nbsp;bytes</td>
+      <td bgcolor="#ffffff" width="81%">Comment. The comment is either
+zero-terminated
+or padded on the right with space characters.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">53 (35h)</td>
+      <td bgcolor="#ffffff" width="11%">2 bytes</td>
+      <td bgcolor="#ffffff" width="81%">Length, in bytes, of the data
+section
+of the file. This number should be 57 (39h) bytes less than the file
+size.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">55 (37h)</td>
+      <td bgcolor="#ffffff" width="11%"><i>n</i> bytes</td>
+      <td bgcolor="#ffffff" width="81%">Data section - consists of a
+number
+of variable entries (described below).</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">55&nbsp;(37h)+<i>n</i></td>
+      <td bgcolor="#ffffff" width="11%">2 bytes</td>
+      <td bgcolor="#ffffff" width="81%">File checksum. This is the
+lower 16
+bits of the sum of all bytes in the data section.</td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<p></p>
+<p>Each variable entry follows this format:</p>
+<p>
+<table border="1" cellspacing="0" width="92%">
+  <tbody>
+    <tr>
+      <th bgcolor="#008800" width="8%"><font color="#ffffff">Offset</font></th>
+      <th bgcolor="#008800" width="11%"><font color="#ffffff">Length</font></th>
+      <th bgcolor="#008800" width="81%"><font color="#ffffff">Description</font></th>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">0</td>
+      <td bgcolor="#ffffff" width="11%">2 bytes</td>
+      <td bgcolor="#ffffff" width="81%">Always has a value of 11 or 13
+(Bh or Dh).</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">2</td>
+      <td bgcolor="#ffffff" width="11%">2 bytes</td>
+      <td bgcolor="#ffffff" width="81%">Length, in bytes, of the
+variable
+data.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">4</td>
+      <td bgcolor="#ffffff" width="11%">1 byte</td>
+      <td bgcolor="#ffffff" width="81%">variable type ID byte (see <a
+ href="vars.html#vartypes">variable type ID's</a>)</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">5</td>
+      <td bgcolor="#ffffff" width="11%">8 bytes</td>
+      <td bgcolor="#ffffff" width="81%">Variable name, padded with NULL
+characters (0h) on the right.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">13 (Dh)</td>
+      <td bgcolor="#ffffff" width="11%">1 byte</td>
+      <td bgcolor="#ffffff" width="81%">Version. Usually set to 0
+(present if first bytes are Dh).<br>
+      </td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">14 (Eh)</td>
+      <td bgcolor="#ffffff" width="11%">1 byte</td>
+      <td bgcolor="#ffffff" width="81%">Flag. Set to 80h if variable is
+archived, 00h else (present if first bytes are Dh).</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">15 (Fh)</td>
+      <td bgcolor="#ffffff" width="11%">2 bytes</td>
+      <td bgcolor="#ffffff" width="81%">Length, in bytes, of the
+variable
+data. (This is a copy of the value in offset 2)</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">17 (11h)</td>
+      <td bgcolor="#ffffff" width="11%"><i>n</i> bytes</td>
+      <td bgcolor="#ffffff" width="81%">Variable data. <a
+ href="vars.html">Click here</a> for variable data formats.</td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<p></p>
+<p> </p>
+<hr align="center">
+<p></p>
+<h3>The TI-83+ backup file format</h3>
+<p>The TI-Graph Link software for the TI-83 does not have backup
+capability. However, the calculator itself does. The following format
+is not readable
+by TI's software.</p>
+<p>Here is the format for backup files that FastLink &amp; TiLP uses
+(it's
+the same format than the TI82/83 one):</p>
+<p>
+<table border="1" cellspacing="0" width="92%">
+  <tbody>
+    <tr>
+      <th bgcolor="#008800" width="15%"><font color="#ffffff">Offset</font></th>
+      <th bgcolor="#008800" width="11%"><font color="#ffffff">Length</font></th>
+      <th bgcolor="#008800" width="74%"><font color="#ffffff">Description</font></th>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="15%">0</td>
+      <td bgcolor="#ffffff" width="11%">8 bytes</td>
+      <td bgcolor="#ffffff" width="74%">8-character signature. The
+signature
+is always "<tt>**TI83F*</tt>".</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="15%">8</td>
+      <td bgcolor="#ffffff" width="11%">3 bytes</td>
+      <td bgcolor="#ffffff" width="74%">3-byte further signature. These
+three
+bytes always contain {1Ah, 0Ah, 00h} = {26, 10, 0}</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="15%">11 (Bh)</td>
+      <td bgcolor="#ffffff" width="11%">42&nbsp;(2Ah)&nbsp;bytes</td>
+      <td bgcolor="#ffffff" width="74%">Comment. The comment is either
+zero-terminated or padded on the right with space characters.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="15%">53 (35h)</td>
+      <td bgcolor="#ffffff" width="11%">2 bytes</td>
+      <td bgcolor="#ffffff" width="74%">Length, in bytes, of the backup
+header
+and the data sections. This number should be 17 (11h) bytes more than
+the sum of the lengths of the three data sections as reported in the
+backup header.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="15%">55 (37h)</td>
+      <td bgcolor="#ffffff" width="11%">11 bytes</td>
+      <td bgcolor="#ffffff" width="74%">The backup header (format
+described
+below).</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="15%">66 (42h)</td>
+      <td bgcolor="#ffffff" width="11%">2 bytes</td>
+      <td bgcolor="#ffffff" width="74%">Length, in bytes, of the first
+data
+section.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="15%">68&nbsp;(44h)</td>
+      <td bgcolor="#ffffff" width="11%"><i>x</i> bytes</td>
+      <td bgcolor="#ffffff" width="74%">First data section.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#eeeeee" width="15%">68 (44h)+<i>x</i></td>
+      <td bgcolor="#eeeeee" width="11%">2 bytes</td>
+      <td bgcolor="#eeeeee" width="74%">Length, in bytes, of the second
+data
+section</td>
+    </tr>
+    <tr>
+      <td bgcolor="#eeeeee" width="15%">70 (46h)+<i>x</i></td>
+      <td bgcolor="#eeeeee" width="11%"><i>y</i> bytes</td>
+      <td bgcolor="#eeeeee" width="74%">Second data section.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="15%">70 (46h)+<i>x</i>+<i>y</i></td>
+      <td bgcolor="#ffffff" width="11%">2 bytes</td>
+      <td bgcolor="#ffffff" width="74%">Length, in bytes, of the third
+data
+section</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="15%">72 (48h)+<i>x</i>+<i>y</i></td>
+      <td bgcolor="#ffffff" width="11%"><i>z</i> bytes</td>
+      <td bgcolor="#ffffff" width="74%">Third data section</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="15%">72 (48h)+<i>x</i>+<i>y</i>+<i>z</i></td>
+      <td bgcolor="#ffffff" width="11%">2 bytes</td>
+      <td bgcolor="#ffffff" width="74%">Checksum. This is the lower 16
+bits
+of the sum of all bytes from offset 55 (37h).</td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<p></p>
+<p>The backup header has this format:</p>
+<p>
+<table border="1" cellspacing="0" width="92%">
+  <tbody>
+    <tr>
+      <th bgcolor="#008800" width="8%"><font color="#ffffff">Offset</font></th>
+      <th bgcolor="#008800" width="11%"><font color="#ffffff">Length</font></th>
+      <th bgcolor="#008800" width="81%"><font color="#ffffff">Description</font></th>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">0</td>
+      <td bgcolor="#ffffff" width="11%">2 bytes</td>
+      <td bgcolor="#ffffff" width="81%">Offset to data length: Always
+has
+a value of 9.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">2</td>
+      <td bgcolor="#ffffff" width="11%">2 bytes</td>
+      <td bgcolor="#ffffff" width="81%">Length, in bytes, of the first
+data
+section.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">4</td>
+      <td bgcolor="#ffffff" width="11%">1&nbsp;byte</td>
+      <td bgcolor="#ffffff" width="81%">Type ID: Always has a value of
+19
+(13h).</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">5</td>
+      <td bgcolor="#ffffff" width="11%">2 bytes</td>
+      <td bgcolor="#ffffff" width="81%">Length, in bytes, of the second
+data
+section.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">7</td>
+      <td bgcolor="#ffffff" width="11%">2 bytes</td>
+      <td bgcolor="#ffffff" width="81%">Length, in bytes, of the third
+data
+section.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">9</td>
+      <td bgcolor="#ffffff" width="11%">2 bytes</td>
+      <td bgcolor="#ffffff" width="81%">Memory address</td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<h3>
+<hr align="center"> The TI-83+ FLASH file format</h3>
+<p>A FLASH file usually contains between 1 and 3 headers with data and
+the header has
+the same format than the TI89/92+ one.<br>
+Headers can contains : license or data (app/os/certificate).<br>
+</p>
+<p>The header takes the following format : <br>
+<i>Note - All 2-byte and 4-byte integers are stored little-endian
+Intel-style (least significant byte first).</i>
+<table border="1" cellspacing="0" width="92%">
+  <tbody>
+    <tr>
+      <th bgcolor="#008800" width="8%"><font color="#ffffff">Offset</font></th>
+      <th bgcolor="#008800" width="11%"><font color="#ffffff">Length</font></th>
+      <th bgcolor="#008800" width="81%"><font color="#ffffff">Description</font></th>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">0</td>
+      <td bgcolor="#ffffff" width="11%">8 bytes</td>
+      <td bgcolor="#ffffff" width="81%">8-character signature. The
+signature
+is always "<tt>**TIFL**</tt>".</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">8</td>
+      <td bgcolor="#ffffff" width="11%">2 bytes</td>
+      <td bgcolor="#ffffff" width="81%">Revision number (BCD coded):
+major.minor.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">9</td>
+      <td bgcolor="#ffffff" width="11%">1 byte</td>
+      <td bgcolor="#ffffff" width="81%">Flags (usually set to 00h).</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">10 (Ah)</td>
+      <td bgcolor="#ffffff" width="11%">1 byte</td>
+      <td bgcolor="#ffffff" width="81%">Object type (00h).</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">12 (Ch)</td>
+      <td bgcolor="#ffffff" width="11%">4 bytes</td>
+      <td bgcolor="#ffffff" width="81%">Binary-Coded-Decimal date such
+as
+{dd, mm, yy, yy} for 'dd/mm/yyyy'.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">16 (10h)</td>
+      <td bgcolor="#ffffff" width="11%">1 bytes</td>
+      <td bgcolor="#ffffff" width="81%">Name length</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">17 (11h)</td>
+      <td bgcolor="#ffffff" width="11%">8 bytes</td>
+      <td bgcolor="#ffffff" width="81%">Application name or 'basecode'
+for
+OS (zero terminated unless 8 characters long).</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">25 (19h)</td>
+      <td bgcolor="#ffffff" width="11%">23 bytes</td>
+      <td bgcolor="#ffffff" width="81%">Filler (unused, set to 00h).</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">48 (30h)</td>
+      <td bgcolor="#ffffff" width="11%">1 byte</td>
+      <td bgcolor="#ffffff" width="81%">Device type (TI73: 74h, TI83+:
+73h,
+TI89: 98h, TI92+: 88h)</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">49 (31h)</td>
+      <td bgcolor="#ffffff" width="11%">1 byte</td>
+      <td bgcolor="#ffffff" width="81%">Data type (os: 23h,
+application: 24h,
+certificate: 25h, license: 3Eh)</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">50 (32H)</td>
+      <td bgcolor="#ffffff" width="11%">24 bytes</td>
+      <td bgcolor="#ffffff" width="81%">Filler (unused, set to 00h).</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">74 (4Ah)</td>
+      <td bgcolor="#ffffff" width="11%">4 bytes</td>
+      <td bgcolor="#ffffff" width="81%">Size of data in bytes. Beware:
+this is size of intelhexa data (in characters), not of pure data (in
+bytes).<br>
+      </td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">78 (4Eh)</td>
+      <td bgcolor="#ffffff" width="11%"><i>n</i> bytes</td>
+      <td bgcolor="#ffffff" width="81%">Data.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="8%">78 (4Eh)+<i>n</i></td>
+      <td bgcolor="#ffffff" width="11%">2 bytes</td>
+      <td bgcolor="#ffffff" width="81%">Checksum. This is the lower 16
+bits
+of the sum of all bytes in the variable data.</td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<p><i>By roms: the part below is preliminary, I will have to finish
+it...<br>
+You are strongly encouraged to take a look at the TI's "TI83+ SDK
+guide" (sdk83pguide.pdf) and more particularly the "Hardware Layer"
+section.<br>
+</i> </p>
+<p>1) Data encoding: </p>
+<p>Data are formatted in a particular way. TI used the 'INTEL Intellec
+8/MDS' format, a very popular format used for transferring data to
+EPROM programmers, CPU emulators, ... <br>
+Format: </p>
+<pre> <br><br>   +--Number of bytes <br>   | +--Address (called 'page address' or 'address    field' in this doc) <br>   | |    +--Block type (00: data, 01: end) <br>   | |    |  +--Data <br>   | |    |  | 						     +-- Checksum <br><br>   | |    |  |						     |<br>: 10 0000 00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 00 CR/LF <br>: 10 0010 00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF F0 CR/LF    <br>: 10 0020 00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF E0 CR/LF <br>: 00 0000 01 FF -&gt; end block</pre>
+<p>Meaning: </p>
+<p>- TI specific block, contains the FLASH page number (1D here): :02
+0000
+02 001D FC </p>
+<p>- data block (page address = 4000h): :20 4000 00 80 0F 00 00 6C 24
+80
+12 01 04 80 21 01 80 31 01 80 48 43 42 4C 45 78 70 6D 74 80 81 02 80 90
+03 D9 <br>
+</p>
+<p>- end block: :00 0000 01 FF </p>
+<p>Each block has an address field. Depending on the operation (App or
+Os)
+and the part, the address of the data block can be used as is (absolute
+addressing without using offset) or not (relative addressing, relocated
+at @4000h if offset=4000h for instance). Page number is sent as encoded
+in the specific block. </p>
+<p> 2) Parts </p>
+<p>An app has one part. The part is made up of several blocks: specific
+blocks, data blocks and an end block. Data are sent with page adress
+4000h aka
+@4000h (offset=0). The page number is specified in the specific block.
+The flag always equals 80h (FLASH). </p>
+<p>An OS has several parts:<br>
+- the first part is the OS header information. It is made up of a data
+and an end block. It is sent with page address 0000h aka @0000h
+(offset=0),
+page number 0000h. <br>
+- the second part is the data. It is made up of a specific, a data and
+an end block. It is sent with page address 0000h modulo 4000h (offset
+4000h) aka @4000h. <br>
+- and the third part is the digital signature of the data block. It is
+made up of a data and an end block. It is sent with page address 0000h
+aka @0000h (offset=0), page number 0000h. About flag, the first and
+third
+block have Fl=80 (FLASH), the second one has always Fl=00 (RAM). </p>
+<p>Data are sent to calcs block per block. A incomplete block may need
+to
+be filled. <br>
+It will be filled with: <br>
+- 0x00 for App, <br>
+- 0xff for OS.<br>
+</p>
+<p>&nbsp; <br>
+<table border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr>
+      <td width="32%">
+      <p align="center"><a href="vars.html"><img
+ src="graphics/prevpage.gif" alt="[previous page]" align="bottom"
+ border="2" height="32" width="32"> <br>
+Variable Formats</a> </p>
+      </td>
+      <td width="34%">
+      <p align="center"><a href="index.html"><img
+ src="graphics/home.gif" alt="[home]" align="bottom" border="2"
+ height="32" width="32"> <br>
+Table of Contents</a> </p>
+      </td>
+      <td width="34%">
+      <p align="center"><a href="tokens.html"><img
+ src="graphics/nextpage.gif" alt="[next page]" align="bottom" border="2"
+ height="32" width="32"> <br>
+Tokens and Characters</a> </p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<hr align="center"> <i>Site maintained by Romain Li&eacute;vin (</i><a
+ href="mailto:roms@lpg.ticalc.org"><i>roms@lpg.ticalc.org</i></a><i>)
+and
+Tim Singer (</i><a href="mailto:tsinger@gladstone.uoregon.edu"><i>tsinger@gladstone.uoregon.edu</i></a><i>)</i>
+<br>
+</body>
+</html>

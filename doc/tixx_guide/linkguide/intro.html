@@ -1,0 +1,98 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; I; Linux 2.4.0-test6 i586) [Netscape]">
+   <title>TI-73...92+/V200 TI Link Guide</title>
+</head>
+<body bgcolor="#FFFFE8">
+<b>TI Link Protocol Guide </b>- Introduction &amp; Special Thanks 
+<center>
+<h2>
+
+<hr ALIGN="CENTER">Introduction &amp; Special Thanks</h2></center>
+
+<h4>
+Why this documentation?</h4>
+Texas Instruments graphing calculators are capable of transferring information
+to other graphing calculators, computers, or special devices such as the
+Calculator-Based Laboratory. Programmers can make use of this capability
+to write programs that interact with the calculator.
+<p>We (Romain Li&eacute;vin and Tim Singer) are separately developing two
+PC-based linking programs for TI graphing calculators. Up until now there
+has not been a single complete and accurate piece of documentation for
+the Texas Instruments transfer protocol and related information. Rather
+than write two incomplete documents, we prefer to write a single work that
+is as complete as possible.
+<h4>
+Organization of this document</h4>
+This document details in a systematic manner all necessary information
+which is required in order to develop a linking program, but may also interest
+the curious.
+<p>The first section describes the hardware byte-transfer protocol and the different 
+  link cables available when this document was written. <br>
+  The second section covers the software packet-based protocol of the TI-89 - 
+  a must for any link software programmer.<br>
+  The third section covers all calculators:<br>
+  - the format of the variable types themselves, which is useful for displaying 
+  and manipulating data on a PC. <br>
+  - the file formats readable by TI's Graph Link software. <br>
+  - reference tables - two character maps and a table of tokens. 
+<p>The '<i>Introduction and Special Thanks</i>' and the '<i>Hardware Linking</i>'
+sections are common to the TI-xx documentation.
+<h4>
+Special thanks</h4>
+Most of the information in this guide has been taken from other documents.
+Special thanks go to:
+<ul>
+<li>
+Pascal Bouron for his original research in tiprot.txt</li>
+
+<li>
+Rusty Wagner for his great debugging tool, Virtual TI.</li>
+
+<li>
+Fred from DBA for his doc on the FLASH protocol.</li>
+</ul>
+Other information was taken from our original documents:
+<ul>
+  <li> /tiXX/ProtocolXX.txt (by Romain Li&eacute;vin).</li>
+</ul>
+
+<h4>
+Contact</h4>
+Our main goal is to provide a complete and updated specification of the
+Texas Instrument linking protocol and related information. If you wish
+to correct or add to this document, please contact us at one of the addresses
+supplied below (or from our websites).
+<p>Tim Singer:
+<br><a href="http://gladstone.uoregon.edu/~tsinger/">http://gladstone.uoregon.edu/~tsinger/</a>
+<br><i><a href="mailto:tsinger@gladstone.uoregon.edu">&lt;tsinger@gladstone.uoregon.edu></a></i>
+<br>&nbsp;
+<p>Romain Li&eacute;vin:
+<br><a href="http://lpg.ticalc.org/prj_tilp">http://lpg.ticalc.org/prj_tilp</a>
+<br>
+  <i><a href="mailto:roms@lpg.ticalc.org">&lt;roms@lpg.ticalc.org></a></i> 
+<p>The latest version of this documentation can be found on <a href="http://www.ticalc.org">ticalc.org</a>
+or on either of our web sites.
+<table BORDER=0 CELLSPACING=0 WIDTH="100%" >
+<tr>
+<td WIDTH="33%"></td>
+
+<td WIDTH="33%">
+<center><a href="index.html"><img SRC="home.gif" ALT="[home]" BORDER=2 height=32 width=32 align=BOTTOM></a>
+<br><a href="index.html">Table of Contents</a></center>
+</td>
+
+<td WIDTH="34%">
+<center><a href="hardware.html"><img SRC="nextpage.gif" ALT="[next page]" BORDER=2 height=32 width=32 align=BOTTOM></a>
+<br><a href="hardware.html">Hardware Link Protocol</a></center>
+</td>
+</tr>
+</table>
+
+<p>
+<hr ALIGN="CENTER"><i>Site maintained by Romain Li&eacute;vin (<a href="mailto:roms@tilp.info">roms@tilp.info</a>)
+and Tim Singer (<a href="mailto:tsinger@gladstone.uoregon.edu">tsinger@gladstone.uoregon.edu</a>)</i>
+</body>
+</html>

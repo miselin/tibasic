@@ -1,0 +1,165 @@
+<!DOCTYPE doctype PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="GENERATOR"
+ content="Mozilla/4.7 [en] (X11; I; Linux 2.4.0-test6 i586) [Netscape]">
+  <title>TI-92 Link Protocol Guide - OS version</title>
+</head>
+<body bgcolor="#ffffe8">
+<b>TI-92 Link Protocol Guide</b> - Getting OS version
+<center>
+<h2>
+<hr align="center">OS version</h2>
+</center>
+<p><br>
+By requesting the main\version, the calculator returns ROM version. </p>
+<p> </p>
+<h4> </h4>
+<p> </p>
+<h4> <a name="rts"></a>Getting OS version only<br>
+</h4>
+Indeed, the request is like requesting a backup.
+<p>The protocol for silently receiving the version is shown below:
+<table nosave="" bgcolor="#ffffff" border="1" cellspacing="0"
+ width="92%">
+  <tbody>
+    <tr>
+      <th bgcolor="#008800" width="7%"><font color="#ffffff">Step</font></th>
+      <th colspan="3" bgcolor="#008800"><font color="#ffffff">Direction</font></th>
+      <th bgcolor="#008800" width="80%"><font color="#ffffff">Packet</font></th>
+    </tr>
+    <tr nosave="">
+      <td bgcolor="#ffffff" width="7%">
+      <center>1&nbsp;</center>
+      </td>
+      <td rowspan="4" nosave="">
+      <center><img src="graphics/comp.gif" alt="Computer" align="bottom"
+ border="0" height="33" width="30"> </center>
+      </td>
+      <td bgcolor="#ffffff">
+      <center><img src="graphics/right.gif" alt="===&gt;" align="bottom"
+ border="0" height="13" width="22"> </center>
+      </td>
+      <td rowspan="4" nosave="">
+      <center><img src="graphics/calc.gif" alt="Calculator"
+ align="bottom" border="0" height="35" width="60"> </center>
+      </td>
+      <td bgcolor="#ffffff" width="80%"> REQ with <a
+ href="packet.html#reqbackup">request-style backup header</a>. Name is
+"main\version". </td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <center>2&nbsp;</center>
+      </td>
+      <td bgcolor="#ffffff">
+      <center><img src="graphics/left.gif" alt="&lt;===" align="bottom"
+ border="0" height="13" width="22"> </center>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <center>3&nbsp;</center>
+      </td>
+      <td bgcolor="#ffffff">
+      <center>
+      <center>
+      <center><img src="graphics/left.gif" alt="&lt;===" align="bottom"
+ border="0" height="13" width="22"> </center>
+      </center>
+      </center>
+      </td>
+      <td bgcolor="#ffffff" width="80%">VAR with <a
+ href="packet.html#backup">data-style backup header</a>.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <center>4&nbsp;</center>
+      </td>
+      <td bgcolor="#ffffff">
+      <center>
+      <center>
+      <center><img src="graphics/right.gif" alt="===&gt;" align="bottom"
+ border="0" height="13" width="22"> </center>
+      </center>
+      </center>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ERR</td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<p></p>
+<p><u>Example (PC requesting version):</u>
+<table nosave="" border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><tt><b>09 A2 12 00 </b>00 00
+00 00 1D 0C 6D 61 69 6E 5C 76 65 72 73 69 6F 6E<b> 30 05<br>
+      </b></tt></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Request informations</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>89 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Acknowledgement of REQ</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>89 06 0A 00 </tt></b><tt>00
+04 00 00 1D 04 31 2E 31 31</tt><b><tt> E6 00<br>
+      </tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Variabel header (name is
+"1.11")<br>
+      </i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>09 5A 00 00 00 00<br>
+      </tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Error<br>
+      </i></td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<p></p>
+<h4> </h4>
+<p></p>
+<p></p>
+<table border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr>
+      <td width="32%">
+      <center><a href="silent.html"></a><a href="backup.html"><img
+ src="graphics/prevpage.gif" alt="[previous page]"
+ style="border: 2px solid ; width: 32px; height: 32px;"></a> <br>
+      <a href="backup.html">Backup Transfers<br>
+      </a></center>
+      </td>
+      <td width="34%">
+      <center><a href="index.html"><img src="graphics/home.gif"
+ alt="[home]" align="bottom" border="2" height="32" width="32"> </a> <br>
+      <a href="index.html">Table of Contents</a></center>
+      </td>
+      <td width="34%">
+      <center><a href="vars.html"></a><a href="misc.html"><img
+ src="graphics/nextpage.gif" alt="[next page]"
+ style="border: 2px solid ; width: 32px; height: 32px;"></a> <br>
+      <a href="misc.html">Misc</a></center>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p></p>
+<hr align="center"><i>Site maintained by Romain Li&eacute;vin (<a
+ href="mailto:roms@lpg.ticalc.org">roms@lpg.ticalc.org</a>) and Tim
+Singer
+(<a href="mailto:tsinger@gladstone.uoregon.edu">tsinger@gladstone.uoregon.edu</a>)</i>
+<br>
+</body>
+</html>

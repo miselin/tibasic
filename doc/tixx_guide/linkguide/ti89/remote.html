@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="GENERATOR"
+ content="Mozilla/4.7 [en] (X11; I; Linux 2.4.0-test6 i586) [Netscape]">
+  <title>TI-89 Link Protocol Guide - Remote Control</title>
+</head>
+<body bgcolor="#ffffe8">
+<b>TI-89 Link Protocol Guide</b> - Remote control/command
+<center>
+<h2>
+<hr align="center">Remote control/command</h2>
+</center>
+The TI-89's remote control ability is "silent," which means that the
+calculator
+does not need to be put in a special mode. The remote control ability
+can
+be utilized any time the calculator is ready to accept a keypress. Key
+codes : <a href="../ti83+/keys.txt">here</a>.
+<p><b><u>Remote command:</u></b>
+</p>
+<p>The protocol used for sending a remote command is shown below.
+<table bgcolor="#ffffff" border="1" cellspacing="0" width="92%">
+  <tbody>
+    <tr>
+      <th bgcolor="#008800" width="7%"><font color="#ffffff">Step</font></th>
+      <th colspan="3" bgcolor="#008800"><font color="#ffffff">Direction</font></th>
+      <th bgcolor="#008800" width="80%"><font color="#ffffff">Packet</font></th>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <center>1&nbsp;</center>
+      </td>
+      <td rowspan="2">
+      <center><img src="graphics/comp.gif" alt="Computer" align="bottom"
+ border="0" height="33" width="30"></center>
+      </td>
+      <td bgcolor="#ffffff">
+      <center><img src="graphics/right.gif" alt="===&gt;" align="bottom"
+ border="0" height="13" width="22"></center>
+      </td>
+      <td rowspan="2" bgcolor="#ffffff">
+      <center><img src="graphics/calc.gif" alt="Calculator"
+ align="bottom" border="0" height="35" width="60"></center>
+      </td>
+      <td bgcolor="#ffffff" width="80%">CMD</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <center>2&nbsp;</center>
+      </td>
+      <td bgcolor="#ffffff">
+      <center><img src="graphics/left.gif" alt="&lt;===" align="bottom"
+ border="0" height="13" width="22"></center>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK</td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<p>The scancode of the key is sent in the last two bytes of the
+command.
+Scancodes are defined in the section B? to B?? of the French TI-89
+guidebook
+or p. 384 of the US TI-89 guidebook.<br>
+<i>Tim: for French GuideBook, I have some photocopies of the scancodes
+but at home (so on Saturday !).</i>
+</p>
+<p><u>Example:</u>
+<table border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>08 87 31 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Command: Key &lt;1&gt;</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>98 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Acknowledgement of command</i></td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<p>If the calculator is put into the self test menu (&lt;F5&gt; +
+&lt;diamond&gt;
++ &lt;(&gt; + &lt;s&gt; from the home screen) then sent back to the
+home screen,
+then whenever a command result becomes available the calculator will
+send
+it through the link port as expression data. Each transmission from the
+calculator does not include a packet header or checksum but is
+terminated
+with 0xFF (see below).
+</p>
+<p><b><u>Remote Control Mode:</u></b>
+</p>
+<p>The remote control mode can be activated either by pressing
+&lt;F5&gt;
++ &lt;DIAMOND&gt; + &lt;(&gt;+&lt;R&gt; or by sending this key sequence
+directly
+to the calculator via remote commands. In this mode, the calculator can
+receive key codes as if they have been typed on the keyboard and send
+the
+result via the link port.
+</p>
+<p>To control the calculator, a scancode must be sent trough the link
+port
+in a command packet. After each scancode is received, the calculator
+replies
+with an FFh byte. Whenever a command result becomes available, the
+calculator
+will send it through the link port as expression data, followed by an
+FFh
+byte.
+</p>
+<p><u>Example:</u>
+<table nosave="" bgcolor="#ffffff" border="0" cellspacing="0"
+ width="100%">
+  <tbody>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>08 87 31 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Command: &lt;1&gt;</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>FF</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Acknowledgement of command</i></td>
+    </tr>
+    <tr nosave="" bgcolor="#99ffcc">
+      <td bgcolor="#ccffcc">PC:&nbsp;</td>
+      <td nosave="" bgcolor="#ccffcc" width="50%"><b><tt>08 87 2B 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Command: &lt;+&gt;</i></td>
+    </tr>
+    <tr nosave="" bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc">TI:</td>
+      <td nosave="" bgcolor="#ffcccc" width="50%"><b><tt>FF</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Acknowledgement of command</i></td>
+    </tr>
+    <tr nosave="" bgcolor="#99ffcc">
+      <td bgcolor="#ccffcc">PC:&nbsp;</td>
+      <td nosave="" bgcolor="#ccffcc" width="50%"><b><tt>08 87 41 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Command: &lt;a&gt;</i></td>
+    </tr>
+    <tr nosave="" bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc">TI:</td>
+      <td nosave="" bgcolor="#ffcccc" width="50%"><b><tt>FF</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Acknowledgement of command</i></td>
+    </tr>
+    <tr nosave="" bgcolor="#99ffcc">
+      <td bgcolor="#ccffcc">PC:&nbsp;</td>
+      <td nosave="" bgcolor="#ccffcc" width="50%"><b><tt>08 87 0D 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Command: &lt;ENTER&gt;</i></td>
+    </tr>
+    <tr nosave="" bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc">TI:</td>
+      <td nosave="" bgcolor="#ffcccc" width="50%"><b><tt>FF</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Acknowledgement of command</i></td>
+    </tr>
+    <tr nosave="" bgcolor="#99ffcc">
+      <td bgcolor="#ffcccc">&nbsp;</td>
+      <td nosave="" bgcolor="#ffcccc" width="50%"><b><tt>41 2B 31 FF</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Reply with result "a+1"</i></td>
+    </tr>
+  </tbody>
+</table>
+<br>
+&nbsp;
+<table border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr>
+      <td width="32%">
+      <center><a href="packet.html"><img src="graphics/prevpage.gif"
+ alt="[previous page]" align="bottom" border="2" height="32" width="32"></a><br>
+      <a href="packet.html">Packet Formats</a></center>
+      </td>
+      <td width="34%">
+      <center><a href="index.html"><img src="graphics/home.gif"
+ alt="[home]" align="bottom" border="2" height="32" width="32"></a><br>
+      <a href="index.html">Table of Contents</a></center>
+      </td>
+      <td width="34%">
+      <center><a href="screenshot.html"><img src="graphics/nextpage.gif"
+ alt="[next page]" align="bottom" border="2" height="32" width="32"></a><br>
+      <a href="screenshot.html">Screenshots</a></center>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<hr align="center"><i>Site maintained by Romain Li&eacute;vin (<a
+ href="mailto:roms@lpg.ticalc.org">roms@lpg.ticalc.org</a>)
+and Tim Singer (<a href="mailto:tsinger@gladstone.uoregon.edu">tsinger@gladstone.uoregon.edu</a>)</i>
+</body>
+</html>

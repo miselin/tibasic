@@ -1,0 +1,96 @@
+			+------------------------------------------+
+			| TI-GRAPH LINK USB cable (aka SilverLink) |
+			|		Informations												   |
+			+------------------------------------------+
+
+
+
+Link cable characteristics:
+---------------------------
+
+- Name: 'TI-GRAPH LINK USB'
+- Manufacturer: 'Texas Instruments Corporated'
+- VID/PID: 0x0451/0xe001
+- Firmware revision: 1.03
+- Internal µC: CY7C64013 (Cypress Semiconductors)
+- bus powered
+
+
+USB related things:
+-------------------
+
+The cable is a full-speed (FS, 12Mbit/s) device, USB1.1 compliant, under a 
+proprietary class. It does not fit into any existing class (HID, printer, ...)
+then it requires a specific device driver.
+
+The device uses 'Bulk' mode for data transfers. There are two bulk endpoints 
+(IN & OUT) and one control endpoint (mandatory). Transfers are achieved by 
+packets. The endpoints advertise a maximum packet size of 32 bytes.
+
+
+Identity card (Linux log):
+--------------------------
+
+T:  Bus=02 Lev=02 Prnt=02 Port=03 Cnt=03 Dev#=  9 Spd=12  MxCh= 0
+D:  Ver= 1.10 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 8 #Cfgs=  1
+P:  Vendor=0451 ProdID=e001 Rev= 1.03
+S:  Manufacturer=Texas Instruments Incorporated
+S:  Product=TI-GRAPH LINK USB
+C:* #Ifs= 1 Cfg#= 1 Atr=a0 MxPwr=100mA
+I:  If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+E:  Ad=81(I) Atr=02(Bulk) MxPS=  32 Ivl=0ms
+E:  Ad=02(O) Atr=02(Bulk) MxPS=  32 Ivl=0ms
+
+Manufacturer: Texas Instruments Incorporated
+Product: TI-GRAPH LINK USB
+usb.c: unhandled interfaces on device
+usb.c: USB device 2 (vend/prod 0x451/0xe001) is not claimed by any active driver.
+  Length              = 18
+  DescriptorType      = 01
+  USB version         = 1.10
+  Vendor:Product      = 0451:e001
+  MaxPacketSize0      = 8
+  NumConfigurations   = 1
+  Device version      = 1.03
+  Device Class:SubClass:Protocol = 00:00:00
+    Per-interface classes
+Configuration:
+  bLength             =    9
+  bDescriptorType     =   02
+  wTotalLength        = 0020
+  bNumInterfaces      =   01
+  bConfigurationValue =   01
+  iConfiguration      =   00
+  bmAttributes        =   a0
+  MaxPower            =  100mA
+
+  Interface: 0
+  Alternate Setting:  0
+    bLength             =    9
+    bDescriptorType     =   04
+    bInterfaceNumber    =   00
+    bAlternateSetting   =   00
+    bNumEndpoints       =   02
+    bInterface Class:SubClass:Protocol =   ff:00:00
+    iInterface          =   00
+    Endpoint:
+      bLength             =    7
+      bDescriptorType     =   05
+      bEndpointAddress    =   81 (in)
+      bmAttributes        =   02 (Bulk)
+      wMaxPacketSize      = 0020
+      bInterval           =   00
+    Endpoint:
+      bLength             =    7
+      bDescriptorType     =   05
+      bEndpointAddress    =   02 (out)
+      bmAttributes        =   02 (Bulk)
+      wMaxPacketSize      = 0020
+      bInterval           =   00
+
+      
+Author:
+-------
+
+(c) 2004, Romain Liévin
+Developer of TiLP & TiEmu.

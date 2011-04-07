@@ -1,0 +1,8 @@
+Disp "HI!":Disp "WOOT"
+If 1=1:Then
+Disp "TEST"
+End
+
+If -50 < -30:Then
+Disp "hello?"
+End

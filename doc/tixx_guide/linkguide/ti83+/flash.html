@@ -1,0 +1,1372 @@
+<!DOCTYPE doctype PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="GENERATOR"
+ content="Mozilla/4.7 [en] (X11; I; Linux 2.4.0-test6 i586) [Netscape]">
+  <title>TI-83+ Link Protocol Guide - Flash Transfers</title>
+</head>
+<body bgcolor="#ffffe8">
+<b>TI-83+ Link Protocol Guide</b> - Flash Transfers
+<center>
+<h2>
+<hr align="center">Flash Transfers</h2>
+</center>
+<p><br>
+<b><i>Beware:</i></b> in the worst case, a FLASH operation can
+completely
+lock up your calculator and there is no way than returning the
+calcultator
+to Texas Instruments in this case. We (Tim. Singer and Romain
+Li&eacute;vin)
+can not be responsible of this. <br>
+Personnaly, Romain has crashed a FLASH OS several times (10) without
+crashing the calculator but you have been warned ! <br>
+A last remark: the link cables which are the more reliable and
+efficient
+for these operations (especially OS flashing) are RS232 cables such as
+Grey TIGL, fastAVRlink (even at 4x = 38400 bauds) or PIClink (not
+tested
+but should work). The SilverLink cable works fine, too. </p>
+<p>There are 2 kinds of FLASH transfers: <br>
+- (free) FLASH applications which are variables stored in the FLASH
+memory
+of the calculator. <br>
+- AMS (Advanced Mathematic Software) which is the Operating System of
+the
+calculator. <br>
+A Flash transfer is a one (large) transmission containing data (up to
+2 MB for AMS). The file format that the TI-83+ Graph Link software uses
+can be found in the <a href="fformat.html#backup">file formats</a>
+section
+of this documentation. </p>
+<p>A FLASH OS must be transferred silently whereas FLASH apps can be
+transferred manually or silently. Silent transfers can only be done
+between a computer and a calculator, and require that the computer make
+the <a href="#request">request</a> or <a href="#rts">request-to-send</a>.
+</p>
+<h4> <a name="request"></a>Checking FLASH</h4>
+The protocol for checking whether the calculator AMS has been upgraded
+is
+described below.
+<table nosave="" bgcolor="#ffffff" border="1" cellspacing="0"
+ width="92%">
+  <tbody>
+    <tr>
+      <th bgcolor="#008800" width="7%"><font color="#ffffff">Step</font></th>
+      <th colspan="3" bgcolor="#008800"><font color="#ffffff">Direction</font></th>
+      <th bgcolor="#008800" width="80%"><font color="#ffffff">Packet</font></th>
+    </tr>
+    <tr nosave="">
+      <td bgcolor="#ffffff" width="7%">
+      <center>1&nbsp;</center>
+      </td>
+      <td rowspan="2" nosave="">
+      <center><img src="graphics/comp.gif" alt="Computer" align="bottom"
+ border="0" height="33" width="30"> </center>
+      </td>
+      <td bgcolor="#ffffff">
+      <center><img src="graphics/right.gif" alt="===&gt;" align="bottom"
+ border="0" height="13" width="22"> </center>
+      </td>
+      <td rowspan="2" nosave="">
+      <center><img src="graphics/calc.gif" alt="Calculator"
+ align="bottom" border="0" height="35" width="60"> </center>
+      </td>
+      <td bgcolor="#ffffff" width="80%">REQ special: <b><u>00</u></b>
+68 00 00.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <center>2&nbsp;</center>
+      </td>
+      <td bgcolor="#ffffff">
+      <center><img src="graphics/left.gif" alt="&lt;===" align="bottom"
+ border="0" height="13" width="22"> </center>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK: either 73 56 00 00 (not
+upgraded), either 73 56 ?? ?? (upgraded).</td>
+    </tr>
+  </tbody>
+</table>
+<p><u>Example:</u>
+<table nosave="" border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt><u>00</u> 68 00 00&nbsp;</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Check whether the calc has
+been FLASHed</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%">TI83+ with AMS v1.14</td>
+    </tr>
+  </tbody>
+</table>
+<table nosave="" border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt><u>00</u> 68 00 00&nbsp;</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Check whether the calc has
+been FLASHed</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73 56 ?? ??</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%">TI83+ with AMS v?.??</td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<h4> <a name="rts"></a>Requesting ID list</h4>
+Indeed, the request is as if the TI requested the 'IDLIST' variable:
+Ty=26
+and Nl=00. <br>
+This request works only with upgraded calculator (check if TI has been
+upgraded
+before).
+<p>The protocol for silently receiving the ID list is shown below:
+<table nosave="" bgcolor="#ffffff" border="1" cellspacing="0"
+ width="92%">
+  <tbody>
+    <tr>
+      <th bgcolor="#008800" width="7%"><font color="#ffffff">Step</font></th>
+      <th colspan="3" bgcolor="#008800"><font color="#ffffff">Direction</font></th>
+      <th bgcolor="#008800" width="80%"><font color="#ffffff">Packet</font></th>
+    </tr>
+    <tr nosave="">
+      <td bgcolor="#ffffff" width="7%">
+      <center> 1&nbsp; </center>
+      </td>
+      <td rowspan="9" nosave="">
+      <center> <img src="graphics/comp.gif" alt="Computer"
+ align="bottom" border="0" height="33" width="30"> </center>
+      </td>
+      <td bgcolor="#ffffff">
+      <center> <img src="graphics/right.gif" alt="===&gt;" align="bottom"
+ border="0" height="13" width="22"> </center>
+      </td>
+      <td rowspan="9" nosave="">
+      <center> <img src="graphics/calc.gif" alt="Calculator"
+ align="bottom" border="0" height="35" width="60"> </center>
+      </td>
+      <td bgcolor="#ffffff" width="80%">REQ with just type ID</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <center> 2&nbsp; </center>
+      </td>
+      <td bgcolor="#ffffff">
+      <center> <img src="graphics/left.gif" alt="&lt;===" align="bottom"
+ border="0" height="13" width="22"> </center>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK (see note below)</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <center> 3&nbsp; </center>
+      </td>
+      <td bgcolor="#ffffff">
+      <center> <img src="graphics/left.gif" alt="&lt;===" align="bottom"
+ border="0" height="13" width="22"> </center>
+      </td>
+      <td bgcolor="#ffffff" width="80%">VAR (specifing the size without
+the
+extra four bytes) with IDLIST as varname<br>
+      </td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <center> 4&nbsp; </center>
+      </td>
+      <td bgcolor="#ffffff">
+      <center> <img src="graphics/right.gif" alt="===&gt;" align="bottom"
+ border="0" height="13" width="22"> </center>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <center> 5&nbsp; </center>
+      </td>
+      <td>
+      <center> <img src="graphics/right.gif" alt="===&gt;" align="bottom"
+ border="0" height="13" width="22"> </center>
+      </td>
+      <td width="80%">CTS</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <center> 6&nbsp; </center>
+      </td>
+      <td>
+      <center> <img src="graphics/left.gif" alt="&lt;===" align="bottom"
+ border="0" height="13" width="22"> </center>
+      </td>
+      <td width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <center> 7&nbsp; </center>
+      </td>
+      <td>
+      <center> <img src="graphics/left.gif" alt="&lt;===" align="bottom"
+ border="0" height="13" width="22"> </center>
+      </td>
+      <td width="80%">DATA with an extra four bytes at the beginning of
+the
+packet</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <center> 8&nbsp; </center>
+      </td>
+      <td>
+      <center> <img src="graphics/right.gif" alt="===&gt;" align="bottom"
+ border="0" height="13" width="22"> </center>
+      </td>
+      <td width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <center> 10&nbsp; </center>
+      </td>
+      <td>
+      <center> <img src="graphics/right.gif" alt="===&gt;" align="bottom"
+ border="0" height="13" width="22"> </center>
+      </td>
+      <td width="80%">ACK</td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<p><u>Example (PC receiving IDlist from TI):</u>
+<table nosave="" border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><tt><b>73 A2 0B 00 </b>00 00
+26 00
+00 00 00 00 00 00 00 <b>26 00</b></tt></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Request the ID list</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Acknowledgement of request</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc">&nbsp;</td>
+      <td bgcolor="#ffcccc" width="50%"><tt><b>73 06 0B 00 </b>0B 00
+26 00 00 00 00 00 00 00 00 <b>31 00</b></tt></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Variable Header</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>73 56 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Acknowledgement of variable
+header</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc">&nbsp;</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>73 09 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Clear to send variable</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Acknowledgement of CTS</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" height="44">&nbsp;</td>
+      <td bgcolor="#ffcccc" height="44" width="50%"><tt><b>73 15 0B 00 </b>01
+00 00 80 0A 32 CC E3 01 21 18 <b>A6
+00</b></tt></td>
+      <td bgcolor="#ffcccc" height="44" width="50%"><i>Variable data:
+"0A32C-CE301-1821"</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>73 56 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Acknowledgement of variable
+data</i></td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<p>If the calculator does not have an IDLIST, it replies as following:</p>
+<table nosave="" border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><tt><b>73 A2 0B 00 </b>00 00
+26 00
+00 00 00 00 00 00 00 <b>26 00</b></tt></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Request the ID list</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73 36 05 <b>00 </b></tt></b><tt>00
+00 00 00 03 <b>03 00</b></tt></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Skip/Exit</i></td>
+    </tr>
+  </tbody>
+</table>
+<h4> <a name="rts"></a>Sending FLASH</h4>
+<u><b><i>Warning:</i></b> We (Tim. Singer and Romain Li&eacute;vin)
+could not be responsible if your calculator has been locked or damaged
+with a FLASH
+OS.</u> <br>
+If an FLASH OS has been sent and the operation has crashed, you can
+wait
+that the TI83+ display 'Turn unit off and on'. Then, try again the
+transfer.
+<br>
+If the calculator is really locked, remove batteries, wait some time
+and
+put them again. Next, press I for 'Install code' and retry transfer.<br>
+<br>
+<u>Note:</u> the TI83+ SE (Silver Edition) will reject any OS upgrade
+older
+than the currently installed.<br>
+<br>
+In the case of a FLASH OS (AMS), the name is 'basecode'.
+<p>The protocol for silently sending a FLASH file is shown below:
+<table nosave="" bgcolor="#ffffff" border="1" cellspacing="0"
+ width="92%">
+  <tbody>
+    <tr>
+      <th bgcolor="#008800" width="7%"><font color="#ffffff">Step</font></th>
+      <th colspan="3" bgcolor="#008800"><font color="#ffffff">Direction</font></th>
+      <th bgcolor="#008800" width="80%"><font color="#ffffff">Packet</font></th>
+    </tr>
+    <tr nosave="">
+      <td bgcolor="#ffffff" width="7%">
+      <center> 1&nbsp; </center>
+      </td>
+      <td rowspan="9" nosave="">
+      <center> <img src="graphics/comp.gif" alt="Computer"
+ align="bottom" border="0" height="33" width="30"> </center>
+      </td>
+      <td bgcolor="#ffffff">
+      <center> <img src="graphics/right.gif" alt="===&gt;" align="bottom"
+ border="0" height="13" width="22"> </center>
+      </td>
+      <td rowspan="9" nosave="">
+      <center> <img src="graphics/calc.gif" alt="Calculator"
+ align="bottom" border="0" height="35" width="60"> </center>
+      </td>
+      <td bgcolor="#ffffff" width="80%">VAR with expected header
+including
+the FLASH application name and size.&nbsp;</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <center> 2&nbsp; </center>
+      </td>
+      <td bgcolor="#ffffff">
+      <center> <img src="graphics/left.gif" alt="&lt;===" align="bottom"
+ border="0" height="13" width="22"> </center>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <center> 3&nbsp; </center>
+      </td>
+      <td>
+      <center> <img src="graphics/left.gif" alt="&lt;===" align="bottom"
+ border="0" height="13" width="22"> </center>
+      </td>
+      <td width="80%">CTS</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <center> 4&nbsp; </center>
+      </td>
+      <td>
+      <center> <img src="graphics/right.gif" alt="===&gt;" align="bottom"
+ border="0" height="13" width="22"> </center>
+      </td>
+      <td width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <center> 5&nbsp; </center>
+      </td>
+      <td>
+      <center> <img src="graphics/right.gif" alt="===&gt;" align="bottom"
+ border="0" height="13" width="22"> </center>
+      </td>
+      <td width="80%">DATA with an extra four bytes at the beginning of
+the
+packet</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <center> 6&nbsp; </center>
+      </td>
+      <td>
+      <center> <img src="graphics/left.gif" alt="&lt;===" align="bottom"
+ border="0" height="13" width="22"> </center>
+      </td>
+      <td width="80%">ACK/ERR (*)</td>
+    </tr>
+    <tr>
+      <td width="7%">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td width="80%">(Repeat steps 1-6 for as many pages as there are
+in
+the file)</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <center> 7&nbsp; </center>
+      </td>
+      <td>
+      <center> <img src="graphics/right.gif" alt="===&gt;" align="bottom"
+ border="0" height="13" width="22"> </center>
+      </td>
+      <td width="80%"> EOT</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <center> 8&nbsp; </center>
+      </td>
+      <td>
+      <center> <img src="graphics/left.gif" alt="&lt;===" align="bottom"
+ border="0" height="13" width="22"> </center>
+      </td>
+      <td width="80%">ACK</td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<p>(*) TI83+ SE will send an error packet if OS upgrade is older than
+the
+one currently installed.<br>
+</p>
+<p>Given that the TI83+ is a paged memory calculator, the protocol
+follows
+this scheme (see the TI83+ SDK guide for hardware informations). You
+have
+to send this page according to the protocol.</p>
+<p>The size of the data part depends on the transfer type:<br>
+- os: 256 bytes (100h)<br>
+- app: 128 bytes (80h)</p>
+<p><u>Example (PC sending an OS to TI):</u>
+<table nosave="" border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><tt><b>23 06 0A 00 </b>00 01
+23 00 00 80 00 00 00 00 <b>7D 02</b></tt></td>
+      <td bgcolor="#ccffcc" width="49%"><i>send the first page(header
+informations for OS)</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">TI:</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>Acknowledgement of request</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">&nbsp;</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 09 0A 00&nbsp;</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>Clear to send variable</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><b><tt>23 56 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Acknowledgement of variable
+header</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">&nbsp;</td>
+      <td bgcolor="#ccffcc" width="49%"><tt><b>23 15 00 01 </b>&lt;...
+256/128 bytes of data ...&gt;<b> CHK</b></tt></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Data block: 128 or 256 bytes</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">TI:</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>Acknowledgement of CTS</i></td>
+    </tr>
+    <tr>
+      <td>
+      <center> <b>. . .</b> </center>
+      </td>
+      <td width="50%">
+      <center> <b>. . .</b> </center>
+      </td>
+      <td width="50%">
+      <center> <b>. . .</b> </center>
+      </td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><tt><b>23 06 0A 00 </b>00 01
+23 00 00 00 00 40 00 00 <b>7D 02</b></tt></td>
+      <td bgcolor="#ccffcc" width="49%"><i>send the second page</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">TI:</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>Acknowledgement of request</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">&nbsp;</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 09 0A 00&nbsp;</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>Clear to send variable</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><b><tt>23 56 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Acknowledgement of variable
+header</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">&nbsp;</td>
+      <td bgcolor="#ccffcc" width="49%"><tt><b>23 15 00 01 </b>&lt;...
+256/128 bytes of data ...&gt;<b> CHK</b></tt></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Data block: 128 or 256 bytes</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">TI:</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>Acknowledgement of CTS</i></td>
+    </tr>
+    <tr>
+      <td>
+      <center> <b>. . .</b> </center>
+      </td>
+      <td width="50%">
+      <center> <b>. . .</b> </center>
+      </td>
+      <td width="50%">
+      <center> <b>. . .</b> </center>
+      </td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><b><tt>23 92 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="49%"><i>End of Transmission</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">&nbsp;</td>
+      <td bgcolor="#ccffcc" width="49%"><tt><b>73 56 00 00</b></tt></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Acknowledgement of EOT&nbsp;</i></td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<p><i>Important remark:</i> for FLASH OS and TI73/83+, a pause must be
+inserted:<br>
+- just after the first page (1 second),<br>
+- and just
+before sending the last page (which is the 'digital signature') else
+the entire
+operation will not be validated. TI's soft seems to use a very long
+pause
+(2..3s). Practically, a pause of 1 second seems to be enough.<br>
+This pause is not needed for TI84+ (it will make transfer fail in fact).<br>
+</p>
+<p><br>
+&nbsp; <a name="rts"></a><b>Receiving FLASH</b></p>
+The protocol for silently receiving a FLASH file is shown below:
+<table nosave="" bgcolor="#ffffff" border="1" cellspacing="0"
+ width="92%">
+  <tbody>
+    <tr>
+      <th bgcolor="#008800" width="7%"><font color="#ffffff">Step</font></th>
+      <th colspan="3" bgcolor="#008800"><font color="#ffffff">Direction</font></th>
+      <th bgcolor="#008800" width="80%"><font color="#ffffff">Packet</font></th>
+    </tr>
+    <tr nosave="">
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">1 </p>
+      </td>
+      <td rowspan="9" nosave="">
+      <p align="center"><img src="graphics/comp.gif" alt="Computer"
+ align="bottom" border="0" height="33" width="30"> </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td rowspan="9" nosave="">
+      <p align="center"><img src="graphics/calc.gif" alt="Calculator"
+ align="bottom" border="0" height="35" width="60"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">REQ with <a
+ href="packet.html#reqbackup">request-style backup header</a>.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">2 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">3 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">VAR with <a
+ href="packet.html#backup">flash-style header</a>.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">4 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">5 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">CTS</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">6 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">7 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">DATA (a 1-kilobyte backup block, with four extra
+bytes
+at the beginning)</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">8 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">&nbsp; </p>
+      </td>
+      <td>&nbsp;</td>
+      <td width="80%"><i>(Repeat steps 3-8 for as many pages as there
+are)</i></td>
+    </tr>
+  </tbody>
+</table>
+<p><u>Note:</u> the TI84+ has a slightly different VAR header: it's the
+same as flash-style header.<br>
+</p>
+<u>Example (PC receiving an application from TI):</u>
+<p> </p>
+<table nosave="" border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><tt><b>23 A2 0B 00 </b>00
+00
+24 C B L E x p m t <b>CHK</b></tt></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Request the 'CBLExpmt' app.</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">TI:</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>Acknowledgement of request</i></td>
+    </tr>
+    <tr>
+      <td>
+      <center> <b>. . .</b> </center>
+      </td>
+      <td width="50%">
+      <center> <b>. . .</b> </center>
+      </td>
+      <td width="50%">
+      <center> <b>. . .</b> </center>
+      </td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">&nbsp;</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 06 0A 00 </tt></b><tt>LL
+HH 24 C B L Ol Oh Pl Ph <b>CHK</b></tt><b><tt>&nbsp;</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>TI reply a shorted name
+(CBL),
+block size, page offset and page number</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><b><tt>23 56 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Acknowledgement of variable
+header</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">&nbsp;</td>
+      <td bgcolor="#ccffcc" width="49%"><tt><b>23 09 00 00</b></tt></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Acknowledgement of request</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">TI:</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>Acknowledgement of CTS</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">&nbsp;</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 15 LL HH </tt></b><tt>&lt;...
+HHLL bytes of data ...&gt;</tt><b><tt> CHK</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>Data block: HHLL bytes</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><b><tt>23 56 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Acknowledgement of variable
+header</i></td>
+    </tr>
+    <tr>
+      <td>
+      <center> <b>. . .</b> </center>
+      </td>
+      <td width="50%">
+      <center> <b>. . .</b> </center>
+      </td>
+      <td width="50%">
+      <center> <b>. . .</b> </center>
+      </td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">&nbsp;</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 06 0A 00 </tt></b><tt>LL
+HH 24 C B L Ol Oh Pl Ph <b>CHK</b></tt><b><tt>&nbsp;</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>TI reply a shorted name
+(CBL),
+block size, page offset and page number</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><b><tt>23 56 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Acknowledgement of variable
+header</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">&nbsp;</td>
+      <td bgcolor="#ccffcc" width="49%"><tt><b>23 09 00 00</b></tt></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Acknowledgement of request</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">TI:</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>Acknowledgement of CTS</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">&nbsp;</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 15 LL HH </tt></b><tt>&lt;...
+HHLL bytes of data ...&gt;</tt><b><tt> CHK</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>Data block: HHLL bytes</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><b><tt>23 56 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Acknowledgement of variable
+header</i></td>
+    </tr>
+    <tr>
+      <td>
+      <center> <b>. . .</b> </center>
+      </td>
+      <td width="50%">
+      <center> <b>. . .</b> </center>
+      </td>
+      <td width="50%">
+      <center> <b>. . .</b> </center>
+      </td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">&nbsp;</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 06 0A 00 </tt></b><tt>LL
+HH 24 C B L Ol Oh Pl Ph <b>CHK</b></tt><b><tt>&nbsp;</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>TI reply a shorted name
+(CBL),
+block size, page offset and page number</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><b><tt>23 56 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Acknowledgement of variable
+header</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">&nbsp;</td>
+      <td bgcolor="#ccffcc" width="49%"><tt><b>23 09 00 00</b></tt></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Acknowledgement of request</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">TI:</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>Acknowledgement of CTS</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">&nbsp;</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 15 LL HH </tt></b><tt>&lt;...
+HHLL bytes of data ...&gt;</tt><b><tt> CHK</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>Data block: HHLL bytes</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><b><tt>23 56 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Acknowledgement of variable
+header</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><b><tt>23 56 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Acknowledgement</i></td>
+    </tr>
+  </tbody>
+</table>
+<p><i></i></p>
+<p><a name="rts"></a><b>Receiving Certificate</b><br>
+</p>
+<p>The protocol for silently receiving a certificate is very similar to
+requesting a FLASH app (ID = 0x27 and name is "") but the VAR answer
+(step 3) has no
+data part. </p>
+<table nosave="" bgcolor="#ffffff" border="1" cellspacing="0"
+ width="92%">
+  <tbody>
+    <tr>
+      <th bgcolor="#008800" width="7%"><font color="#ffffff">Step</font></th>
+      <th colspan="3" bgcolor="#008800"><font color="#ffffff">Direction</font></th>
+      <th bgcolor="#008800" width="80%"><font color="#ffffff">Packet</font></th>
+    </tr>
+    <tr nosave="">
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">1 </p>
+      </td>
+      <td rowspan="9" nosave="">
+      <p align="center"><img src="graphics/comp.gif" alt="Computer"
+ align="bottom" border="0" height="33" width="30"> </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td rowspan="9" nosave="">
+      <p align="center"><img src="graphics/calc.gif" alt="Calculator"
+ align="bottom" border="0" height="35" width="60"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">REQ with <a
+ href="packet.html#reqbackup">request-style idlist header</a>.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">2 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">3 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">VAR with <span
+ style="text-decoration: underline;">no</span> header</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">4 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">5 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">CTS</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">6 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">7 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">XDP (a 256 bytes block) or EOT<br>
+      </td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">8 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">&nbsp; </p>
+      </td>
+      <td>&nbsp;</td>
+      <td width="80%"><i>(Repeat steps 5-8 for as many pages as there
+are)</i></td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<u>Example (PC receiving a certificate from TI):</u>
+<p> </p>
+<table nosave="" border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><tt><b>23 A2 0B 00 </b>00
+00
+27 00 00 00 00 00 00 00 00 <b>27 00</b></tt></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Request certificate.</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">TI:</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>Acknowledgement of request</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">&nbsp;</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 06 <span
+ style="text-decoration: underline;">00</span> 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>TI reply with void VAR<br>
+      </i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><b><tt>23 56 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Acknowledgement of variable
+header</i></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">&nbsp;</td>
+      <td bgcolor="#ccffcc" width="49%"><tt><b>23 09 00 00</b></tt></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Acknowledgement of request</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">TI:</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>Acknowledgement of CTS</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">&nbsp;</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 15 01 00 </tt></b><tt>&lt;...
+0100h bytes of data ...&gt;</tt><b><tt> CHK</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>Data block: 256 bytes</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><b><tt>23 56 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Acknowledgement of variable
+header</i></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><span
+ style="font-weight: bold;">...</span><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: center; font-weight: bold;">...<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">&nbsp;PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><tt><b>23 09 00 00</b></tt></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Acknowledgement of request</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">TI:</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>Acknowledgement of CTS</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">TI:</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 92 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>End Of Transmission<br>
+      </i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><b><tt>23 56 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Acknowledgement of EOT</i></td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<b>Sending a Certificate</b><br>
+<p>The protocol for silently sending a certificate is very similar to
+sending a FLASH app (ID = 0x25 and name is "") but the VAR answer
+(step 3) has no
+data part. </p>
+<table nosave="" bgcolor="#ffffff" border="1" cellspacing="0"
+ width="92%">
+  <tbody>
+    <tr>
+      <th bgcolor="#008800" width="7%"><font color="#ffffff">Step</font></th>
+      <th colspan="3" bgcolor="#008800"><font color="#ffffff">Direction</font></th>
+      <th bgcolor="#008800" width="80%"><font color="#ffffff">Packet</font></th>
+    </tr>
+    <tr nosave="">
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">1 </p>
+      </td>
+      <td rowspan="10" nosave="">
+      <p align="center"><img src="graphics/comp.gif" alt="Computer"
+ align="bottom" border="0" height="33" width="30"> </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td rowspan="10" nosave="">
+      <p align="center"><img src="graphics/calc.gif" alt="Calculator"
+ align="bottom" border="0" height="35" width="60"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">VAR with <a
+ href="packet.html#reqbackup">request-style flash header</a> (offset =
+4000h, page = 00h).<br>
+      </td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">2 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">3 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">CTS</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">4 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">5 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">XDP<br>
+      </td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">6 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">ACK or nothing if EOT<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">7<br>
+      </td>
+      <td style="vertical-align: top;">
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td style="vertical-align: top;">CTS<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">8<br>
+      </td>
+      <td style="vertical-align: top;">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td style="vertical-align: top;">ACK<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">9<br>
+      </td>
+      <td style="vertical-align: top;">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td style="vertical-align: top;">EOT<br>
+      </td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">1<br>
+      </p>
+      </td>
+      <td>&nbsp;</td>
+      <td width="80%"><i>(Repeat steps 5-8 for as many pages as
+there
+are and finish with step 9)</i></td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<u>Example (PC sending a certificate to TI):</u>
+<p> </p>
+<table nosave="" border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><tt><b>23 06 0A 00 </b>E8 00
+25 00 00 04 00 40 00 00 <b>51 01</b></tt></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Request certificate.</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">TI:</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>Acknowledgement of request</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">&nbsp;</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 09 <span
+ style="text-decoration: underline;">0A</span> 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>Clear To Send<br>
+      </i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><b><tt>23 56 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Acknowledgement of CTS</i></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><b><tt>23 15 00 E8</tt></b><tt>
+&lt;...
+0100h bytes of data ...&gt;</tt><b><tt> CHK</tt></b></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Data block : 232 bytes<br>
+      </i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">TI:</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>Acknowledgement of request</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">&nbsp;</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 09 <span
+ style="text-decoration: underline;">E8</span> 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>TI reply with void VAR<br>
+      </i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><b><tt>23 56 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Acknowledgement of variable
+header</i></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">...</td>
+      <td style="vertical-align: top;">...</td>
+      <td style="vertical-align: top;">...</td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><b><tt>23 15 00 E8</tt></b><tt>
+&lt;...
+0100h bytes of data ...&gt;</tt><b><tt> CHK</tt></b></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Data block : 232 bytes<br>
+      </i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">TI:</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>Acknowledgement of data<br>
+      </i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" width="2%">TI:</td>
+      <td bgcolor="#ffcccc" width="49%"><b><tt>73 09 <span
+ style="text-decoration: underline;">E8</span> 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="49%"><i>Clear To Send<br>
+      </i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><b><tt>23 56 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Acknowledgement of CTS<br>
+      </i></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">...</td>
+      <td style="vertical-align: top;">...</td>
+      <td style="vertical-align: top;">...</td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><b><tt>23 92 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="49%"><i>End Of Transmission</i></td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<table border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr>
+      <td width="32%">
+      <center><a href="silent.html"><img src="graphics/prevpage.gif"
+ alt="[previous page]" align="bottom" border="2" height="32" width="32">
+      </a> <br>
+      <a href="silent.html">Silent transfers</a></center>
+      </td>
+      <td width="34%">
+      <center><a href="index.html"><img src="graphics/home.gif"
+ alt="[home]" align="bottom" border="2" height="32" width="32"> </a> <br>
+      <a href="index.html">Table of Contents</a></center>
+      </td>
+      <td width="34%">
+      <center><a href="vars.html"></a><a href="clock.html"><img
+ src="graphics/nextpage.gif" alt="[next page]"
+ style="border: 2px solid ; width: 32px; height: 32px;"></a> <br>
+      <a href="clock.html">Clock</a> </center>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<hr align="center"><i>Site maintained by Romain Li&eacute;vin (<a
+ href="mailto:roms@lpg.ticalc.org">roms@lpg.ticalc.org</a>) and Tim
+Singer
+(<a href="mailto:tsinger@gladstone.uoregon.edu">tsinger@gladstone.uoregon.edu</a>)</i>
+<br>
+</body>
+</html>

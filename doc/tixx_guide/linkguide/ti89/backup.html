@@ -1,0 +1,429 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; I; Linux 2.4.0-test6 i586) [Netscape]">
+   <title>TI-89 Link Protocol Guide - Backup Transfers</title>
+</head>
+<body bgcolor="#FFFFE8">
+<b>TI-89 Link Protocol Guide</b> - System Backup Transfers 
+<center>
+<h2>
+
+<hr ALIGN="CENTER">System Backup Transfers</h2></center>
+A System Backup is one large transmission containing all user-modifiable
+data in the calculator. The file format that the TI-89 Graph Link software
+uses can be found in the <a href="fformat.html#backup">file formats</a>
+section of this documentation.
+<p>System backups must be transferred silently. Silent transfers can only
+be done between a computer and a calculator, and require that the computer
+make the <a href="#request">request</a> or <a href="#rts">request-to-send</a>.
+<h4>
+<a NAME="request"></a>Requesting a Backup</h4>
+Indeed, receiving a backup is a group of all variables of the calculator.
+So, it is necessary to make a directory list in order to have the list
+of variables to receive.
+<h4>
+<a NAME="rts"></a>Sending a Backup</h4>
+Indeed, sending a backup is a group of all variables of the calculator.
+There is just a special block transmitted before sending the group of variables.
+<p>The protocol for silently sending the special block is shown below:
+<table BORDER CELLSPACING=0 WIDTH="92%" BGCOLOR="#FFFFFF" NOSAVE >
+<tr>
+<th WIDTH="7%" BGCOLOR="#008800"><font color="#FFFFFF">Step</font></th>
+
+<th COLSPAN="3" BGCOLOR="#008800"><font color="#FFFFFF">Direction</font></th>
+
+<th WIDTH="80%" BGCOLOR="#008800"><font color="#FFFFFF">Packet</font></th>
+</tr>
+
+<tr NOSAVE>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>1&nbsp;</center>
+</td>
+
+<td ROWSPAN="6" NOSAVE>
+<center><img SRC="graphics/comp.gif" ALT="Computer" BORDER=0 height=33 width=30 align=BOTTOM></center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td ROWSPAN="6" NOSAVE>
+<center><img SRC="graphics/calc.gif" ALT="Calculator" BORDER=0 height=35 width=60 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">VAR with <a href="packet.html#backup">send-style
+backup header</a>.</td>
+</tr>
+
+<tr>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>2&nbsp;</center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">ACK</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>3&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">CTS</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>4&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">ACK</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>5&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">EOT</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>6&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">ACK</td>
+</tr>
+</table>
+
+<p>Next, all variables are sent according to the 'Sending a variable' operation
+with one important exception: the type field is equal to either 1Dh (none),
+26h (locked) or 27h (archived), independantly of the variable type.
+<br>&nbsp;
+<table BORDER CELLSPACING=0 WIDTH="92%" BGCOLOR="#FFFFFF" >
+<tr>
+<th WIDTH="7%" BGCOLOR="#008800"><font color="#FFFFFF">Step</font></th>
+
+<th COLSPAN="3" BGCOLOR="#008800"><font color="#FFFFFF">Direction</font></th>
+
+<th WIDTH="80%" BGCOLOR="#008800"><font color="#FFFFFF">Packet</font></th>
+</tr>
+
+<tr>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>1&nbsp;</center>
+</td>
+
+<td ROWSPAN="8">
+<center><img SRC="graphics/comp.gif" ALT="Computer" BORDER=0 height=33 width=30 align=BOTTOM></center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td ROWSPAN="8">
+<center><img SRC="graphics/calc.gif" ALT="Calculator" BORDER=0 height=35 width=60 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">RTS (specifing the size with the extra
+four bytes) and with a particular type (1Dh, 26h or 27h)</td>
+</tr>
+
+<tr>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>2&nbsp;</center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">ACK</td>
+</tr>
+
+<tr>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>3&nbsp;</center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">CTS or SKIP/EXIT (see note below)</td>
+</tr>
+
+<tr>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>4&nbsp;</center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">ACK</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>5&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">DATA</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>6&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">ACK</td>
+</tr>
+
+<tr>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>7&nbsp;</center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">EOT<i> -</i> if there are several variables
+to transmit, steps 7 and 8 can be skipped until the last variable.</td>
+</tr>
+
+<tr>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>8&nbsp;</center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">ACK</td>
+</tr>
+</table>
+
+<p><u>Example (PC sending backup from TI):</u>
+<table BORDER=0 CELLSPACING=0 WIDTH="100%" NOSAVE >
+<tr>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><tt><b>08 06 0A 00</b> 00 00 00 00 00
+1D 04 6D 61 69 6E <b>C6 01</b></tt></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Variable header: Backup ("main")</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">TI:</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><b><tt>98 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Acknowledgement of header</i></td>
+</tr>
+
+<tr BGCOLOR="#FFCCCC" NOSAVE>
+<td NOSAVE>&nbsp;</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC" NOSAVE><b><tt>98 09 00 00</tt></b></td>
+
+<td WIDTH="50%"><i>Clear To Send</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><b><tt>08 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Acknowledgement of CTS</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">&nbsp;</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><b><tt>08 92 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>End of transmission</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">TI:</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><b><tt>98 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Acknowledgement of data</i></td>
+</tr>
+
+<tr>
+<td>
+<center><b>. . .</b></center>
+</td>
+
+<td WIDTH="50%">
+<center><b>. . .</b></center>
+</td>
+
+<td WIDTH="50%">
+<center><b>. . .</b></center>
+</td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><tt><b>09 C9 0D 00</b> 0F 00 00 00 <i>1D</i>
+06 6D 61 69 6E 5C 66 01 <b>9A 02</b></tt></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Variable header: "main/f" (none)</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">TI:</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><b><tt>98 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Acknowledgement of header</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">&nbsp;</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><b><tt>98 09 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Clear To Send</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><b><tt>08 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Acknowledgement of CTS</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">&nbsp;</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><tt><b>08 15 13 00</b> 00 00 00 00 00
+0D E9 02 01 1F 08 F0 93 E5 08 00 00 00 DC <b>6C 04</b></tt></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Variable content</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">TI:</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><b><tt>98 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Acknowledgement of data</i></td>
+</tr>
+
+<tr BGCOLOR="#99FFCC" NOSAVE>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC" NOSAVE><b><tt>08 92 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>End of transmission</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">TI:</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><b><tt>98 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Acknowledgement of EOT</i></td>
+</tr>
+
+<tr>
+<td>
+<center><b>. . .</b></center>
+</td>
+
+<td WIDTH="50%">
+<center><b>. . .</b></center>
+</td>
+
+<td WIDTH="50%">
+<center><b>. . .</b></center>
+</td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><b><tt>08 C9 10 00</tt></b><tt> 06 00
+00 00 <i>1D</i> 09 6D 79 5F 64 69 72 5C 73 31 00 <b>B0 03</b></tt></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Variable header: "my_dir/s1"</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">&nbsp;</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC">
+<center><b>...</b></center>
+</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC">&nbsp;</td>
+</tr>
+</table>
+
+<table BORDER=0 CELLSPACING=0 WIDTH="100%" >
+<tr>
+<td WIDTH="32%">
+<center><a href="silent.html"><img SRC="graphics/prevpage.gif" ALT="[previous page]" BORDER=2 height=32 width=32 align=BOTTOM></a>
+<br><a href="silent.html">Silent transfers</a></center>
+</td>
+
+<td WIDTH="34%">
+<center><a href="index.html"><img SRC="graphics/home.gif" ALT="[home]" BORDER=2 height=32 width=32 align=BOTTOM></a>
+<br><a href="index.html">Table of Contents</a></center>
+</td>
+
+<td WIDTH="34%">
+<center><a href="flash.html"><img SRC="graphics/nextpage.gif" ALT="[next page]" BORDER=2 height=32 width=32 align=BOTTOM></a>
+<br><a href="flash.html">FLASH transfers</a></center>
+</td>
+</tr>
+</table>
+
+<hr ALIGN="CENTER"><i>Site maintained by Romain Li&eacute;vin (<a href="mailto:roms@lpg.ticalc.org">roms@lpg.ticalc.org</a>)
+and Tim Singer (<a href="mailto:tsinger@gladstone.uoregon.edu">tsinger@gladstone.uoregon.edu</a>)</i>
+</body>
+</html>

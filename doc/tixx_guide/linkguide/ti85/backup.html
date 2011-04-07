@@ -1,0 +1,241 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+  <meta name="GENERATOR" content="Visual Page 1.0 for Windows">
+  <meta http-equiv="Content-Type" content="text/html;CHARSET=iso-8859-1">
+  <title>TI-85 Link Protocol Guide - Backup Transfers</title>
+</head>
+<body bgcolor="#ffffe8">
+<p><b>TI-85 Link Protocol Guide v1.0</b> - System Backup Transfers</p>
+<center>
+<h2>
+<hr align="center"> System Backup Transfers</h2>
+</center>
+<p>A System Backup is one large transmission containing all
+user-modifiable data in the calculator. The file format that the TI-85
+Graph Link software uses can be found in the <a
+ href="fformat.html#backup">file formats</a> section of this
+documentation.</p>
+<p>The protocol for all system backup transfers is shown below. For
+information on packet formats, <a href="packet.html">click here</a>.</p>
+<p>A computer can be either the sending unit or the receiving unit.</p>
+<p>
+<table bgcolor="#ffffff" border="1" cellspacing="0" width="92%">
+  <tbody>
+    <tr>
+      <th bgcolor="#008800" width="7%"><font color="#ffffff">Step</font></th>
+      <th colspan="3" bgcolor="#008800"><font color="#ffffff">Direction</font></th>
+      <th bgcolor="#008800" width="80%"><font color="#ffffff">Packet</font></th>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">1 </p>
+      </td>
+      <td rowspan="10">
+      <p align="center"><img src="graphics/calc.gif" alt="Sending Unit"
+ align="bottom" border="0" height="67" width="30"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="6%">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td rowspan="10">
+      <p align="center"><img src="graphics/calc.gif"
+ alt="Receiving Unit" align="bottom" border="0" height="67" width="30">
+      </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">VAR with <a
+ href="packet.html#backup">backup-style header</a> and type ID = 0x1D.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">2 </p>
+      </td>
+      <td bgcolor="#ffffff" width="6%">
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">3 </p>
+      </td>
+      <td bgcolor="#ffffff" width="6%">
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">CTS or SKIP/EXIT. If exit, do
+step 4 and quit.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">4 </p>
+      </td>
+      <td bgcolor="#ffffff" width="6%">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">5 </p>
+      </td>
+      <td width="6%">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">DATA - section 1 (system data)</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">6 </p>
+      </td>
+      <td width="6%">
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">7 </p>
+      </td>
+      <td width="6%">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">DATA - section 2 (user data)</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">8 </p>
+      </td>
+      <td width="6%">
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">9 </p>
+      </td>
+      <td width="6%">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">DATA - section 3 (variable table?)</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">10 </p>
+      </td>
+      <td width="6%">
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">ACK</td>
+    </tr>
+  </tbody>
+</table>
+<i></i></p>
+<p></p>
+<p><u>Example (PC sending backup to TI):</u><br>
+<table border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>05&nbsp;06&nbsp;09&nbsp;00&nbsp;</tt></b><tt>B1&nbsp;08&nbsp;1D&nbsp;B3&nbsp;19&nbsp;DA&nbsp;00&nbsp;F7&nbsp;8B&nbsp;<b>FE&nbsp;03</b></tt></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Variable header: Backup</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>85&nbsp;56&nbsp;09&nbsp;00</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Acknowledgement of header</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">&nbsp;</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>85&nbsp;09&nbsp;09&nbsp;00</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Clear to send backup</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>05&nbsp;56&nbsp;00&nbsp;00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Acknowledgement of CTS</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ccffcc">&nbsp;</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>05&nbsp;15&nbsp;B1&nbsp;08&nbsp;</tt></b>&lt;8B1h&nbsp;bytes&nbsp;of&nbsp;data&nbsp;plus&nbsp;checksum&gt;</td>
+      <td bgcolor="#ccffcc" width="50%"><i>Backup data section 1
+(system data)</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>85&nbsp;56&nbsp;B1&nbsp;08</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Acknowledgement of data</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>05&nbsp;15&nbsp;B3&nbsp;19&nbsp;</tt></b>&lt;19B3h&nbsp;bytes&nbsp;of&nbsp;data&nbsp;plus&nbsp;checksum&gt;</td>
+      <td bgcolor="#ccffcc" width="50%"><i>Backup data section 2 (user
+data)</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>85&nbsp;56&nbsp;B3&nbsp;19</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Acknowledgement of data</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>05&nbsp;15&nbsp;DA&nbsp;00&nbsp;</tt></b>&lt;DAh&nbsp;bytes&nbsp;of&nbsp;data&nbsp;plus&nbsp;checksum&gt;</td>
+      <td bgcolor="#ccffcc" width="50%"><i>Backup data section 3
+(variable table?)</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>85&nbsp;56&nbsp;DA&nbsp;00</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Acknowledgement of data</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>05 92 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>End Of Transmission (if PC
+sending)<br>
+      </i></td>
+    </tr>
+  </tbody>
+</table>
+For PC receiving backup from TI, swap 05 &amp; 85 IDs.<br>
+<br>
+<table border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr>
+      <td width="32%">
+      <p align="center"><a href="silent.html"><img
+ src="graphics/prevpage.gif" alt="[previous page]" align="bottom"
+ border="2" height="32" width="32"><br>
+Silent transfers</a> </p>
+      </td>
+      <td width="34%">
+      <p align="center"><a href="index.html"><img
+ src="graphics/home.gif" alt="[home]" align="bottom" border="2"
+ height="32" width="32"><br>
+Table of Contents</a> </p>
+      </td>
+      <td width="34%">
+      <p align="center"><a href="vars.html"><img
+ src="graphics/nextpage.gif" alt="[next page]" align="bottom" border="2"
+ height="32" width="32"><br>
+Variable Formats</a> </p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<hr align="center"> <i>Site maintained by Romain Li&eacute;vin (</i><a
+ href="mailto:roms@lpg.ticalc.org"><i>roms@lpg.ticalc.org</i></a><i>)
+and Tim Singer (</i><a href="mailto:tsinger@gladstone.uoregon.edu"><i>tsinger@gladstone.uoregon.edu</i></a><i>)</i>
+</body>
+</html>

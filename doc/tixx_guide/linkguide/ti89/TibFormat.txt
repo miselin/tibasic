@@ -1,0 +1,42 @@
+TIB Format :
+The last byte of the field type is the size of the field :
+	< $D : Size is the last byte
+	= $D : Size is the next byte
+	= $E : Size is the next word
+	= $F : Size is the next long
+	
+dc.w	$800F			; AMS Header
+	dc.l	$00		; The encapsulated bytes which follow
+
+	dc.w	$8011			; First Part of Product ID
+		dc.b	$00		; 03 for 89 / 1 for 92+
+	dc.b	$8021			; Third part of Product ID
+		dc.b	$00		; 06 for 2.02 / 1 for 1.01, etc
+	dc.b	$8032			; Fourth part of Product ID
+		dc.b	$00,$00		; 0038 / 004F
+	dc.b	$80A1			; Second part of Product ID
+		dc.b	$00		; Is flashed ? 1
+	dc.b	$804D			; Product Name
+		dc.b	$00		; *Size of the field
+		ds.b	xxxx		; *Name = AMS, etc
+	dc.w	$0326			; Product Code ?
+		dc.b	$09,$04,$00,$00,$00,$00  ;  *Date Stamp - XX/XX/XXXX ?
+	dc.w	$020D
+		dc.b	$40       	; *encrypted TI Date Stamp Signature
+		ds.b	64		; *First Encryption - 64 Chars
+	dc.w	$807F			; Actual AMS code
+		dc.l	$00		; Size
+		dc.l	$CCCCCCCC       ; Start of AMS code (End of Header)
+		ds.b	xxxxx		; MUST BE at an EVEN address ! Add 0 else before.
+		dc.l	$00000000	; * Checksum
+
+dc.w	$020D
+	dc.b	$40        ;   * Dummy encrypted TI Checksum Signature
+	ds.b	64
+
+Vti detects the rom version by searching a string which looks like :
+	dc.b	N,'.',N,N,0,N,N,'/',N,N,'/',N,N,N,N,0
+	N means a number '0' to '9'.
+	It must be at an EVEN address.
+	If you don't define it, it may crash Vti.
+	

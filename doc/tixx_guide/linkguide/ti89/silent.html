@@ -1,0 +1,974 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; I; Linux 2.4.0-test6 i586) [Netscape]">
+   <title>TI-89 Link Protocol Guide - Silent Transfers</title>
+</head>
+<body bgcolor="#FFFFE8">
+<b>TI-89 Link Protocol Guide</b> - Silent Variable Transfers 
+<center>
+<h2>
+
+<hr ALIGN="CENTER">Silent Variable Transfers</h2></center>
+"Silent Linking" is a capability that Texas Instruments built into the
+TI-83, TI-83+, TI-92, TI-89, TI-92 and TI-92+. It enables the calculator
+to transfer data to and from a computer without any special preparation
+required on the calculator end. The only drawback to the silent linking
+method is that when using this protocol, the calculator will automatically
+overwrite any data in a variable that has the same name as one being sent
+to it. Any program that incorporates silent linking must check for this;
+otherwise data may be lost.
+<p>Because silent linking protocols are one-sided (i.e. the user interaction
+is solely on the computer), there are three different transfer sequences
+required. First a <a href="#dir">directory listing</a> must be downloaded
+from the calculator in order to choose the variables to transfer or to
+check for duplicate names and out-of-memory conditions. Then, if variables
+are to be downloaded, a <a href="#request">variable request</a> action
+must be initiated by the computer. Finally, if variables are to be uploaded,
+a <a href="#rts">request-to-send</a> action must be sent by the computer.
+<h4>
+<a NAME="dir"></a>Directory Listing</h4>
+A directory listing is a list of all user variables in the calculator's
+memory and a number specifying how many bytes of free memory are left.
+<br>
+On the TI89/92+/V200 calculator, the directory list is done in 2 phase: <br>
+- the first, the computer request a main directory list which lists only the folders 
+(and the FLASH apps, too (see note))<br>
+- the second, the computer request a local directory list in each folder
+listed by the phase 1.
+<p>The protocol for requesting a directory listing is shown below. For
+information on packet formats, <a href="packet.html">click here</a>.
+<table BORDER CELLSPACING=0 WIDTH="92%" BGCOLOR="#FFFFFF" NOSAVE >
+<tr>
+<th WIDTH="7%" BGCOLOR="#008800"><font color="#FFFFFF">Step</font></th>
+
+<th COLSPAN="3" BGCOLOR="#008800"><font color="#FFFFFF">Direction</font></th>
+
+<th WIDTH="80%" BGCOLOR="#008800"><font color="#FFFFFF">Packet</font></th>
+</tr>
+
+<tr NOSAVE>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>1&nbsp;</center>
+</td>
+
+<td ROWSPAN="10" NOSAVE>
+<center><img SRC="graphics/comp.gif" ALT="Computer" BORDER=0 height=33 width=30 align=BOTTOM></center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td ROWSPAN="10" NOSAVE>
+<center><img SRC="graphics/calc.gif" ALT="Calculator" BORDER=0 height=35 width=60 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">REQ with data type=1Ah (see <a href="packet.html#19h">note
+under Type ID's</a> for variable header format) and with a particular filter.</td>
+</tr>
+
+<tr>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>2&nbsp;</center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">ACK</td>
+</tr>
+
+<tr>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>3&nbsp;</center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">VAR - a variable information packet (see
+format below)</td>
+</tr>
+
+<tr>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>4&nbsp;</center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">ACK</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>5&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">CTS</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>6&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">ACK</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>7&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">DATA - a variable entry (see format below).</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>8&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">ACK</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>9&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">CONT or EOT - if CONT, then go to step 4.</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>10&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">ACK</td>
+</tr>
+</table>
+
+<p>The request has the following format according to the operation (global
+directory list or local directory list):
+<table BORDER CELLSPACING=0 WIDTH="92%" >
+<tr>
+<th WIDTH="7%" BGCOLOR="#DDDDDD">Offset</th>
+
+<th WIDTH="8%" BGCOLOR="#DDDDDD">Length</th>
+
+<th WIDTH="85%" BGCOLOR="#DDDDDD">Description</th>
+</tr>
+
+<tr>
+<td WIDTH="7%">0</td>
+
+<td WIDTH="8%">4 bytes</td>
+
+<td WIDTH="85%">Always {00h, 00h, 00h, Fl} where Fl is a vartype filter.
+This allow to only list variable of a given type. It is always 1Fh (directory
+type) when a global dirlist is required or 1Bh when a local directory list
+is required in a particular folder.</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">4</td>
+
+<td WIDTH="8%">1 bytes</td>
+
+<td WIDTH="85%">This byte always has a value of 1Ah (directory list request).</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">5</td>
+
+<td WIDTH="8%">1 byte</td>
+
+<td WIDTH="85%">The length, in characters, of the name field. Here, it
+is always 0.&nbsp;</td>
+</tr>
+</table>
+
+<p>The data in the variable information packet has the following format:
+<table BORDER CELLSPACING=0 WIDTH="92%" >
+<tr>
+<th WIDTH="7%" BGCOLOR="#DDDDDD">Offset</th>
+
+<th WIDTH="8%" BGCOLOR="#DDDDDD">Length</th>
+
+<th WIDTH="85%" BGCOLOR="#DDDDDD">Description</th>
+</tr>
+
+<tr>
+<td WIDTH="7%">0</td>
+
+<td WIDTH="8%">4 bytes</td>
+
+<td WIDTH="85%">Unknown.</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">4</td>
+
+<td WIDTH="8%">1 bytes</td>
+
+<td WIDTH="85%">This byte always has a value of 1Ah (directory list type).</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">5</td>
+
+<td WIDTH="8%">1 byte</td>
+
+<td WIDTH="85%">The length, in characters, of the name field. Always 04h.</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">6</td>
+
+<td WIDTH="8%">4 bytes</td>
+
+<td WIDTH="85%">The name of the current folder. Always "main".&nbsp;</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">10</td>
+
+<td WIDTH="8%">1 byte</td>
+
+<td WIDTH="85%">Unknown, always 03h.</td>
+</tr>
+</table>
+
+<p>The var section (data packet) is made up of several entries. 
+<table BORDER CELLSPACING=0 WIDTH="92%" >
+  <tr> 
+    <th WIDTH="7%" BGCOLOR="#DDDDDD">Offset</th>
+    <th WIDTH="8%" BGCOLOR="#DDDDDD">Length</th>
+    <th WIDTH="85%" BGCOLOR="#DDDDDD">Description</th>
+  </tr>
+  <tr> 
+    <td WIDTH="7%">0</td>
+    <td WIDTH="8%">4 bytes</td>
+    <td WIDTH="85%">These four bytes always have a value of 0.</td>
+  </tr>
+  <tr> 
+    <td WIDTH="7%">4</td>
+    <td WIDTH="8%">n bytes</td>
+    <td WIDTH="85%">Data section: variables, FLASH applications and folder entries 
+      are listed here.</td>
+  </tr>
+</table>
+
+<br>
+Data section is made up of several blocks which take the following format (always 
+18 bytes long): 
+<table border cellspacing=0 width="92%" >
+  <tr> 
+    <th width="7%" bgcolor="#DDDDDD">Offset</th>
+    <th width="8%" bgcolor="#DDDDDD">Length</th>
+    <th width="85%" bgcolor="#DDDDDD">Description</th>
+  </tr>
+  <tr> 
+    <td width="7%">0</td>
+    <td width="8%">8 bytes</td>
+    <td width="85%">Variable name padded with NULL chars if necessary.</td>
+  </tr>
+  <tr> 
+    <td width="7%">8</td>
+    <td width="8%">1 byte</td>
+    <td width="85%">Variable type ID.</td>
+  </tr>
+  <tr> 
+    <td width="7%">9</td>
+    <td width="8%">1 byte</td>
+    <td width="85%">Variable attribute: 00h = unlocked, 01h = locked, 03 = archived.</td>
+  </tr>
+  <tr> 
+    <td width="7%">10</td>
+    <td width="8%">4 bytes</td>
+    <td width="85%">If folders are listed (phase 1), this field contains the number 
+      of variables in this folder. <br>
+      If variables are listed (phase 2), this field contains the length, in bytes, 
+      of the variable data for this variable without the extra four bytes at the 
+      beginning of the data packet.</td>
+  </tr>
+  <tr>
+    <td width="7%">14</td>
+    <td width="8%">8 bytes</td>
+    <td width="85%">(V200 only) These eight bytes always have a value of 0.</td>
+  </tr>
+</table>
+<p><i>Note:<br>
+  </i>- with AMS &lt; 2.08 :<i> </i>FLASH applications entries are listed both 
+  in phase 1 and phase 2,<br>
+  - with AMS &gt;=2.08: FLASH applications entries are listed only in phase 2.</p>
+<p><u>Example:</u> <br>
+  &nbsp;
+<table BORDER=0 CELLSPACING=0 WIDTH="100%" BGCOLOR="#FFFFFF" NOSAVE >
+<tr>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><tt><b>08 A2 06 00 </b>00 00 00 1F 1A
+00 <b>39 00</b></tt></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Global directory request (phase 1)</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">TI:</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><b><tt>98 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Acknowledgement of request</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">&nbsp;</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><tt><b>98 06 0B 00 </b>7E 00 00 0E 1A
+04 6D 61 69 6E 03 <b>52 02</b></tt></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Variable header - complete directory
+starting with "main".</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><b><tt>08 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Acknowledgement of header</i></td>
+</tr>
+
+<tr BGCOLOR="#99FFCC" NOSAVE>
+<td BGCOLOR="#CCFFCC">&nbsp;</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC" NOSAVE><b><tt>08 09 FF FF</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Clear to send</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">TI:</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><b><tt>98 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Acknowledgement of clear to send</i></td>
+</tr>
+
+<tr BGCOLOR="#FFCCCC" NOSAVE>
+<td BGCOLOR="#FFCCCC">&nbsp;</td>
+
+    <td WIDTH="50%" BGCOLOR="#FFCCCC" NOSAVE><tt><b>98 15 12 00</b> 00 00 00 00 
+      6D 61 69 6E 00 00 00 00 1F 00 00 00 00 03 <b>66 13</b></tt></td>
+    <td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Variable entry - Unlocked folder "main" 
+      with threevariable</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><b><tt>08 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Acknowledgement of variable entry</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">TI:</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><b><tt>98 92 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Continue - more variables in directory</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><b><tt>08 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Acknowledgement of continue</i></td>
+</tr>
+
+<tr BGCOLOR="#99FFCC" NOSAVE>
+<td NOSAVE>PC:</td>
+
+<td><b><tt>08 68 00 00</tt></b></td>
+
+<td><i>Check if TI is ready</i></td>
+</tr>
+
+<tr BGCOLOR="#FFCCCC" NOSAVE>
+<td NOSAVE>TI:</td>
+
+<td><b><tt>98 92 00 00</tt></b></td>
+
+<td><i>The calc is ready</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">PC:&nbsp;</td>
+
+    <td WIDTH="50%" BGCOLOR="#CCFFCC"><tt><b>08 A2 0A 00</b> 00 00 00 1B 1A 04 6D 
+      61 69 6E <b>DE 01</b></tt></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Local dirlist request in folder 'main'
+(phase 2)</i></td>
+</tr>
+
+<tr BGCOLOR="#FFCCCC" NOSAVE>
+<td NOSAVE>TI:</td>
+
+<td><b><tt>98 56 00 00</tt></b></td>
+
+<td><i>Acknowledgement of request</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">TI:</td>
+
+    <td WIDTH="50%" BGCOLOR="#FFCCCC"><tt><b>98 06 0B 00</b> 38 00 00 0E 1A 04 6D 
+      61 69 6E <b>03 A6</b></tt></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Variable entry - "main" folder</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><b><tt>08 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Acknowledgement of continue</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">&nbsp;</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><b><tt>08 09 FF FF</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Clear to send</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">TI:</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><b><tt>98 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Acknowledgement of clear to send</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">&nbsp;</td>
+
+    <td WIDTH="50%" BGCOLOR="#FFCCCC"><tt><b>98 15 3C 00</b> 00 00 00 00 <br>
+      6D 61 69 6E 00 00 00 00 1F 00 00 00 00 03 <br>
+      78 00 00 00 00 00 00 00 00 00 05 00 00 00 <br>
+      79 00 00 00 00 00 00 00 00 01 05 00 00 00 <br>
+      7A 00 00 00 00 00 00 00 00 03 05 00 00 00 <b>45 03</b> </tt></td>
+    <td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Folder entry - Folder &quot;main&quot;<br>
+      Variable entries - Normal variable &quot;x&quot;, Locked variable &quot;y&quot; 
+      and Archiveded variable "z"</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><b><tt>08 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Acknowledgement of variable entry</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">TI:</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><b><tt>98 92 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>End of transmission - no more variables</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><b><tt>08 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Acknowledgement of EOT</i></td>
+</tr>
+</table>
+
+<h4>
+<a NAME="request"></a>Requesting a Variable</h4>
+The protocol for requesting and receiving a variable from the calculator
+is shown below.
+<table BORDER CELLSPACING=0 WIDTH="92%" BGCOLOR="#FFFFFF" NOSAVE >
+<tr>
+<th WIDTH="7%" BGCOLOR="#008800"><font color="#FFFFFF">Step</font></th>
+
+<th COLSPAN="3" BGCOLOR="#008800"><font color="#FFFFFF">Direction</font></th>
+
+<th WIDTH="80%" BGCOLOR="#008800"><font color="#FFFFFF">Packet</font></th>
+</tr>
+
+<tr NOSAVE>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>1&nbsp;</center>
+</td>
+
+<td ROWSPAN="10" NOSAVE>
+<center><img SRC="graphics/comp.gif" ALT="Computer" BORDER=0 height=33 width=30 align=BOTTOM></center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td ROWSPAN="10" NOSAVE>
+<center><img SRC="graphics/calc.gif" ALT="Calculator" BORDER=0 height=35 width=60 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">REQ with expected header including the
+folder name, if necessary</td>
+</tr>
+
+<tr>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>2&nbsp;</center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">ACK (see note below)</td>
+</tr>
+
+<tr>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>3&nbsp;</center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">VAR (specifing the size without the extra
+four bytes) with actual header and no folder name</td>
+</tr>
+
+<tr>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>4&nbsp;</center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">ACK</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>5&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">CTS</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>6&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">ACK</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>7&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">DATA with an extra four bytes at the beginning of the packet</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>8&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">ACK</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>9&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">EOT</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>10&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">ACK</td>
+</tr>
+</table>
+<i>Note: If the requested variable does not exist, step 2 will be the end
+of the transfer.</i>
+<p>As with manual transfers, the data section contains the variable data.
+For information on variable formats,
+<a href="vars.html">click here</a>.
+<p><u>Example:</u>
+<table BORDER=0 CELLSPACING=0 WIDTH="100%" BGCOLOR="#FFCCCC" NOSAVE >
+<tr>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+    <td WIDTH="50%" BGCOLOR="#CCFFCC"><tt><b>08 A2 0C 00 </b>00 00 00 00 00 06 
+      6D 61 69 6E 5C 79 <b>80 02</b></tt></td>
+    <td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Request Known Variable&nbsp; "x" in the 
+      "main folder</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">TI:</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><b><tt>98 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Acknowledgement of request</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">&nbsp;</td>
+
+    <td WIDTH="50%" BGCOLOR="#FFCCCC"><tt><b>98 06 08 00 </b>05 00 00 00 00 01 
+      79 00 <b>7F 00</b></tt></td>    <td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Variable Header: Real "x" (locked)</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><b><tt>08 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Acknowledgement of variable header</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">&nbsp;</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><b><tt>08 09 FF FF</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Clear to send variable</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">TI:</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><b><tt>98 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Acknowledgement of CTS</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">&nbsp;</td>
+
+    <td WIDTH="50%" BGCOLOR="#FFCCCC"><tt><b>98 15 09 00 </b>00 00 00 00 00 03 
+      0D 01 1F <b>30 00</b></tt></td>    <td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Variable data: x=12</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><b><tt>08 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Acknowledgement of variable data</i></td>
+</tr>
+
+<tr NOSAVE>
+<td BGCOLOR="#FFCCCC">TI:</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC" NOSAVE><b><tt>98 92 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>End Of Transmission</i></td>
+</tr>
+
+<tr BGCOLOR="#99FFCC" NOSAVE>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC" NOSAVE><b><tt>08 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC" NOSAVE><i>Acknowledgement of EOT</i></td>
+</tr>
+</table>
+
+<h4>
+<a NAME="rts"></a>Sending a Variable</h4>
+There are two ways to send a variable: with a folder name (such as 'main\str')
+or without a folder name (such as 'str'). If no folder is specified, the
+variable is sent to the current directory on the calculator.
+<p>The protocol for sending a variable to the calculator is shown below.
+<table BORDER CELLSPACING=0 WIDTH="92%" BGCOLOR="#FFFFFF" >
+<tr>
+<th WIDTH="7%" BGCOLOR="#008800"><font color="#FFFFFF">Step</font></th>
+
+<th COLSPAN="3" BGCOLOR="#008800"><font color="#FFFFFF">Direction</font></th>
+
+<th WIDTH="80%" BGCOLOR="#008800"><font color="#FFFFFF">Packet</font></th>
+</tr>
+
+<tr>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>1&nbsp;</center>
+</td>
+
+<td ROWSPAN="8">
+<center><img SRC="graphics/comp.gif" ALT="Computer" BORDER=0 height=33 width=30 align=BOTTOM></center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td ROWSPAN="8">
+<center><img SRC="graphics/calc.gif" ALT="Calculator" BORDER=0 height=35 width=60 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">RTS (specifing the size with the extra
+four bytes)</td>
+</tr>
+
+<tr>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>2&nbsp;</center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">ACK</td>
+</tr>
+
+<tr>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>3&nbsp;</center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">CTS or SKIP/EXIT (see note below)</td>
+</tr>
+
+<tr>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>4&nbsp;</center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">ACK</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>5&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">DATA</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>6&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">ACK</td>
+</tr>
+
+<tr>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>7&nbsp;</center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">EOT<i> -</i> if there are several variables
+to transmit, steps 7 and 8 can be skipped until the last variable.</td>
+</tr>
+
+<tr>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>8&nbsp;</center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">ACK</td>
+</tr>
+</table>
+<i>Note: If the calculator sends a MEM packet in step 3, it does not have
+enough free memory to accomodate the variable. In this case, step 3 will
+be the end of the transfer.</i>
+<p>Again, the data section contains the variable data.
+<p><u>Example:</u> (to do, my sample file is corrupted (strange, grrr!))
+<table BORDER=0 CELLSPACING=0 WIDTH="100%" >
+<tr>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+    <td WIDTH="50%" BGCOLOR="#CCFFCC"><tt><b>09 C9 0D 00 </b>05 00 00 00 00 06 
+      6D 61 69 6E 5C 78 03 <b>87 02</b></tt></td>
+    <td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Request to send Real "x" in the "main" 
+      folder</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">TI:</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><b><tt>89 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Acknowledgement of request</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">&nbsp;</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><b><tt>89 09 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Clear to send variable</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><b><tt>09 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Acknowledgement of CTS</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">&nbsp;</td>
+
+    <td WIDTH="50%" BGCOLOR="#CCFFCC"><tt><b>09 15 0C 00 </b>00 00 00 00 00 03 
+      0C 01 1F <b>2F 00</b></tt></td>
+
+    <td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Variable data: 12</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">TI:</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><b><tt>89 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Acknowledgement of data</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><b><tt>09 92 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>End Of Transmission</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">TI:</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><b><tt>89 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Acknowledgement of EOT</i></td>
+</tr>
+</table>
+
+<table BORDER=0 CELLSPACING=0 WIDTH="100%" >
+<tr>
+<td WIDTH="32%">
+<center><a href="manual.html"><img SRC="graphics/prevpage.gif" ALT="[previous page]" BORDER=2 height=32 width=32 align=BOTTOM></a>
+<br><a href="manual.html">Manual Transfers</a></center>
+</td>
+
+<td WIDTH="34%">
+<center><a href="index.html"><img SRC="graphics/home.gif" ALT="[home]" BORDER=2 height=32 width=32 align=BOTTOM></a>
+<br><a href="index.html">Table of Contents</a></center>
+</td>
+
+<td WIDTH="34%">
+<center><a href="backup.html"><img SRC="graphics/nextpage.gif" ALT="[next page]" BORDER=2 height=32 width=32 align=BOTTOM></a>
+<br><a href="backup.html">Backups</a></center>
+</td>
+</tr>
+</table>
+
+<hr ALIGN="CENTER"><i>Site maintained by Romain Li&eacute;vin (<a href="mailto:roms@lpg.ticalc.org">roms@lpg.ticalc.org</a>)
+and Tim Singer (<a href="mailto:tsinger@gladstone.uoregon.edu">tsinger@gladstone.uoregon.edu</a>)</i>
+</body>
+</html>

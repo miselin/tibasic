@@ -1,0 +1,351 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META NAME="GENERATOR" Content="Visual Page 1.0 for Windows">
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<TITLE>TI-83 Link Protocol Guide - File formats</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFE8">
+
+<P><B>TI-83 Link Protocol Guide v1.0</B> - File formats</P>
+<CENTER>
+<H2>
+<HR ALIGN="CENTER">
+File Formats</H2>
+</CENTER>
+<P>The TI-83 Graph Link software stores variables in several types of files. Single variables are stored in files
+that have an extension that corresponds with their type. Groups of variables are stored in files with the extension
+&quot;.83g&quot;. However, all of these file types have a common format.</P>
+<P>The different file types and contents that the TI-83 Graph Link software can read and write are shown below.</P>
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="66%">
+	<TR>
+		<TH WIDTH="13%" BGCOLOR="#DDDDDD">Extension</TH>
+		<TH BGCOLOR="#DDDDDD">Description</TH>
+	</TR>
+	<TR>
+		<TD WIDTH="13%">
+			<P ALIGN="CENTER">.83b
+		</TD>
+		<TD>TI-83 system backup</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="13%">
+			<P ALIGN="CENTER">.83b
+		</TD>
+		<TD>TI-83 complex number</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="13%">
+			<P ALIGN="CENTER">.83d
+		</TD>
+		<TD>TI-83 GDB (function, polar, parametric or sequence)</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="13%">
+			<P ALIGN="CENTER">.83g
+		</TD>
+		<TD>Multiple TI-83 variables of varying types (group)</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="13%">
+			<P ALIGN="CENTER">.83i
+		</TD>
+		<TD>TI-83 picture (image)</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="13%">
+			<P ALIGN="CENTER">.83l
+		</TD>
+		<TD>TI-83 list</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="13%">
+			<P ALIGN="CENTER">.83m
+		</TD>
+		<TD>TI-83 matrix</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="13%">
+			<P ALIGN="CENTER">.83n
+		</TD>
+		<TD>TI-83 real number</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="13%">
+			<P ALIGN="CENTER">.83p
+		</TD>
+		<TD>TI-83 program</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="13%">
+			<P ALIGN="CENTER">.83s
+		</TD>
+		<TD>TI-83 string</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="13%">
+			<P ALIGN="CENTER">.83t
+		</TD>
+		<TD>TI-83 table setup</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="13%">
+			<P ALIGN="CENTER">.83w
+		</TD>
+		<TD>TI-83 window settings (Window or RclWindow)</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="13%">
+			<P ALIGN="CENTER">.83y
+		</TD>
+		<TD>TI-83 Y-Variable (equation)</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="13%">
+			<P ALIGN="CENTER">.83z
+		</TD>
+		<TD>TI-83 zoom (saved window settings)</TD>
+	</TR>
+</TABLE>
+<p></P>
+<P>
+<HR ALIGN="CENTER">
+<p></P>
+<H3>The TI-83 variable file format</H3>
+<P>The TI-83 variable file format has two parts: a header and several variable entries.</P>
+<P>The header appears at the beginning of the file and takes the following format:<BR>
+<I>Note - All 2-byte integers are stored little-endian Intel-style (least significant byte first).</I></P>
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="92%">
+	<TR>
+		<TH WIDTH="8%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Offset</FONT></TH>
+		<TH WIDTH="11%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Length</FONT></TH>
+		<TH WIDTH="81%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Description</FONT></TH>
+	</TR>
+	<TR>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">0</TD>
+		<TD WIDTH="11%" BGCOLOR="#FFFFFF">8 bytes</TD>
+		<TD WIDTH="81%" BGCOLOR="#FFFFFF">8-character signature. The signature is always &quot;<TT>**TI83**</TT>&quot;.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">8</TD>
+		<TD WIDTH="11%" BGCOLOR="#FFFFFF">3 bytes</TD>
+		<TD WIDTH="81%" BGCOLOR="#FFFFFF">3-byte further signature. These three bytes always contain {1Ah, 0Ah, 00h} = {26, 10, 0}</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">11 (Bh)</TD>
+		<TD WIDTH="11%" BGCOLOR="#FFFFFF">42&nbsp;(2Ah)&nbsp;bytes</TD>
+		<TD WIDTH="81%" BGCOLOR="#FFFFFF">Comment. The comment is either zero-terminated or padded on the right with space characters.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">53 (35h)</TD>
+		<TD WIDTH="11%" BGCOLOR="#FFFFFF">2 bytes</TD>
+		<TD WIDTH="81%" BGCOLOR="#FFFFFF">Length, in bytes, of the data section of the file. This number should be 57 (39h) bytes less than the file size.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">55 (37h)</TD>
+		<TD WIDTH="11%" BGCOLOR="#FFFFFF"><I>n</I> bytes</TD>
+		<TD WIDTH="81%" BGCOLOR="#FFFFFF">Data section - consists of a number of variable entries (described below).</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">55&nbsp;(37h)+<I>n</I></TD>
+		<TD WIDTH="11%" BGCOLOR="#FFFFFF">2 bytes</TD>
+		<TD WIDTH="81%" BGCOLOR="#FFFFFF">File checksum. This is the lower 16 bits of the sum of all bytes in the data section.</TD>
+	</TR>
+</TABLE>
+<p></P>
+<P>Each variable entry follows this format:</P>
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="92%">
+	<TR>
+		<TH WIDTH="8%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Offset</FONT></TH>
+		<TH WIDTH="11%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Length</FONT></TH>
+		<TH WIDTH="81%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Description</FONT></TH>
+	</TR>
+	<TR>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">0</TD>
+		<TD WIDTH="11%" BGCOLOR="#FFFFFF">2 bytes</TD>
+		<TD WIDTH="81%" BGCOLOR="#FFFFFF">Always has a value of 11 (Bh).</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">2</TD>
+		<TD WIDTH="11%" BGCOLOR="#FFFFFF">2 bytes</TD>
+		<TD WIDTH="81%" BGCOLOR="#FFFFFF">Length, in bytes, of the variable data.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">4</TD>
+		<TD WIDTH="11%" BGCOLOR="#FFFFFF">1 byte</TD>
+		<TD WIDTH="81%" BGCOLOR="#FFFFFF">variable type ID byte (see <A HREF="vars.html#vartypes">variable type ID's</A>)</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">5</TD>
+		<TD WIDTH="11%" BGCOLOR="#FFFFFF">8 bytes</TD>
+		<TD WIDTH="81%" BGCOLOR="#FFFFFF">Variable name, padded with NULL characters (0h) on the right.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">13 (Dh)</TD>
+		<TD WIDTH="11%" BGCOLOR="#FFFFFF">2 bytes</TD>
+		<TD WIDTH="81%" BGCOLOR="#FFFFFF">Length, in bytes, of the variable data. (This is a copy of the value in offset 2)</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="8%" BGCOLOR="#FFFFFF">15 (Fh)</TD>
+		<TD WIDTH="11%" BGCOLOR="#FFFFFF"><I>n</I> bytes</TD>
+		<TD WIDTH="81%" BGCOLOR="#FFFFFF">Variable data. <A HREF="vars.html">Click here</A> for variable data formats.</TD>
+	</TR>
+</TABLE>
+<p></P>
+<P>
+<HR ALIGN="CENTER">
+<p></P>
+<H3>The TI-83 backup file format</H3>
+<P>Most link programs allow a user to download and save system backups with the extension &quot;.82b&quot;.</P>
+<P>Here is the format for backup files:</P>
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="92%">
+  <TR> 
+    <TH WIDTH="15%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Offset</FONT></TH>
+    <TH WIDTH="11%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Length</FONT></TH>
+    <TH WIDTH="74%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Description</FONT></TH>
+  </TR>
+  <TR> 
+    <TD WIDTH="15%" BGCOLOR="#FFFFFF">0</TD>
+    <TD WIDTH="11%" BGCOLOR="#FFFFFF">8 bytes</TD>
+    <TD WIDTH="74%" BGCOLOR="#FFFFFF">8-character signature. The signature is 
+      always &quot;<TT>**TI83**</TT>&quot;.</TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="15%" BGCOLOR="#FFFFFF">8</TD>
+    <TD WIDTH="11%" BGCOLOR="#FFFFFF">3 bytes</TD>
+    <TD WIDTH="74%" BGCOLOR="#FFFFFF">3-byte further signature. These three bytes 
+      always contain {1Ah, 0Ah, 00h} = {26, 10, 0}</TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="15%" BGCOLOR="#FFFFFF">11 (Bh)</TD>
+    <TD WIDTH="11%" BGCOLOR="#FFFFFF">42&nbsp;(2Ah)&nbsp;bytes</TD>
+    <TD WIDTH="74%" BGCOLOR="#FFFFFF">Comment. The comment is either zero-terminated 
+      or padded on the right with space characters.</TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="15%" BGCOLOR="#FFFFFF">53 (35h)</TD>
+    <TD WIDTH="11%" BGCOLOR="#FFFFFF">2 bytes</TD>
+    <TD WIDTH="74%" BGCOLOR="#FFFFFF">Length, in bytes, of the backup header and 
+      the data sections. This number should be 17 (11h) bytes more than the sum 
+      of the lengths of the three data sections as reported in the backup header.</TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="15%" BGCOLOR="#FFFFFF">55 (37h)</TD>
+    <TD WIDTH="11%" BGCOLOR="#FFFFFF">11 bytes</TD>
+    <TD WIDTH="74%" BGCOLOR="#FFFFFF">The backup header (format described below).</TD>
+  </TR>
+  <TR>
+    <TD WIDTH="15%" BGCOLOR="#FFFFFF">66 (42h)</TD>
+    <TD WIDTH="11%" BGCOLOR="#FFFFFF">2 bytes</TD>
+    <TD WIDTH="74%" BGCOLOR="#FFFFFF">Length, in bytes, of the first data section</TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="15%" BGCOLOR="#FFFFFF">68&nbsp;(44h)</TD>
+    <TD WIDTH="11%" BGCOLOR="#FFFFFF"><I>x</I> bytes</TD>
+    <TD WIDTH="74%" BGCOLOR="#FFFFFF">First data section.</TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="15%" BGCOLOR="#EEEEEE">68 (44h)+<I>x</I></TD>
+    <TD WIDTH="11%" BGCOLOR="#EEEEEE">2 bytes</TD>
+    <TD WIDTH="74%" BGCOLOR="#EEEEEE">Length, in bytes, of the second data section</TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="15%" BGCOLOR="#EEEEEE">70 (46h)+<I>x</I></TD>
+    <TD WIDTH="11%" BGCOLOR="#EEEEEE"><I>y</I> bytes</TD>
+    <TD WIDTH="74%" BGCOLOR="#EEEEEE">Second data section.</TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="15%" BGCOLOR="#FFFFFF">70 (46h)+<I>x</I>+<I>y</I></TD>
+    <TD WIDTH="11%" BGCOLOR="#FFFFFF">2 bytes</TD>
+    <TD WIDTH="74%" BGCOLOR="#FFFFFF">Length, in bytes, of the third data section</TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="15%" BGCOLOR="#FFFFFF">72 (48h)+<I>x</I>+<I>y</I></TD>
+    <TD WIDTH="11%" BGCOLOR="#FFFFFF"><I>z</I> bytes</TD>
+    <TD WIDTH="74%" BGCOLOR="#FFFFFF">Third data section</TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="15%" BGCOLOR="#FFFFFF">72 (48h)+<I>x</I>+<I>y</I>+<I>z</I></TD>
+    <TD WIDTH="11%" BGCOLOR="#FFFFFF">2 bytes</TD>
+    <TD WIDTH="74%" BGCOLOR="#FFFFFF">Checksum. This is the lower 16 bits of the 
+      sum of all bytes in the backup header and data sections.</TD>
+  </TR>
+</TABLE>
+<p></P>
+<P>The backup header has this format:</P>
+
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="92%">
+  <TR> 
+    <TH WIDTH="8%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Offset</FONT></TH>
+    <TH WIDTH="11%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Length</FONT></TH>
+    <TH WIDTH="81%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Description</FONT></TH>
+  </TR>
+  <TR> 
+    <TD WIDTH="8%" BGCOLOR="#FFFFFF">0</TD>
+    <TD WIDTH="11%" BGCOLOR="#FFFFFF">2 bytes</TD>
+    <TD WIDTH="81%" BGCOLOR="#FFFFFF">Offset to data length: Always has a value 
+      of 9.</TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="8%" BGCOLOR="#FFFFFF">2</TD>
+    <TD WIDTH="11%" BGCOLOR="#FFFFFF">2 bytes</TD>
+    <TD WIDTH="81%" BGCOLOR="#FFFFFF">Length, in bytes, of the first data section.</TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="8%" BGCOLOR="#FFFFFF">4</TD>
+    <TD WIDTH="11%" BGCOLOR="#FFFFFF">1&nbsp;byte</TD>
+    <TD WIDTH="81%" BGCOLOR="#FFFFFF">Type ID: Always has a value of 15 (Fh).</TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="8%" BGCOLOR="#FFFFFF">5</TD>
+    <TD WIDTH="11%" BGCOLOR="#FFFFFF">2 bytes</TD>
+    <TD WIDTH="81%" BGCOLOR="#FFFFFF">Length, in bytes, of the second data section.</TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="8%" BGCOLOR="#FFFFFF">7</TD>
+    <TD WIDTH="11%" BGCOLOR="#FFFFFF">2 bytes</TD>
+    <TD WIDTH="81%" BGCOLOR="#FFFFFF">Length, in bytes, of the third data section.</TD>
+  </TR>
+  <TR> 
+    <TD WIDTH="8%" BGCOLOR="#FFFFFF">9</TD>
+    <TD WIDTH="11%" BGCOLOR="#FFFFFF">2 bytes</TD>
+    <TD WIDTH="81%" BGCOLOR="#FFFFFF">Memory address of the second data section</TD>
+  </TR>
+</TABLE>
+<BR>
+
+<TABLE BORDER="0" CELLSPACING="0" WIDTH="100%">
+	<TR>
+		<TD WIDTH="32%">
+			<P ALIGN="CENTER"><A HREF="vars.html"><IMG SRC="graphics/prevpage.gif" WIDTH="32" HEIGHT="32" ALIGN="BOTTOM" ALT="[previous page]"
+			BORDER="2"><BR>
+			Variable Formats</A>
+		</TD>
+		<TD WIDTH="34%">
+			<P ALIGN="CENTER"><A HREF="index.html"><IMG SRC="graphics/home.gif" WIDTH="32" HEIGHT="32" ALIGN="BOTTOM" ALT="[home]"
+			BORDER="2"><BR>
+			Table of Contents</A>
+		</TD>
+		<TD WIDTH="34%">
+			<P ALIGN="CENTER"><A HREF="tokens.html"><IMG SRC="graphics/nextpage.gif" WIDTH="32" HEIGHT="32" ALIGN="BOTTOM"
+			ALT="[next page]" BORDER="2"><BR>
+			Tokens and Characters</A>
+		</TD>
+	</TR>
+</TABLE>
+
+<HR ALIGN="CENTER">
+<I>Site maintained by Romain Li&eacute;vin (</I><A HREF="mailto:roms@lpg.ticalc.org"><I>roms@lpg.ticalc.org</I></A><I>)
+and Tim Singer (</I><A HREF="mailto:tsinger@gladstone.uoregon.edu"><I>tsinger@gladstone.uoregon.edu</I></A><I>)</I>
+
+
+</BODY>
+
+</HTML>

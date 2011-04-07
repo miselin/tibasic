@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META NAME="GENERATOR" Content="Visual Page 1.0 for Windows">
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<TITLE>TI-73 Link Protocol Guide - Screenshots</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFE8">
+
+<P><B>TI-73 Link Protocol Guide v1.0</B> - Screenshots</P>
+<CENTER>
+<H2>
+<HR ALIGN="CENTER">
+Screenshots</H2>
+</CENTER>
+<P>The TI-73's screenshot ability is &quot;silent,&quot; which means that the calculator does not need to be put
+in a special mode. Screenshots can be taken any time the calculator is ready to accept a keypress.</P>
+<P>The protocol used for getting a screenshot is shown below. For information on packet formats, <A HREF="packet.html">click
+here</A>.</P>
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="92%" BGCOLOR="#FFFFFF">
+	<TR>
+		<TH WIDTH="7%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Step</FONT></TH>
+		<TH COLSPAN="3" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Direction</FONT></TH>
+		<TH WIDTH="80%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Packet</FONT></TH>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">1
+		</TD>
+		<TD ROWSPAN="4">
+			<P ALIGN="CENTER"><IMG SRC="graphics/comp.gif" WIDTH="30" HEIGHT="33" ALIGN="BOTTOM" ALT="Computer" BORDER="0">
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/right.gif" WIDTH="22" HEIGHT="13" ALIGN="BOTTOM" ALT="===>" BORDER="0">
+		</TD>
+		<TD ROWSPAN="4" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/calc.gif" WIDTH="30" HEIGHT="67" ALIGN="BOTTOM" ALT="Calculator" BORDER="0">
+		</TD>
+		<TD WIDTH="80%" BGCOLOR="#FFFFFF">SCR</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">2
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/left.gif" WIDTH="22" HEIGHT="13" ALIGN="BOTTOM" ALT="<===" BORDER="0">
+		</TD>
+		<TD WIDTH="80%" BGCOLOR="#FFFFFF">ACK</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">3
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/left.gif" WIDTH="22" HEIGHT="13" ALIGN="BOTTOM" ALT="<===" BORDER="0">
+		</TD>
+		<TD WIDTH="80%" BGCOLOR="#FFFFFF">DATA - Format described below.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">4
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/right.gif" WIDTH="22" HEIGHT="13" ALIGN="BOTTOM" ALT="===>" BORDER="0">
+		</TD>
+		<TD WIDTH="80%" BGCOLOR="#FFFFFF">ACK</TD>
+	</TR>
+</TABLE>
+<p></P>
+<P>The data packet contains a 768-byte monochrome bitmap (1 bit per pixel). Each bit has a value of 1 if the corresponding
+pixel is dark or a value of 0 if the corresponding pixel is light.</P>
+<P>The pixel order is left-to-right, then top-to-bottom (See figure below).<BR>
+Byte 0 defines the first 8 pixels in the left side of the top row of the screen. Bytes 1-11 define the rest of
+the first row, bytes 12-23 define the second row, etc.</P>
+<P><U>Example:</U><BR>
+
+<TABLE BORDER="0" CELLSPACING="0" WIDTH="100%">
+	<TR>
+		<TD BGCOLOR="#CCFFCC">PC:</TD>
+		
+    <TD WIDTH="50%" BGCOLOR="#CCFFCC"><B><TT>07&nbsp;6D&nbsp;00&nbsp;00</TT></B></TD>
+		<TD WIDTH="50%" BGCOLOR="#CCFFCC"><I>Screenshot request</I></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#FFCCCC">TI:</TD>
+		
+    <TD WIDTH="50%" BGCOLOR="#FFCCCC"><B><TT>74&nbsp;56&nbsp;00&nbsp;00</TT></B></TD>
+		<TD WIDTH="50%" BGCOLOR="#FFCCCC"><I>Acknowledgement of request</I></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#FFCCCC">&nbsp;</TD>
+		
+    <TD WIDTH="50%" BGCOLOR="#FFCCCC"><B><TT>74&nbsp;15&nbsp;00&nbsp;03&nbsp;</TT></B>&lt;768&nbsp;bytes&nbsp;plus&nbsp;2&nbsp;byte&nbsp;checksum&gt;</TD>
+		<TD WIDTH="50%" BGCOLOR="#FFCCCC"><I>Screen data</I></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#CCFFCC">PC:</TD>
+		
+    <TD WIDTH="50%" BGCOLOR="#CCFFCC"><B><TT>07&nbsp;56&nbsp;00&nbsp;00</TT></B></TD>
+		<TD WIDTH="50%" BGCOLOR="#CCFFCC"><I>Acknowledgement of data</I></TD>
+	</TR>
+</TABLE>
+<p></P>
+<P>The following figure demonstrates byte ordering of the pixels if the bitmap is in a 768-element array data[]:</P>
+<P><IMG SRC="graphics/scrnshot.gif" WIDTH="336" HEIGHT="274" ALIGN="BOTTOM" ALT="[pixel grid diagram]" BORDER="0"></P>
+<P>Note that this format is different from the standard Windows bitmap format, which specifies a value of 1 if
+the pixel is light and bottom-to-top row order.</P>
+
+<P>
+<TABLE BORDER="0" CELLSPACING="0" WIDTH="100%">
+	<TR>
+		<TD WIDTH="32%">
+			<P ALIGN="CENTER"><A HREF="packet.html"><IMG SRC="graphics/prevpage.gif" WIDTH="32" HEIGHT="32" ALIGN="BOTTOM"
+			ALT="[previous page]" BORDER="2"><BR>
+			Packet Formats</A>
+		</TD>
+		<TD WIDTH="34%">
+			<P ALIGN="CENTER"><A HREF="index.html"><IMG SRC="graphics/home.gif" WIDTH="32" HEIGHT="32" ALIGN="BOTTOM" ALT="[home]"
+			BORDER="2"><BR>
+			Table of Contents</A>
+		</TD>
+		<TD WIDTH="34%">
+			<P ALIGN="CENTER"><A HREF="manual.html"><IMG SRC="graphics/nextpage.gif" WIDTH="32" HEIGHT="32" ALIGN="BOTTOM"
+			ALT="[next page]" BORDER="2"><BR>
+			Manual Transfers</A>
+		</TD>
+	</TR>
+</TABLE>
+
+<HR ALIGN="CENTER">
+<I>Site maintained by Romain Li&eacute;vin (</I><A HREF="mailto:roms@lpg.ticalc.org"><I>roms@lpg.ticalc.org</I></A><I>)
+and Tim Singer (</I><A HREF="mailto:tsinger@gladstone.uoregon.edu"><I>tsinger@gladstone.uoregon.edu</I></A><I>)</I>
+
+
+</BODY>
+
+</HTML>

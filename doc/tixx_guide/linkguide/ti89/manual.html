@@ -1,0 +1,262 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; I; Linux 2.4.0-test6 i586) [Netscape]">
+   <title>TI-89 Link Protocol Guide - Manual Transfers</title>
+</head>
+<body bgcolor="#FFFFE8">
+<b>TI-89 Link Protocol Guide</b> - Manual Variable Transfers 
+<center>
+<h2>
+
+<hr ALIGN="CENTER">Manual Variable Transfers</h2></center>
+The TI-89 uses manual transfer protocols when it is in Link mode. On the
+sending unit a user must choose the variables to be sent, and the receiving
+calculator must be put into a special reception mode.
+<p>The protocol for all manual variable transfers is shown below. For information
+on packet formats, <a href="packet.html">click here</a>.
+<p>A computer can be either the sending unit or the receiving unit.
+<table BORDER CELLSPACING=0 WIDTH="92%" BGCOLOR="#FFFFFF" >
+<tr>
+<th WIDTH="7%" BGCOLOR="#008800"><font color="#FFFFFF">Step</font></th>
+
+<th COLSPAN="3" BGCOLOR="#008800"><font color="#FFFFFF">Direction</font></th>
+
+<th WIDTH="80%" BGCOLOR="#008800"><font color="#FFFFFF">Packet</font></th>
+</tr>
+
+<tr>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>1&nbsp;</center>
+</td>
+
+<td ROWSPAN="8">
+<center><img SRC="graphics/calc.gif" ALT="Sending Unit" BORDER=0 height=35 width=60 align=BOTTOM></center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td ROWSPAN="8">
+<center><img SRC="graphics/calc.gif" ALT="Receiving Unit" BORDER=0 height=35 width=60 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">VAR (specifing the size without the extra
+four bytes).</td>
+</tr>
+
+<tr>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>2&nbsp;</center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">ACK</td>
+</tr>
+
+<tr>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>3&nbsp;</center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">CTS or MEM. If MEM, then stop.</td>
+</tr>
+
+<tr>
+<td WIDTH="7%" BGCOLOR="#FFFFFF">
+<center>4&nbsp;</center>
+</td>
+
+<td BGCOLOR="#FFFFFF">
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%" BGCOLOR="#FFFFFF">ACK</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>5&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">DATA with an extra four bytes at the beginning.</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>6&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">ACK</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>7&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/right.gif" ALT="===>" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">EOT or another VAR. If var, go to step 2.</td>
+</tr>
+
+<tr>
+<td WIDTH="7%">
+<center>8&nbsp;</center>
+</td>
+
+<td>
+<center><img SRC="graphics/left.gif" ALT="<===" BORDER=0 height=13 width=22 align=BOTTOM></center>
+</td>
+
+<td WIDTH="80%">ACK</td>
+</tr>
+</table>
+
+<p>The data packet contains the variable data. For information on variable
+formats, <a href="vars.html">click here</a>.
+<p><u>Examples (PC sending variables to TI):</u>
+<table BORDER=0 CELLSPACING=0 WIDTH="100%" >
+<tr>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><b><tt>08 06 07 00 </tt></b><tt>06 00
+00 00 00 01 7A <b>4C 00</b></tt></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Variable Header: Expression "z"</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">TI:</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><b><tt>98 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Acknowledgement of header</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">&nbsp;</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><b><tt>98 09 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Clear to send variable</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><b><tt>08 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Acknowledgement of CTS</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">&nbsp;</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><b><tt>08 15 0A 00 </tt></b><tt>00 00
+00 00 00 04 67 02 02 1F <b>8E 00</b></tt></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Variable data: "6.28318530718"</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">TI:</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><b><tt>98 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Acknowledgement of data</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><b><tt>08 92 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>End of transmission</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">TI:</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><b><tt>98 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Acknowledgement of EOT</i></td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+
+<td WIDTH="50%">&nbsp;</td>
+
+<td WIDTH="50%">&nbsp;</td>
+</tr>
+
+<tr>
+<td BGCOLOR="#CCFFCC">PC:</td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><b><tt>08 06 07 00 </tt></b><tt>06 00
+00 00 00 01 79 <b>4B 00</b></tt></td>
+
+<td WIDTH="50%" BGCOLOR="#CCFFCC"><i>Variable Header: Expression "y"</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">TI:</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><b><tt>98 56 00 00</tt></b></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Acknowledgement of request</i></td>
+</tr>
+
+<tr>
+<td BGCOLOR="#FFCCCC">&nbsp;</td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><tt><b>98 36 05 00 </b>05 00 01 00 00
+<b>06 00</b></tt></td>
+
+<td WIDTH="50%" BGCOLOR="#FFCCCC"><i>Out of memory</i></td>
+</tr>
+</table>
+
+<table BORDER=0 CELLSPACING=0 WIDTH="100%" >
+<tr>
+<td WIDTH="32%">
+<center><a href="screenshot.html"><img SRC="graphics/prevpage.gif" ALT="[previous page]" BORDER=2 height=32 width=32 align=BOTTOM></a>
+<br><a href="screenshot.html">Screenshots</a></center>
+</td>
+
+<td WIDTH="34%">
+<center><a href="index.html"><img SRC="graphics/home.gif" ALT="[home]" BORDER=2 height=32 width=32 align=BOTTOM></a>
+<br><a href="index.html">Table of Contents</a></center>
+</td>
+
+<td WIDTH="34%">
+<center><a href="silent.html"><img SRC="graphics/nextpage.gif" ALT="[next page]" BORDER=2 height=32 width=32 align=BOTTOM></a>
+<br><a href="silent.html">Silent Transfers</a></center>
+</td>
+</tr>
+</table>
+
+<hr ALIGN="CENTER"><i>Site maintained by Romain Li&eacute;vin (<a href="mailto:roms@lpg.ticalc.org">roms@lpg.ticalc.org</a>)
+and Tim Singer (<a href="mailto:tsinger@gladstone.uoregon.edu">tsinger@gladstone.uoregon.edu</a>)</i>
+</body>
+</html>

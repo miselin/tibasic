@@ -1,0 +1,570 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+  <meta name="GENERATOR" content="Visual Page 1.0 for Windows">
+  <meta http-equiv="Content-Type" content="text/html;CHARSET=iso-8859-1">
+  <title>TI-83+ Link Protocol Guide - Silent Transfers</title>
+</head>
+<body bgcolor="#ffffe8">
+<p><b>TI-83+ Link Protocol Guide v1.0</b> - Silent Variable Transfers</p>
+<center>
+<h2>
+<hr align="center">Silent Variable Transfers</h2>
+</center>
+<p>"Silent Linking" is a capability that Texas Instruments built into
+the TI-83, TI-83+, TI-86, TI-89,
+TI-92 and TI-92+. It enables the calculator to transfer data to and
+from a computer without any special preparation
+required on the calculator end. The only drawback to the silent linking
+method is that when using this protocol,
+the calculator will automatically overwrite any data in a variable that
+has the same name as one being sent to
+it. Any program that incorporates silent linking must check for this;
+otherwise data may be lost.</p>
+<p>Because silent linking protocols are one-sided (i.e. the user
+interaction is solely on the computer), there
+are three different transfer sequences required. First a <a href="#dir">directory
+listing</a> must be downloaded
+from the calculator in order to choose the variables to transfer or to
+check for duplicate names and out-of-memory
+conditions. Then, if variables are to be downloaded, a <a
+ href="#request">variable request</a> action must be initiated
+by the computer. Finally, if variables are to be uploaded, a <a
+ href="#rts">request-to-send</a> action must be
+sent by the computer.</p>
+<h4><a name="dir"></a>Directory Listing</h4>
+<p>A directory listing is a list of all user variables in the
+calculator's memory and a number specifying how many
+bytes of free memory are left.</p>
+<p>The protocol for requesting a directory listing is shown below. For
+information on packet formats, <a href="packet.html">click
+here</a>.</p>
+<p>
+<table bgcolor="#ffffff" border="1" cellspacing="0" width="92%">
+  <tbody>
+    <tr>
+      <th bgcolor="#008800" width="7%"><font color="#ffffff">Step</font></th>
+      <th colspan="3" bgcolor="#008800"><font color="#ffffff">Direction</font></th>
+      <th bgcolor="#008800" width="80%"><font color="#ffffff">Packet</font></th>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">1 </p>
+      </td>
+      <td rowspan="9">
+      <p align="center"><img src="graphics/comp.gif" alt="Computer"
+ align="bottom" border="0" height="33" width="30"> </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td rowspan="9">
+      <p align="center"><img src="graphics/calc.gif" alt="Calculator"
+ align="bottom" border="0" height="67" width="30"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">REQ with data type=0x19 (see <a
+ href="packet.html#15h">note under Type ID's</a> for variable header
+format)</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">2 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">3 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">DATA: 2-byte free memory count <i>(little-endian)</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">4 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td width="7%">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td width="80%"><i> (Repeat steps 5 and 6 for all user variables
+in the calculator's memory)</i></td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">5 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">VAR (with padded variable header) - one entry</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">6 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">7 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">EOT</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">8 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">ACK</td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<p></p>
+<p><u>Example:<br>
+</u>
+<table bgcolor="#ffffff" border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>73&nbsp;A2&nbsp;0D&nbsp;00&nbsp;</tt></b><tt>00&nbsp;00&nbsp;19&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;<b>19&nbsp;00</b></tt></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Directory request</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73&nbsp;56&nbsp;00&nbsp;00</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Acknowledgement of request</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">&nbsp;</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73&nbsp;15&nbsp;02&nbsp;00&nbsp;</tt></b><tt>66&nbsp;5B&nbsp;<b>C1
+00</b></tt></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Data: 23398 (5B66h) bytes of
+free memory</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>73&nbsp;56&nbsp;00&nbsp;00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Acknowledgement of data</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73&nbsp;06&nbsp;0D&nbsp;00&nbsp;</tt></b><tt>09&nbsp;00&nbsp;00&nbsp;41&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;<b>4A&nbsp;00</b></tt></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Variable Header: Real Number
+"A"</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>73&nbsp;56&nbsp;00&nbsp;00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Acknowledgement of variable
+header</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73&nbsp;06&nbsp;0D&nbsp;00&nbsp;</tt></b><tt>09&nbsp;00&nbsp;00&nbsp;42&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;80&nbsp;<b>CB&nbsp;00</b></tt></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Variable Header: Real Number
+"B" which is archived</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>73&nbsp;56&nbsp;00&nbsp;00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Acknowledgement of variable
+header</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73&nbsp;92&nbsp;00&nbsp;00</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>No more variables</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>73&nbsp;56&nbsp;00&nbsp;00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Acknowledgement of EOT</i></td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<p></p>
+<h4><a name="request"></a>Requesting a Variable</h4>
+<p>The protocol for requesting and receiving a variable from the
+calculator is shown below.</p>
+<p>
+<table bgcolor="#ffffff" border="1" cellspacing="0" width="92%">
+  <tbody>
+    <tr>
+      <th bgcolor="#008800" width="7%"><font color="#ffffff">Step</font></th>
+      <th colspan="3" bgcolor="#008800"><font color="#ffffff">Direction</font></th>
+      <th bgcolor="#008800" width="80%"><font color="#ffffff">Packet</font></th>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">1 </p>
+      </td>
+      <td rowspan="8">
+      <p align="center"><img src="graphics/comp.gif" alt="Computer"
+ align="bottom" border="0" height="33" width="30"> </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td rowspan="8">
+      <p align="center"><img src="graphics/calc.gif" alt="Calculator"
+ align="bottom" border="0" height="67" width="30"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">REQ with expected header</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">2 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK (see note below)</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">3 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">VAR with actual header</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">4 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">5 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">CTS</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">6 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">7 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">DATA</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">8 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">ACK</td>
+    </tr>
+  </tbody>
+</table>
+<i>Note: If the requested variable does not exist, the calculator will
+send an EXIT packet after step 2, to which
+the computer will respond with an ACK packet. This would be the end of
+the transfer.</i></p>
+<p></p>
+<p>As with manual transfers, the data section contains the variable
+data. For information on variable formats,
+<a href="vars.html">click here</a>.</p>
+<p><u>Example:</u>
+<table border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>73&nbsp;A2&nbsp;0D&nbsp;00&nbsp;</tt></b><tt>09&nbsp;00&nbsp;00&nbsp;41&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;<b>4A&nbsp;00</b></tt></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Request Real Number "A"</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73&nbsp;56&nbsp;00&nbsp;00</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Acknowledgement of request</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">&nbsp;</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73&nbsp;06&nbsp;0D&nbsp;00&nbsp;</tt></b><tt>09&nbsp;00&nbsp;00&nbsp;41&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;<b>4A&nbsp;00</b></tt></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Variable Header: Real Number
+"A"</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>73&nbsp;56&nbsp;00&nbsp;00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Acknowledgement of variable
+header</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ccffcc">&nbsp;</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>73&nbsp;09&nbsp;00&nbsp;00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%">Clear to send variable</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73&nbsp;56&nbsp;00&nbsp;00</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Acknowledgement of CTS</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">&nbsp;</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73&nbsp;15&nbsp;09&nbsp;00&nbsp;</tt></b><tt>00&nbsp;80&nbsp;12&nbsp;56&nbsp;34&nbsp;78&nbsp;85&nbsp;25&nbsp;55&nbsp;<b>93&nbsp;02</b></tt></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Variable data:
+"1.2563478852555"</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>73&nbsp;56&nbsp;00&nbsp;00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Acknowledgement of variable
+data</i></td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<p></p>
+<h4><a name="rts"></a>Sending a Variable</h4>
+<p>The protocol for sending a variable to the calculator is shown below.</p>
+<p>
+<table bgcolor="#ffffff" border="1" cellspacing="0" width="92%">
+  <tbody>
+    <tr>
+      <th bgcolor="#008800" width="7%"><font color="#ffffff">Step</font></th>
+      <th colspan="3" bgcolor="#008800"><font color="#ffffff">Direction</font></th>
+      <th bgcolor="#008800" width="80%"><font color="#ffffff">Packet</font></th>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">1 </p>
+      </td>
+      <td colspan="1" rowspan="7">
+      <p align="center"><img src="graphics/comp.gif" alt="Computer"
+ align="bottom" border="0" height="33" width="30"> </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td colspan="1" rowspan="7">
+      <p align="center"><img src="graphics/calc.gif" alt="Calculator"
+ align="bottom" border="0" height="67" width="30"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">RTS</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">2 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">3 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">CTS or SKIP/EXIT (see note
+below)</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">4 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">5 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">DATA</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">6 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">7<br>
+      </td>
+      <td style="vertical-align: top;">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td style="vertical-align: top;">EOT<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<i>Note: If the calculator sends a SKIP/EXIT packet in step 3, it does
+not have enough free memory to accomodate
+the variable. In this case, step 4 will be the end of the transfer.</i></p>
+<p></p>
+<p>Again, the data section contains the variable data.</p>
+<p><u>Examples:<br>
+</u>
+<table border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>73&nbsp;C9&nbsp;0D&nbsp;00&nbsp;</tt></b><tt>09&nbsp;00&nbsp;00&nbsp;41&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;<b>4A&nbsp;00</b></tt></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Request to send Real Number
+"A"</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73&nbsp;56&nbsp;00&nbsp;00</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Acknowledgement of request</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">&nbsp;</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73&nbsp;09&nbsp;00&nbsp;00</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Clear to send variable</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>73&nbsp;56&nbsp;00&nbsp;00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Acknowledgement of CTS</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ccffcc">&nbsp;</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>73&nbsp;15&nbsp;09&nbsp;00&nbsp;</tt></b><tt>00&nbsp;80&nbsp;12&nbsp;56&nbsp;34&nbsp;78&nbsp;85&nbsp;25&nbsp;55&nbsp;<b>93&nbsp;02</b></tt></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Variable data:
+"1.2563478852555"</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73&nbsp;56&nbsp;00&nbsp;00</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Acknowledgement of data</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>73 92 00&nbsp;00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>End Of Transmission</i></td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td width="50%">&nbsp;</td>
+      <td width="50%">&nbsp;</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>73&nbsp;C9&nbsp;0D&nbsp;00&nbsp;</tt></b><tt>09&nbsp;00&nbsp;00&nbsp;42&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;<b>4B&nbsp;00</b></tt></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Request to send Real Number
+"B"</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73&nbsp;56&nbsp;00&nbsp;00</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Acknowledgement of request</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">&nbsp;</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73&nbsp;36&nbsp;01&nbsp;00&nbsp;</tt></b><tt>03&nbsp;<b>03&nbsp;00</b></tt></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Out of memory</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>73&nbsp;56&nbsp;00&nbsp;00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Acknowledgement of out of
+memory</i></td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<table border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr>
+      <td width="32%">
+      <p align="center"><a href="manual.html"><img
+ src="graphics/prevpage.gif" alt="[previous page]" align="bottom"
+ border="2" height="32" width="32"><br>
+Manual Transfers</a> </p>
+      </td>
+      <td width="34%">
+      <p align="center"><a href="index.html"><img
+ src="graphics/home.gif" alt="[home]" align="bottom" border="2"
+ height="32" width="32"><br>
+Table of Contents</a> </p>
+      </td>
+      <td width="34%">
+      <p align="center"><a href="backup.html"><img
+ src="graphics/nextpage.gif" alt="[next page]" align="bottom" border="2"
+ height="32" width="32"><br>
+Backups</a> </p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<hr align="center"><i>Site maintained by Romain Li&eacute;vin (</i><a
+ href="mailto:roms@lpg.ticalc.org"><i>roms@lpg.ticalc.org</i></a><i>)
+and Tim Singer (</i><a href="mailto:tsinger@gladstone.uoregon.edu"><i>tsinger@gladstone.uoregon.edu</i></a><i>)</i>
+</body>
+</html>

@@ -1,0 +1,444 @@
+TI89 AMS203
+
+$5C58	: (0088) circular byte buffer (used for link transmit buffer)
+	+0000.W	: buffer tail (insert byte at [buffer+tail])
+	+0002.W	: buffer head (read byte from [buffer+head])
+	+0004.W	: size of buffer (default: 0080)
+	+0006.W	: number of bytes currently stored in buffer
+	+0008	: circular buffer
+$5CE0	: (0088) circular byte buffer (used for link receive buffer)
+	+0000.W	: buffer tail (insert byte at [buffer+tail])
+	+0002.W	: buffer head (read byte from [buffer+head])
+	+0004.W	: size of buffer (default: 0080)
+	+0006.W	: number of bytes currently stored in buffer
+	+0008	: circular buffer
+	
+$5D68 : set to FF when link buffers are flushed ?? link reset'ed ?
+$5D69 : set to FF upon entering link ISR, set to 00 upon exiting (re-entrancy flag, link activity ?)
+$5D6A : buffer full and char lost ?
+$5D6B : 
+$5D6C : 
+$5D6D : 
+$5D6E : used to save the int mask between trap 1 calls
+
+$7A00 : MID = Machine ID (packet structure ?)
+$7A01 : CID = Command ID
+
+22245A: used to allow only irq > 5
+222466: used to restore intmask
+
+1°) AI4 handler
+	
+@IA4_handler
+222180:	; save context
+222184:		; $ff when entering ISR
+222188:	;	ctrl reg -> A1
+22218e:	; rx/tx reg -> A2
+
+222194:	; a0 = &rx buf
+22219a:	; if(#bytes < buffer size)
+22219e:	; 
+2221a2:	; then process
+2221a4:	; else, 1 -> $5d6a
+2221aa:	; goto ISR end
+
+@lbl001							; check for irq cause
+2221ae:	; read ctrl reg
+2221b0:	; if SA=1 (autostart)
+2221b4:	; then goto end
+2221b8:	; if SLE=1 (error)
+2221bc:	; then reset linkport
+2221c0:	;	if SRX=0 (rx reg full)
+2221c4:	; then goto tx routine
+
+										; RX routine
+2221c6:	; else get char from rx reg
+2221c8:	; #bytes++
+2221cc:	; rxbuf[tail] = char
+2221ce:	; 
+2221d2:	; tail++
+2221d4:	; if(tail < bufsize)
+2221d8:	; then jump
+2221da:	; else, roll-up tail to 0
+
+@lbl002
+2221dc:	; and store it
+2221de:	; goto end
+
+@lbl003							;TX routine
+2221e2:	; if TXIE=0
+2221e6:	; then goto end (no char to transmit)
+2221ea:	; else a0 = &tx_buf
+
+@lbl004
+2221f0:	; if no (more) char in tx_buf ?
+2221f4:	; then exit
+2221f6:	; else, read ctrl reg
+2221f8:	; if STX=0
+2221fc:	; then exit (last char)
+2221fe:	; else char = txbuf[head]
+222202:	;
+
+@lbl005							; wait for char transmission
+222206:	; read ctrl reg
+222208:	; if SLE=1 (link error)
+22220c:	; then reset link
+22220e:	; if STX=0 (tx empty)
+222212:	; then loop (wait for char to be transmitted)
+
+222214:	; write char into tx reg
+222216:	; #bytes--
+22221a:	; head++
+22221c:	; if head >= buf size
+222220:	; 
+222222:	; then roll-up head to 0
+222224:	; and store
+222228:	; re-loop for next byte
+222228:	; ????
+
+@lbl006
+22222a:	; disable TX interrupt (no more bytes to send)
+
+@lbl007							; end of ISR
+222232:	; $00 when exiting ISR
+222236:	; restore context
+22223a:	; exit ISR
+
+@lbl008							; reset link port
+22223c:	;	reset link port (AE,LD,LTO=1)
+222244:	; AE,CLE,CAIE,CRW=1
+22224c:	; $ff
+222250:	; exit
+
+2°) void OSLinkReset(void)
+
+@OSLinkReset:
+222252:	; wait for 20 ms
+222256:	; 
+22225a:	; disable ints
+22225e:	; read ctrl reg
+222264:	; disable ints and link
+22226c:	; red/white wire = 0
+222274:	;
+22227c:	; wait for 100 us
+222280:	;
+222284:	; D1/tip/red = 1
+22228c:	; D1/ring/white = 1
+222294:	; wait for 100 us
+222298:	;
+22229c:	; clear MID
+2222a0:	; ??
+
+3°) void OSLinkOpen(void);
+
+@OSLinkOpen
+2c1360:	; jump to ??
+
+@lbl013 
+2c1362:	; if OsTimer #2 not expired
+2c1366:		;
+2c136c:	;
+2c136e:	; 
+2c1370:	; then skip
+2c1372:	; else calc off
+2c1378:	;
+2c137c:		;and restart timer
+2c1382:	;
+
+@lbl012
+2c1384:	; get bytes in tx buf
+2c138a:	; if #bytes=0
+2c138c:	; then
+2c138e:	; else if link flushed ??
+2c1392:	; then ??
+2c1394:	; else ig ??
+2c1398:	; then ??
+
+@lbl013
+2c139a:	;
+2c139e:	; release timer for what ?
+2c13a4:	;
+2c13a4:	;
+2c13a6:	; clear buffers
+2c13ac:	; end
+
+4°) void OSLinkClose (void);
+
+@OSLinkClose
+2222a2:	; a0 = &tx_buf
+2222a8:	; if nbytes=0
+2222ac:	; then ??
+2222ae:	; if =1 (link port reset'ed due to error)
+2222b2:	; then ??
+2222b4:	; if =0
+2222b8:	; then loop
+
+@lbl009
+2222ba:	; ?
+2222be:	; ?
+2222c2:	;
+2222c4:	; disable ints
+2222c8:	; $ff
+
+@lbl010
+2222cc:	;
+2222ce:	; clear some vars
+2222d2:	;
+2222d2:	;
+2222d6:	;
+2222da:	;
+2222de:	; a0 = &tx_buf
+2222e4:	; clear tx_buf
+2222e8:	; a0 = &rx_buf
+2222ee:	; clear rx_buf
+2222f2:	; init ctrl reg
+2222fa:	; restore ints
+2222fe:	;
+2222f2:	; init ctrl reg
+2222fa:	; restore ints
+2222fe:	;
+222300:	;
+222302:	; end
+
+@lbl0011						;clear buffer
+222304:	; tail = 0
+222306:	; head = 0
+222308:	; buf size = 128
+22230c:	; nbytes = 0
+22230e:	;
+
+5°) unsigned short OSLinkTxQueueInquire (void);
+
+@OSLinkTxQueueInquire
+222310:	; disable ints
+222314:	; a0 = @tx_buf
+22231a:	; get # of free bytes in buffer
+22231e:	;
+222322:	; return it on stack frame
+222324:	; restore ints
+222328:	;
+22232a:	; end
+
+@OSLinkTxQueueInq2
+22232c:	; disable ints
+22232c:	; disable ints
+222330:	; a0 = @tx_buf
+222336:	; return #bytes in buffer
+22233a:	; restore ints
+22233e:	; d0 = #bytes
+222340:	;
+
+
+6°) short OSLinkTxQueueActive (void); 
+
+@OSLinkTxQueueActive
+222342:	; disable ints
+222346:	; return 0
+222348:	; if CTX=0 (no transmission is in progress)
+222350:	; then return FALSE
+222350:	;
+222354:	; else return TRUE
+222356:	;
+222358:	; restore ints
+22235c:	;
+22235e:	; end
+
+9°) short OSWriteLinkBlock (const char *buffer, unsigned short num); 
+
+@OSWriteLinkBlock
+222360:	; disable ints
+222364:	; get vars from stack frame (a0 = buffer, d0 = num)
+222368:	;
+22236c:	;
+222370:	;
+222372:	;
+222374:	; return -1
+222376:	; check there are no more than 128 bytes
+22237a:	; return -1
+22237c:	; a1 = #bytes in tx buf
+22237c:	;
+222382:	;
+222386:	; #bytes += num
+222388:	;
+22238c:	; return -1
+22238e:	; if CTX=1 (TX IE)
+222396:	; then do nothing
+222398:	; else enable TX interrupt (is this raises interrupt ?)
+2223a0:	; copy bytes into tx buffer
+2223a2:	;
+2223a4:	;
+2223a8:	;
+2223ac:	;
+2223ae:	;
+2223b2:	;
+2223b4:	;
+2223b6:	; loop to copy num bytes
+2223ba:	;
+2223bc:	; restore ints
+2223bc:	;
+2223c0:	; return 0
+2223c2:	;
+2223c6:	; end
+2223c8:	;
+2223ca:	;
+2223cc:	;
+2223ce:	;
+2223d0:	;
+2223d2:	;
+2223d6:	; return -1
+2223d8:	;
+2223d8:	;
+
+@OSReadLinkBlock
+2223da:	;
+2223de:	;
+2223e2:	;
+2223e6:	;
+2223ea:	;
+2223ec:	;
+2223f2:	;
+2223f6:	;
+2223f8:	;
+2223fc:	;
+222400:	;
+222402:	;
+222404:	;
+222408:	;
+22240a:	;
+22240c:	;
+222410:	;
+222412:	;
+222412:	;
+222416:	;
+222418:	;
+22241c:	;
+222422:	; if SA=1 (autostart)
+222426:	; then ...
+222428:	; if SLE=0 (error)
+22242c:	; then
+22242e:	; else reset linkport
+222436:	;
+222436:	;
+22243e:	;
+222442:	;
+222446:	;
+222448:	;
+22244a:	;
+22244e:	;
+222452:	;
+222454:	;
+222458:	;
+
+7°) short OSCheckSilentLink (void);
+
+@OSCheckSilentLink
+2bf314:	;
+2bf316:	;
+2bf318:	; check var
+2bf31c:	; return ?
+2bf320:	; check var
+2bf324:	; 
+2bf326:	; return ?
+
+@
+2bf32a:	; check var ?
+2bf32e:	;
+2bf330:	; close link
+2bf330:	; ??
+2bf336:	;
+2bf338:	; clear MID
+
+@
+2bf33c:	;
+2bf33e:	; D3 contains the Command ID
+2bf342:	;
+2bf344:	;
+2bf348:	; TI92_PC
+2bf34e:	;
+2bf350:	; TI92p_PC
+2bf350:	; V200_PC
+2bf356:	;
+2bf358:	; TI89_PC, TI89t_PC
+2bf35e:	;
+2bf360:	; PC_TI89, PC_TI89t, PC_TI92p, PC_V200
+2bf366:	;
+2bf368:	; PC_TI92
+2bf36e:	;
+2bf370:	; CMD_FLSH (flash os/app)
+2bf374:	;
+2bf374:	;
+2bf376:	; CMD_RDY (ready)
+2bf37a:	;
+2bf37c:	;
+2bf37e:	;
+2bf380:	; ??
+2bf386:	;
+2bf388:	; ??
+2bf38e:	;
+2bf390:	; CMD_SCR (screenshot)
+2bf390:	;
+2bf394:	;
+2bf396:	;
+2bf398:	; CMD_FLSH
+2bf39c:	;
+2bf39e:	;
+2bf3a0:	; CMD_VAR (variable header)
+2bf3a4:	;
+2bf3a6:	;
+2bf3a8:	; CMD_RDY
+2bf3a8:	; CMD_RDY
+2bf3ac:	;
+2bf3ae:	;
+2bf3b0:	; CMD_REQ (requets variable)
+2bf3b4:	;
+2bf3b6:	;
+2bf3b8:	; CMD_KEY (remote control)
+2bf3bc:	;
+2bf3be:	;
+2bf3c0:	; CMD_IND (var index)
+2bf3c0:	;
+2bf3c4:	;
+2bf3c6:	;
+2bf3c8:	; CMD_RTS (requets to send)
+2bf3cc:	;
+2bf3ce:	;
+2bf3d0:	;
+2bf3d2:	;
+2bf3d4:	;
+2bf3d6:	;
+2bf3d6:	;
+2bf3d8:	;
+2bf3da:	;
+2bf3dc:	;
+2bf3e2:	;
+2bf3e4:	;
+2bf3e6:	;
+2bf3ea:	; return ?
+2bf3ec:	;
+2bf3ee:	;
+2bf3ee:	;
+2bf3f0:	;
+2bf3f2:	;
+2bf3f4:	;
+2bf3f8:	;
+2bf3fc:	;
+2bf3fe:	;
+2bf400:	;
+2bf404:	;
+2bf40a:	;
+2bf40a:	;
+2bf40c:	;
+
+@
+2bf40e:	; return 0
+2bf410:	;
+2bf412:	;
+2bf414:	; end
+
+8°) void OSLinkCmd (short NormalState);
+
+@OSLinkCmd
+2bf416:	;
+2bf41a:	;
+2bf420:	;
+2bf424:	;

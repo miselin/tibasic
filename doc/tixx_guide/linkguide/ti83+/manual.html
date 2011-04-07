@@ -1,0 +1,204 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META NAME="GENERATOR" Content="Visual Page 1.0 for Windows">
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<TITLE>TI-83+ Link Protocol Guide - Manual Transfers</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFE8">
+
+<P><B>TI-83+ Link Protocol Guide v1.0</B> - Manual Variable Transfers</P>
+<CENTER>
+<H2>
+<HR ALIGN="CENTER">
+Manual Variable Transfers</H2>
+</CENTER>
+<P>The TI-83+ uses manual transfer protocols when it is in Link mode. On the sending unit a user must choose the
+variables to be sent, and the receiving calculator must be put into a special reception mode.</P>
+<P>The protocol for all manual variable transfers is shown below. For information on packet formats, <A HREF="packet.html">click
+here</A>.</P>
+<P>A computer can be either the sending unit or the receiving unit.</P>
+<P>
+<TABLE BORDER="1" CELLSPACING="0" WIDTH="92%" BGCOLOR="#FFFFFF">
+	<TR>
+		<TH WIDTH="7%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Step</FONT></TH>
+		<TH COLSPAN="3" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Direction</FONT></TH>
+		<TH WIDTH="80%" BGCOLOR="#008800"><FONT COLOR="#FFFFFF">Packet</FONT></TH>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">1
+		</TD>
+		<TD ROWSPAN="8">
+			<P ALIGN="CENTER"><IMG SRC="graphics/calc.gif" WIDTH="30" HEIGHT="67" ALIGN="BOTTOM" ALT="Sending Unit" BORDER="0">
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/right.gif" WIDTH="22" HEIGHT="13" ALIGN="BOTTOM" ALT="===>" BORDER="0">
+		</TD>
+		<TD ROWSPAN="8">
+			<P ALIGN="CENTER"><IMG SRC="graphics/calc.gif" WIDTH="30" HEIGHT="67" ALIGN="BOTTOM" ALT="Receiving Unit" BORDER="0">
+		</TD>
+		<TD WIDTH="80%" BGCOLOR="#FFFFFF">VAR</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">2
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/left.gif" WIDTH="22" HEIGHT="13" ALIGN="BOTTOM" ALT="<===" BORDER="0">
+		</TD>
+		<TD WIDTH="80%" BGCOLOR="#FFFFFF">ACK</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">3
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/left.gif" WIDTH="22" HEIGHT="13" ALIGN="BOTTOM" ALT="<===" BORDER="0">
+		</TD>
+		<TD WIDTH="80%" BGCOLOR="#FFFFFF">CTS or SKIP/EXIT. Do step 4 (send the ACK). Then if skip, skip to step 7, or if exit then stop.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="7%" BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER">4
+		</TD>
+		<TD BGCOLOR="#FFFFFF">
+			<P ALIGN="CENTER"><IMG SRC="graphics/right.gif" WIDTH="22" HEIGHT="13" ALIGN="BOTTOM" ALT="===>" BORDER="0">
+		</TD>
+		<TD WIDTH="80%" BGCOLOR="#FFFFFF">ACK</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="7%">
+			<P ALIGN="CENTER">5
+		</TD>
+		<TD>
+			<P ALIGN="CENTER"><IMG SRC="graphics/right.gif" WIDTH="22" HEIGHT="13" ALIGN="BOTTOM" ALT="===>" BORDER="0">
+		</TD>
+		<TD WIDTH="80%">DATA</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="7%">
+			<P ALIGN="CENTER">6
+		</TD>
+		<TD>
+			<P ALIGN="CENTER"><IMG SRC="graphics/left.gif" WIDTH="22" HEIGHT="13" ALIGN="BOTTOM" ALT="<===" BORDER="0">
+		</TD>
+		<TD WIDTH="80%">ACK</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="7%">
+			<P ALIGN="CENTER">7
+		</TD>
+		<TD>
+			<P ALIGN="CENTER"><IMG SRC="graphics/right.gif" WIDTH="22" HEIGHT="13" ALIGN="BOTTOM" ALT="===>" BORDER="0">
+		</TD>
+		<TD WIDTH="80%">EOT or another VAR. If var, go to step 2.</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="7%">
+			<P ALIGN="CENTER">8
+		</TD>
+		<TD>
+			<P ALIGN="CENTER"><IMG SRC="graphics/left.gif" WIDTH="22" HEIGHT="13" ALIGN="BOTTOM" ALT="<===" BORDER="0">
+		</TD>
+		<TD WIDTH="80%">ACK</TD>
+	</TR>
+</TABLE>
+</P>
+<P>The data packet contains the variable data. For information on variable formats, <A HREF="vars.html">click here</A>.</P>
+
+<P><U>Example (PC sending variables to TI):</U><BR>
+
+<TABLE BORDER="0" CELLSPACING="0" WIDTH="100%">
+	<TR>
+		<TD BGCOLOR="#CCFFCC">PC:</TD>
+		<TD WIDTH="50%" BGCOLOR="#CCFFCC"><B><TT>73&nbsp;06&nbsp;0D&nbsp;00&nbsp;</TT></B><TT>09&nbsp;00&nbsp;00&nbsp;41&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;<B>4A&nbsp;00</B></TT></TD>
+		<TD WIDTH="50%" BGCOLOR="#CCFFCC"><I>Variable Header: Real Number &quot;A&quot;</I></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#FFCCCC">TI:</TD>
+		<TD WIDTH="50%" BGCOLOR="#FFCCCC"><B><TT>73&nbsp;56&nbsp;00&nbsp;00</TT></B></TD>
+		<TD WIDTH="50%" BGCOLOR="#FFCCCC"><I>Acknowledgement of header</I></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#FFCCCC">&nbsp;</TD>
+		<TD WIDTH="50%" BGCOLOR="#FFCCCC"><B><TT>73&nbsp;09&nbsp;00&nbsp;00</TT></B></TD>
+		<TD WIDTH="50%" BGCOLOR="#FFCCCC"><I>Clear to send variable</I></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#CCFFCC">PC:</TD>
+		<TD WIDTH="50%" BGCOLOR="#CCFFCC"><B><TT>73&nbsp;56&nbsp;00&nbsp;00</TT></B></TD>
+		<TD WIDTH="50%" BGCOLOR="#CCFFCC"><I>Acknowledgement of CTS</I></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#CCFFCC">&nbsp;</TD>
+		<TD WIDTH="50%" BGCOLOR="#CCFFCC"><B><TT>73&nbsp;15&nbsp;09&nbsp;00&nbsp;</TT></B><TT>00&nbsp;80&nbsp;12&nbsp;56&nbsp;34&nbsp;78&nbsp;85&nbsp;25&nbsp;55&nbsp;<B>93&nbsp;02</B></TT></TD>
+		<TD WIDTH="50%" BGCOLOR="#CCFFCC"><I>Variable data: &quot;1.2563478852555&quot;</I></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#FFCCCC">TI:</TD>
+		<TD WIDTH="50%" BGCOLOR="#FFCCCC"><B><TT>73&nbsp;56&nbsp;00&nbsp;00</TT></B></TD>
+		<TD WIDTH="50%" BGCOLOR="#FFCCCC"><I>Acknowledgement of data</I></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#CCFFCC">PC:</TD>
+		<TD WIDTH="50%" BGCOLOR="#CCFFCC"><B><TT>73&nbsp;06&nbsp;0D&nbsp;00&nbsp;</TT></B><TT>09&nbsp;00&nbsp;00&nbsp;42&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;00&nbsp;<B>4B&nbsp;00</B></TT></TD>
+		<TD WIDTH="50%" BGCOLOR="#CCFFCC"><I>Variable Header: Real Number &quot;B&quot;</I></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#FFCCCC">TI:</TD>
+		<TD WIDTH="50%" BGCOLOR="#FFCCCC"><B><TT>73&nbsp;56&nbsp;00&nbsp;00</TT></B></TD>
+		<TD WIDTH="50%" BGCOLOR="#FFCCCC"><I>Acknowledgement of header</I></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#FFCCCC">&nbsp;</TD>
+		<TD WIDTH="50%" BGCOLOR="#FFCCCC"><B><TT>73&nbsp;36&nbsp;01&nbsp;00&nbsp;</TT></B><TT>02&nbsp;<B>02&nbsp;00</B></TT></TD>
+		<TD WIDTH="50%" BGCOLOR="#FFCCCC"><I>Skip variable</I></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#CCFFCC">PC:</TD>
+		<TD WIDTH="50%" BGCOLOR="#CCFFCC"><B><TT>73&nbsp;56&nbsp;00&nbsp;00</TT></B></TD>
+		<TD WIDTH="50%" BGCOLOR="#CCFFCC"><I>Acknowledgement of variable skip</I></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#CCFFCC">&nbsp;</TD>
+		<TD WIDTH="50%" BGCOLOR="#CCFFCC"><B><TT>73&nbsp;92&nbsp;00&nbsp;00</TT></B></TD>
+		<TD WIDTH="50%" BGCOLOR="#CCFFCC"><I>No more variables</I></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#FFCCCC">TI:</TD>
+		<TD WIDTH="50%" BGCOLOR="#FFCCCC"><B><TT>73&nbsp;56&nbsp;00&nbsp;00</TT></B></TD>
+		<TD WIDTH="50%" BGCOLOR="#FFCCCC"><I>Acknowledgement of EOT</I></TD>
+	</TR>
+</TABLE>
+<BR>
+
+<TABLE BORDER="0" CELLSPACING="0" WIDTH="100%">
+	<TR>
+		<TD WIDTH="32%">
+			<P ALIGN="CENTER"><A HREF="screenshot.html"><IMG SRC="graphics/prevpage.gif" WIDTH="32" HEIGHT="32" ALIGN="BOTTOM"
+			ALT="[previous page]" BORDER="2"><BR>
+			Screenshots</A>
+		</TD>
+		<TD WIDTH="34%">
+			<P ALIGN="CENTER"><A HREF="index.html"><IMG SRC="graphics/home.gif" WIDTH="32" HEIGHT="32" ALIGN="BOTTOM" ALT="[home]"
+			BORDER="2"><BR>
+			Table of Contents</A>
+		</TD>
+		<TD WIDTH="34%">
+			<P ALIGN="CENTER"><A HREF="silent.html"><IMG SRC="graphics/nextpage.gif" WIDTH="32" HEIGHT="32" ALIGN="BOTTOM"
+			ALT="[next page]" BORDER="2"><BR>
+			Silent Transfers</A>
+		</TD>
+	</TR>
+</TABLE>
+
+<HR ALIGN="CENTER">
+<I>Site maintained by Romain Li&eacute;vin (</I><A HREF="mailto:roms@lpg.ticalc.org"><I>roms@lpg.ticalc.org</I></A><I>)
+and Tim Singer (</I><A HREF="mailto:tsinger@gladstone.uoregon.edu"><I>tsinger@gladstone.uoregon.edu</I></A><I>)</I>
+
+</BODY>
+
+</HTML>

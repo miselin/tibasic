@@ -1,0 +1,411 @@
+<!DOCTYPE doctype PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="GENERATOR"
+ content="Mozilla/4.7 [en] (X11; I; Linux 2.4.0-test6 i586) [Netscape]">
+  <title>TI-83+ Link Protocol Guide - Clock Management</title>
+</head>
+<body bgcolor="#ffffe8">
+<b>TI-83+ Link Protocol Guide</b> - Setting/Getting Clock
+<center>
+<h2>
+<hr align="center">Clock Management</h2>
+</center>
+<p><br>
+Texas Instruments have incorporated clock management into their new AMS
+software,
+starting at the 2.08 release. This clock can only work on HW2 models
+(for
+some hardware reasons...). </p>
+<p>The clock management is like sending/receiving a special variable
+named
+"\0x08".<br>
+</p>
+<p> </p>
+<h4> </h4>
+<p> </p>
+<h4> <a name="rts"></a>Getting Clock</h4>
+Indeed, the request is like receiving the '\0x08' variable with Ty=29.
+This request works only with OS v2.?? mini.
+<br>
+<br>
+The protocol for silently receiving the clock is shown below:<br>
+<table bgcolor="#ffffff" border="1" cellspacing="0" width="92%">
+  <tbody>
+    <tr>
+      <th bgcolor="#008800" width="7%"><font color="#ffffff">Step</font></th>
+      <th colspan="3" bgcolor="#008800"><font color="#ffffff">Direction</font></th>
+      <th bgcolor="#008800" width="80%"><font color="#ffffff">Packet</font></th>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">1 </p>
+      </td>
+      <td rowspan="8">
+      <p align="center"><img src="graphics/comp.gif" alt="Computer"
+ align="bottom" border="0" height="33" width="30"> </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td rowspan="8">
+      <p align="center"><img src="graphics/calc.gif" alt="Calculator"
+ align="bottom" border="0" height="67" width="30"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">REQ with expected header (name
+is 0x08, type is 0x29)<br>
+      </td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">2 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK (see note below)</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">3 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">VAR with actual header</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">4 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">5 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">CTS</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">6 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">7 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">XDP</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">8 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">ACK</td>
+    </tr>
+  </tbody>
+</table>
+<i>Note: If the requested variable does not exist, the calculator will
+send an EXIT packet after step 2, to which
+the computer will respond with an ACK packet. This would be the end of
+the transfer.</i>
+<p></p>
+<p><u>Example (PC receiving Clock from TI):<br>
+</u>
+<table nosave="" border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><tt><b>23 A2 0B 00 </b>00 00
+29 08 00 00 00 00 00 00 00 <b>31 00</b></tt></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Request the Clock variable</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Acknowledgement of request</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc">&nbsp;</td>
+      <td bgcolor="#ffcccc" width="50%"><tt><b>73 06 0D 00 </b>09 00
+29 00 00 00 00 00 00 00 00 00 <b>32 00</b></tt></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Variable Header: no name</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>23 56 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Acknowledgement of variable
+header</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc">&nbsp;</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>23 09 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Clear to send variable</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Acknowledgement of CTS</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ffcccc" height="44">&nbsp;</td>
+      <td bgcolor="#ffcccc" height="44" width="50%"><tt><b>73 15 09 00 </b>00
+00 07 8A 37 01 01 0C FF <b>D5 01</b></tt></td>
+      <td bgcolor="#ffcccc" height="44" width="50%"><i>Variable data: 9
+bytes
+(1st Aug 2002, 14:02, clock is ON, 24h format, DD/MM/YY format)</i></td>
+    </tr>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>23 56 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Acknowledgement of variable
+data</i></td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<p></p>
+<h4> </h4>
+<p>The variable data has the following format (pure binary, no BCD):
+<table border="1" cellspacing="0" width="92%">
+  <tbody>
+    <tr>
+      <th bgcolor="#dddddd" width="7%">Offset</th>
+      <th bgcolor="#dddddd" width="8%">Length</th>
+      <th bgcolor="#dddddd" width="85%">Description</th>
+    </tr>
+    <tr>
+      <td width="7%">0<br>
+      </td>
+      <td width="8%">2&nbsp;bytes</td>
+      <td width="85%">Always 00h</td>
+    </tr>
+    <tr>
+      <td width="7%">2<br>
+      </td>
+      <td width="8%">4 bytes</td>
+      <td width="85%">Number of seconds elapsed since January the 1st,
+1997 with leap years (2000, 2004, ...).<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">8<br>
+      </td>
+      <td style="vertical-align: top;">1 byte<br>
+      </td>
+      <td style="vertical-align: top;">Date Display Formatting (1:
+MM/DD/YY, 2: DD/MM/YY, 3: YY/MM/DD)</td>
+    </tr>
+    <tr>
+      <td valign="top">9<br>
+      </td>
+      <td valign="top">1 byte<br>
+      </td>
+      <td valign="top"> Time Display Formatting (12/28: AM/PM, 24: 24
+hours)<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<p></p>
+<h4><a name="rts"></a>Setting Clock</h4>
+<p> Indeed, setting clock is like sending the '\0x08' variable with
+Ty=29. <br>
+This request works only with OS v2.?? mini.<br>
+</p>
+The protocol for silently sending the clock is shown below :<br>
+<table bgcolor="#ffffff" border="1" cellspacing="0" width="92%">
+  <tbody>
+    <tr>
+      <th bgcolor="#008800" width="7%"><font color="#ffffff">Step</font></th>
+      <th colspan="3" bgcolor="#008800"><font color="#ffffff">Direction</font></th>
+      <th bgcolor="#008800" width="80%"><font color="#ffffff">Packet</font></th>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">1 </p>
+      </td>
+      <td colspan="1" rowspan="7">
+      <p align="center"><img src="graphics/comp.gif" alt="Computer"
+ align="bottom" border="0" height="33" width="30"> </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td colspan="1" rowspan="7">
+      <p align="center"><img src="graphics/calc.gif" alt="Calculator"
+ align="bottom" border="0" height="67" width="30"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">RTS</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">2 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">3 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">CTS or SKIP/EXIT (see note
+below)</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <p align="center">4 </p>
+      </td>
+      <td bgcolor="#ffffff">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">5 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">XDP</td>
+    </tr>
+    <tr>
+      <td width="7%">
+      <p align="center">6 </p>
+      </td>
+      <td>
+      <p align="center"><img src="graphics/left.gif" alt="&lt;==="
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">7<br>
+      </td>
+      <td style="vertical-align: top;">
+      <p align="center"><img src="graphics/right.gif" alt="===&gt;"
+ align="bottom" border="0" height="13" width="22"> </p>
+      </td>
+      <td style="vertical-align: top;">EOT<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<i>Note: If the calculator sends a SKIP/EXIT packet in step 3, it does
+not have enough free memory to accomodate
+the variable. In this case, step 4 will be the end of the transfer.</i>
+<p><u>Example (PC sending clock to TI):</u>
+<table nosave="" border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr bgcolor="#ffcccc">
+      <td bgcolor="#ccffcc" width="2%">PC:</td>
+      <td bgcolor="#ccffcc" width="49%"><tt><b>23 C9 0D 00 </b>00 00
+29 08 00 00 00 00 00 00 00 00 11 <b>42 00<br>
+      </b></tt></td>
+      <td bgcolor="#ccffcc" width="49%"><i>Send the "Clock"
+pseudo-variable</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Acknowledgement of request</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">&nbsp;</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73 09 0D 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Clear to send variable</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>23 56 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Acknowledgement of CTS</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ccffcc">&nbsp;</td>
+      <td bgcolor="#ccffcc" width="50%"><tt><b>23 15 09 00 </b>00 07
+0F FE 74 1F 01 0C FF <b>B3 02</b></tt></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Variable data</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>73 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Acknowledgement of data</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>23 92 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>End Of Transmission</i></td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<p></p>
+<table border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr>
+      <td width="32%">
+      <center><a href="flash.html"><img src="graphics/prevpage.gif"
+ alt="[previous page]"
+ style="border: 2px solid ; width: 32px; height: 32px;"></a> <br>
+&nbsp; <a href="flash.html">Flash Transfers</a></center>
+      </td>
+      <td width="34%">
+      <center><a href="index.html"><img src="graphics/home.gif"
+ alt="[home]" align="bottom" border="2" height="32" width="32"> </a> <br>
+      <a href="index.html">Table of Contents</a></center>
+      </td>
+      <td width="34%">
+      <center><a href="vars.html"></a><a href="os_version.html"><img
+ src="graphics/nextpage.gif" alt="[next page]"
+ style="border: 2px solid ; width: 32px; height: 32px;"></a> <br>
+      <a href="os_version.html">OS Version</a></center>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p></p>
+<hr align="center"><i>Site maintained by Romain Li&eacute;vin (<a
+ href="mailto:roms@lpg.ticalc.org">roms@lpg.ticalc.org</a>) and Tim
+Singer
+(<a href="mailto:tsinger@gladstone.uoregon.edu">tsinger@gladstone.uoregon.edu</a>)</i>
+<br>
+</body>
+</html>

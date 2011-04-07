@@ -1,0 +1,705 @@
+;====== keyboard key names
+;
+;       key presses that do not echo into the display
+;       and are not application or menu loading key presses
+;
+kRight          EQU       001h
+kLeft           EQU       002h
+kUp             EQU       003h
+kDown           EQU       004h
+kEnter          EQU       005h
+kAlphaEnter     EQU       006h
+kAlphaUp        EQU       007h
+kAlphaDown      EQU       008h
+kClear          EQU       009h
+kDel            EQU       00Ah
+kIns            EQU       00Bh
+kRecall         EQU       00Ch
+kLastEnt        EQU       00Dh
+kBOL            EQU       00Eh
+kEOL            EQU       00Fh
+;
+kSelAll         EQU       010h
+kUnselAll       EQU       011h
+kLtoTI82        EQU       012h
+kBackup         EQU       013h
+kRecieve        EQU       014h
+kLnkQuit        EQU       015h
+kTrans          EQU       016h
+kRename         EQU       017h
+kOverw          EQU       018h
+kOmit           EQU       019h
+kCont           equ       01Ah
+kLtoTI83        equ       01Bh
+kSendApp        equ       01Ch
+kvApps          equ       01Ch
+kSendId         equ       01Dh
+kSendSW         equ       01Eh
+kvALL           equ       01Fh
+kvSendType      equ       020h  ;send a particular data type (in kextend)
+kNoWay          EQU       021h
+kYes            EQU       022h
+kAbout          equ       023h  ;about screen
+kApp            equ       024h
+;
+kProgExec       equ       025h
+kListflag       equ       026h
+;
+;open for expansion       028h..02bh
+;
+
+menustart       equ       02ch
+;
+;       key presses that do not echo into the display
+;       and are menu switching key presses
+;
+kAreYouSure     equ       02Ch
+kPrgm           equ       02Dh
+kZoom           equ       02Eh        ; PULL DOWN
+kDraw           equ       02Fh
+kSPlot          equ       030h
+kStat           equ       031h
+kMath           equ       032h
+kTest           equ       033h
+kAppsMenu       equ       034h
+kVars           equ       035h
+kMem            equ       036h
+kConstSetmenu   equ       037h
+kConvMenu       equ       038h
+kTrigmenu       equ       039h
+kLIST           equ       03Ah
+kConstMenu      equ       03Bh
+;
+menuend         equ       kConstMenu
+;
+kConst          EQU       03Ch
+;
+;
+kAlpha          equ       03dh
+kCatalog        equ       03eh        ; catalog
+kInputDone      equ       3fh
+
+;
+;       key presses that do not echo into the display
+;       and are context switching key presses
+;
+kQuit           equ       040h
+kLinkIO         equ       041h
+kChkApps        equ       042h        ; Check Apps
+kStatEd         equ       043h
+kGraph          equ       044h
+kMode           equ       045h
+kPrgmEd         equ       046h        ; PROGRAM EDIT
+kPrgmCr         equ       047h        ; PROGRAM CREATE
+kWindow         equ       048h        ; RANGE EDITOR
+kYequ           equ       049h        ; EQUATION EDITOR
+kTable          equ       04Ah        ; TABLE EDITOR
+kTblSet         equ       04Bh        ; TABLE SET
+kChkRAM         equ       04CH        ; CHECK RAM
+kDelMem         equ       04DH        ; DELETE MEM
+kResetMem       equ       04EH        ; RESET MEM
+kResetDef	equ	  04FH        ; RESET DEFAULT
+kPrgmInput      EQU       050H        ; PROGRAM INPUT
+kZFactEd        EQU       051H        ; ZOOM FACTOR EDITOR
+kError          EQU       052H        ; ERROR
+kExtApps        EQU       053h        ; Extra Applications.     NEW
+kSolveRoot	equ	  054h        ; SOLVE EDITOR
+kStatP          equ       055h        ; stat plot
+kConstEd        equ       056h        ; Constant equ Editor.
+kPrgmSetVar     equ       057h        ; SetMenu in a Program.
+kFormat         equ       058h        ; FORMAT
+;
+;
+append          equ       kFormat
+;
+;       58h - 59h are empty for growth
+;
+echoStart1      equ       05ah
+;
+;       conditional keys that if in prog edit will echo
+;       or if not in prog edit go to the graph screen
+;       'trace' , 'zooms'
+;
+;
+kTrace          equ       05ah
+kZFit           equ       05bh
+kZIn            equ       05ch
+kZOut           equ       05dh
+kZPrev          equ       05eh
+kZBox           equ       05fh
+kZDecml         equ       060h
+kSetZm          equ       061h
+kZSquar         equ       062h
+kZStd           equ       063h
+kZTrig          equ       064h
+kZQuad1         equ       065h
+;kusrzm          equ       065h
+;kzsto           equ       066h
+kZInt           equ       067h
+kZStat          equ       068h
+;
+;       conditional keys that if in prog edit or if the
+;       graph screen is not displayed will echo, else will
+;       go to the graph screen. 'draw' menu, eval
+echoStart2      equ       069h
+;
+;
+kSelect         equ       069h
+kCircl          equ       06ah
+kClDrw          equ       06bh
+kLine           equ       06ch
+kPen            equ       06dh
+kPtChg          equ       06eh
+kPtOff          equ       06fh
+kPtOn           equ       070h
+kVert           equ       071h
+kHoriz          equ       072h
+kText           equ       073h
+kTanLn          equ       074h
+kManFit         equ       075h
+;
+;   these keys will always force to graph mode
+;
+kEval           equ       076h
+;
+echoStart       equ       07dh
+;
+;       key presses that echo into a buffer
+;
+kRemain         equ       07dh          ;only needed to display 'r'
+kPlot3          equ       07eh
+kListName       equ       07fh
+kAdd            equ       080h
+kSub            equ       081h
+kMul            equ       082h
+kDiv            equ       083h
+kExpon          equ       084h
+kLParen         equ       085h
+kRParen         equ       086h
+kLBrack         equ       087h
+kRBrack         equ       088h
+kShade          equ       089h
+kStore          equ       08ah
+kComma          equ       08bh
+kChs            equ       08ch
+kDecPnt         equ       08dh
+k0              equ       08eh
+k1              equ       08fh
+k2              equ       090h
+k3              equ       091h
+k4              equ       092h
+k5              equ       093h
+k6              equ       094h
+k7              equ       095h
+k8              equ       096h
+k9              equ       097h
+kEE             equ       098h
+kSpace          equ       099h
+kCapA           EQU       09Ah
+kCapB           EQU       09Bh
+kCapC           EQU       09Ch
+kCapD           EQU       09Dh
+kCapE           EQU       09Eh
+kCapF           EQU       09Fh
+kCapG           EQU       0A0h
+kCapH           EQU       0A1h
+kCapI           EQU       0A2h
+kCapJ           EQU       0A3h
+kCapK           EQU       0A4h
+kCapL           EQU       0A5h
+kCapM           EQU       0A6h
+kCapN           EQU       0A7h
+kCapO           EQU       0A8h
+kCapP           EQU       0A9h
+kCapQ           EQU       0AAh
+kCapR           EQU       0ABh
+kCapS           EQU       0ACh
+kCapT           EQU       0ADh
+kCapU           EQU       0AEh
+kCapV           EQU       0AFh
+kCapW           EQU       0B0h
+kCapX           EQU       0B1h
+kCapY           EQU       0B2h
+kCapZ           EQU       0B3h
+kVarx           EQU       0B4h
+kPi             EQU       0B5h
+kInv            EQU       0B6h
+kSin            EQU       0B7h
+kASin           EQU       0B8h
+kCos            EQU       0B9h
+kACos           EQU       0BAh
+kTan            EQU       0BBh
+kATan           EQU       0BCh
+kSquare         EQU       0BDh
+kSqrt           EQU       0BEh
+kLn             EQU       0BFh
+kExp            EQU       0C0h
+kLog            EQU       0C1h
+kALog           EQU       0C2h
+kToABC          EQU       0C3h
+;
+;kclrtbl         equ       0c4h
+;
+kAns            equ       0c5h
+kColon          equ       0c6h
+;
+
+kUnit           equ       0c7h          ;                       new
+kFracSlash      equ       0c8h          ;                       new
+kRoot           equ       0c9h
+;
+kQuest          equ       0cah        ; question mark
+kQuote          equ       0cbh        ; "
+kTheta          equ       0cch
+kIf             equ       0cdh
+kThen           equ       0ceh
+kElse           equ       0cfh
+kFor            equ       0d0h
+kWhile          equ       0d1h
+kRepeat         equ       0d2h
+kEnd            equ       0d3h
+kPause          equ       0d4h
+kLbl            equ       0d5h
+kGoto           equ       0d6h
+kISG            equ       0d7h
+kDSL            equ       0d8h
+kMenu           equ       0d9h
+kExec           equ       0dah
+kReturn         equ       0dbh
+kStop           equ       0dch
+kInput          equ       0ddh
+kPrompt         equ       0deh
+kDisp           equ       0dfh
+kDispG          equ       0e0h
+kDispT          equ       0e1h
+kOutput         equ       0e2h
+kGetKey         equ       0e3h
+kClrHome        equ       0e4h
+;
+;kprtscr         equ       0e5h
+;
+kPercent        equ        0e6h         ;%                      new
+kMixSimp        equ        0e7h         ;                       new
+kFracDec        equ        0e8h         ;                       new
+kSimp           equ        0e9h         ;                       new
+kUnredF         equ        0eah         ;                       new
+kIDiv           equ        0ebh         ;                       new
+kConvert        equ       0ech          ;                       new
+kLBrace         equ       0edh
+kRBrace         equ       0eeh
+kL1A            equ       0efh
+kL2A            equ       0f0h
+kL3A            equ       0f1h
+kL4A            equ       0f2h
+kL5A            equ       0f3h
+kL6A            equ       0f4h
+kConvLength     equ       0f5h        ;1st byte of conversion key.
+kConvArea       equ       0f6h        ;1st byte of conversion key.
+kConvVolume     equ       0f7h        ;1st byte of conversion key.
+kConvTime       equ       0f8h        ;1st byte of conversion key.
+kConvTemp       equ       0f9h        ;1st byte of conversion key.
+kConvMass       equ       0fah        ;1st byte of conversion key.
+kConvSpeed      equ       0fbh        ;1st byte of conversion key.
+;
+;       this key means that it is a 2 byte keycode
+;       there are 2 of these keys be careful
+;
+;
+kExtendEcho2    equ       0fch
+;
+;
+;       this key means that the key press is one that echos
+;       into a buffer, and it is a 2 byte key code, go look at
+;       (extecho) for the key value
+;
+kExtendEcho     equ       0feh
+;
+kE1BT           equ       0
+
+kDrawInv        equ       kE1BT
+kDrawF          equ       kE1BT+1
+kPixelOn        equ       kE1BT+2
+kPixelOff       equ       kE1BT+3
+kPxlTest        equ       kE1BT+4
+kRCGDB          equ       kE1BT+5
+kRCPic          equ       kE1BT+6
+kSTGDB          equ       kE1BT+7
+kSTPic          equ       kE1BT+8
+kAbs            equ       kE1BT+9
+kTEqu           equ       kE1BT+10    ; ==
+kTNoteQ         equ       kE1BT+11    ; <>
+kTGT            equ       kE1BT+12    ; >
+kTGTE           equ       kE1BT+13    ; > =
+kTLT            equ       kE1BT+14    ; <
+kTLTE           equ       kE1BT+15    ; < =
+
+kAnd            equ       kE1BT+16
+kOr             equ       kE1BT+17
+kXor            equ       kE1BT+18
+kNot            equ       kE1BT+19
+
+;klr1            equ       kE1BT+20
+
+kXRoot          equ       kE1BT+21
+kCube           equ       kE1BT+22
+kCbRt           equ       kE1BT+23    ; cube root
+kToDec          equ       kE1BT+24
+;
+kCubicR         equ       kE1BT+25
+kQuartR         equ       kE1BT+26
+;
+kPlot1          equ       kE1BT+27
+kPlot2          equ       kE1BT+28
+;
+
+kRound          equ       kE1BT+29
+kIPart          equ       kE1BT+30
+kFPart          equ       kE1BT+31
+kInt            equ       kE1BT+32
+
+kRand           equ       kE1BT+33
+kNPR            equ       kE1BT+34
+kNCR            equ       kE1BT+35
+kXFactorial     equ       kE1BT+36
+
+kRad            equ       kE1BT+37
+kDegr           equ       kE1BT+38    ; degrees conv
+kApost          equ       kE1BT+39
+kToDMS          equ       kE1BT+40
+kRtoPo          equ       kE1BT+41    ; r
+kRtoPr          equ       kE1BT+42
+kPtoRx          equ       kE1BT+43
+kPtoRy          equ       kE1BT+44
+
+kRowSwap        equ       kE1BT+45
+kRowPlus        equ       kE1BT+46
+kTimRow         equ       kE1BT+47
+kTRowP          equ       kE1BT+48
+
+kSortA          equ       kE1BT+49
+kSortD          equ       kE1BT+50
+kSeq            equ       kE1BT+51
+
+kMin            equ       kE1BT+52
+kMax            equ       kE1BT+53
+kMean           equ       kE1BT+54
+kMedian         equ       kE1BT+55
+kSum            equ       kE1BT+56
+kProd           equ       kE1BT+57
+
+kDet            equ       kE1BT+58
+kTransp         equ       kE1BT+59
+kDim            equ       kE1BT+60    ; same as one in list
+kFill           equ       kE1BT+61    ; same as one in list
+kIdent          equ       kE1BT+62
+kRandm          equ       kE1BT+63
+kAug            equ       kE1BT+64
+
+kLstMode        equ       kE1BT+65
+;available      equ       kE1BT+66
+
+kmRad           equ       kE1BT+67
+kmDeg           equ       kE1BT+68
+kmNormF         equ       kE1BT+69
+kmSci           equ       kE1BT+70
+kFix            equ       kE1BT+71
+kmFloat         equ       kE1BT+72
+kSetMenu        equ       kE1BT+73
+kEOFrac         equ       kE1BT+74
+
+kBoyIcon        equ     kE1BT+75
+kTreeIcon       equ     kE1BT+76
+kFaceIcon       equ     kE1BT+77
+kCircleIcon     equ     kE1BT+78
+kDiamondIcon    equ     kE1BT+79
+kStarIcon       equ     kE1BT+80
+kDollarIcon      equ    kE1BT+81
+;available      equ     kE1BT+82
+;available      equ     kE1BT+83
+
+kFNOn           equ       kE1BT+84
+kFNOff          equ       kE1BT+85
+
+kPlotsOn        equ       kE1BT+86
+kPlotsPff       equ       kE1BT+87
+
+kPixelChg       equ       kE1BT+88
+
+kSendMBL        equ       kE1BT+89
+kRecvMBL        equ       kE1BT+90
+
+kBoxPlot        equ       kE1BT+ 91
+kBoxIcon        equ       kE1BT+ 92
+
+kCrossIcon      equ       kE1BT+ 93
+kDotIcon        equ       kE1BT+ 94
+
+kE2BT           equ       kE1BT+95
+
+kSeqential      equ       kE2BT         ;105
+kSimulG         equ       kE2BT+1       ;106
+kCoordOn        equ       kE2BT+2       ;107
+kCoordOff       equ       kE2BT+3       ;108
+kDrawLine       equ       kE2BT+4       ;109
+kDrawDot        equ       kE2BT+5       ;110
+kAxisOn         equ       kE2BT+6       ;111
+kAxisOff        equ       kE2BT+7       ;112
+kGridOn         equ       kE2BT+8       ;113
+kGridOff        equ       kE2BT+9       ;114
+kLblOn          equ       kE2BT+10      ;115
+kOblOff         equ       kE2BT+11      ;116
+kPolarG         equ       kE2BT+12      ;117
+kRectG          equ       kE2BT+13      ;118
+
+kL1             equ       kE2BT+14      ;119 = 77h
+kL2             equ       kE2BT+15
+kL3             equ       kE2BT+16
+kL4             equ       kE2BT+17
+kL5             equ       kE2BT+18
+kL6             equ       kE2BT+19
+
+kMatA          equ       kE2BT+20
+kMatB           equ       kE2BT+21
+kMatC           equ       kE2BT+22
+kMatD           equ       kE2BT+23
+kMatE           equ       kE2BT+24
+
+kXmin           EQU       kE2BT+25
+kXmax           EQU       kE2BT+26
+kXscl           EQU       kE2BT+27
+kYmin           EQU       kE2BT+28
+kYmax           EQU       kE2BT+29
+kYscl           EQU       kE2BT+30
+kTmin           EQU       kE2BT+31
+kTmax           EQU       kE2BT+32
+kTStep          EQU       kE2BT+33
+kOmin           EQU       kE2BT+34
+kOmax           EQU       kE2BT+35
+kOStep          EQU       kE2BT+36
+ku0             EQU       kE2BT+37
+kv0             EQU       kE2BT+38
+knMin           EQU       kE2BT+39
+knMax           EQU       kE2BT+40
+kDeltaY         EQU       kE2BT+41
+kDeltaX         EQU       kE2BT+42
+
+kZXmin          EQU       kE2BT+43
+kZXmax          EQU       kE2BT+44
+kZXscl          EQU       kE2BT+45
+kZYmin          EQU       kE2BT+46
+kZYmax          EQU       kE2BT+47
+kZYscl          EQU       kE2BT+48
+kZTmin          EQU       kE2BT+49
+kZTmax          EQU       kE2BT+50
+kZTStep         EQU       kE2BT+51
+kZOmin          EQU       kE2BT+52
+kZOmax          EQU       kE2BT+53
+kZOStep         EQU       kE2BT+54
+;
+kABC         equ       kE2BT+55
+kBC           equ       kE2BT+56
+kAutoSimp       equ       kE2BT+57
+kManSimp        equ       kE2BT+58
+
+kDelLast        equ       kE2BT+59
+ksingleC        equ       kE2BT+60
+kMultiC         equ       kE2BT+61
+
+kPic1           equ       kE2BT+62
+kPic2           equ       kE2BT+63
+kPic3           equ       kE2BT+64
+
+kDelVar         equ       kE2BT+65
+kGetCalc        equ       kE2BT+66
+
+kStndrd         equ       kE2BT+67
+kParam          equ       kE2BT+68
+kPolar          equ       kE2BT+69
+kAFillOn        equ       kE2BT+70
+kAFillOff       equ       kE2BT+71
+kACalcOn        equ       kE2BT+72
+kACalcOff       equ       kE2BT+73
+
+kSetConst       equ       kE2BT+74
+;
+kGraphStyle     equ       kE2BT+75
+;
+kExprOn         EQU       kE2BT+76
+kExprOff        EQU       kE2BT+77
+kStatA          EQU       kE2BT+78
+kStatB          EQU       kE2BT+79
+kStatC          EQU       kE2BT+80
+kCorr           EQU       kE2BT+81
+kStatD          EQU       kE2BT+82
+kStatE          EQU       kE2BT+83
+kRegEq          EQU       kE2BT+84
+kMinX           EQU       kE2BT+85
+kQ1             EQU       kE2BT+86
+kMD             EQU       kE2BT+87
+kQ3             EQU       kE2BT+88
+kMaxX           EQU       kE2BT+89
+kStatX1         EQU       kE2BT+90
+kStatY1         EQU       kE2BT+91
+kStatX2         EQU       kE2BT+92
+kStatY2         EQU       kE2BT+93
+kStatX3         EQU       kE2BT+94
+kStatY3         EQU       kE2BT+95
+kTblMin         EQU       kE2BT+96
+kTblStep        EQU       kE2BT+97
+kSetupLst       EQU       kE2BT+98
+kClrAllLst      EQU       kE2BT+99
+kLogistic       EQU       kE2BT+100
+kc1             equ       kE2BT+101   ;constant c1
+kc2             equ       kE2BT+102   ;constant c2
+kc3             equ       kE2BT+103   ;constant c3
+kc4             equ       kE2BT+104   ;constant c4
+kPlotStart      equ       kE2BT+105   ; plotstart
+kZPlotStart     equ       kE2BT+106   ; zplotstart
+kXFact          equ       kE2BT+107   ; xfact
+kYFact          equ       kE2BT+108   ; yfact
+kMaxY           equ       kE2BT+109   ; maxy
+kTblInput       equ       kE2BT+110   ; web off
+kPlotStep       equ       kE2BT+111
+kZPlotStep      equ       kE2BT+112
+kSelectA        equ       kE2BT+113
+kZFitA          equ       kE2BT+114
+kOneVar         equ       kE2BT+115
+kTwoVar         equ       kE2BT+116
+kLR             equ       kE2BT+117
+kLRExp          equ       kE2BT+118
+kLRLn           equ       kE2BT+119
+;klrpwr          equ       kE2BT+
+;kmanfit         equ       kE2BT+
+kMedMed         equ       kE2BT+120
+kQuad           equ       kE2BT+121
+kClrLst         equ       kE2BT+122
+kHist           equ       kE2BT+123
+kXYLine         equ       kE2BT+124
+kScatter        equ       kE2BT+125
+kLR1            equ       kE2BT+126
+kClrTbl         equ       kE2BT+127
+kE2BT_end       equ       kClrTbl
+;
+;
+
+; new 2 byte keys
+
+kE2BT2		EQU       0
+
+kGDB1		EQU       kE2BT2
+kGDB2		EQU       kE2BT2+1
+kGDB3		EQU       kE2BT2+2
+kY1		EQU       kE2BT2+3
+kY2		EQU       kE2BT2+4
+kY3		EQU       kE2BT2+5
+kY4		EQU       kE2BT2+6
+kY5		EQU       kE2BT2+7
+kY6		EQU       kE2BT2+8
+kY7		EQU       kE2BT2+9
+kY8		EQU       kE2BT2+10
+kY9		EQU       kE2BT2+11
+kY0		EQU       kE2BT2+12
+kX1T		EQU       kE2BT2+13
+kY1T		EQU       kE2BT2+14
+kX2T		EQU       kE2BT2+15
+kY2T		EQU       kE2BT2+16
+kX3T		EQU       kE2BT2+17
+kY3T		EQU       kE2BT2+18
+kX4T		EQU       kE2BT2+19
+kY4T		EQU       kE2BT2+20
+kX5T		EQU       kE2BT2+21
+kY5T		EQU       kE2BT2+22
+kX6T		EQU       kE2BT2+23
+kY6T		EQU       kE2BT2+24
+kR1		EQU       kE2BT2+25
+kR2		EQU       kE2BT2+26
+kR3		EQU       kE2BT2+27
+kR4		EQU       kE2BT2+28
+kR5		EQU       kE2BT2+29
+kR6		EQU       kE2BT2+30
+kGDB4		EQU       kE2BT2+31
+kGDB5		EQU       kE2BT2+32
+kGDB6		EQU       kE2BT2+33
+kPic4		EQU       kE2BT2+34
+kPic5		EQU       kE2BT2+35
+kPic6		EQU       kE2BT2+36
+kGDB7		EQU       kE2BT2+37
+kGDB8		EQU       kE2BT2+38
+kGDB9		EQU       kE2BT2+39
+kGDB0		EQU       kE2BT2+40
+kPic7		EQU       kE2BT2+41
+kPic8		EQU       kE2BT2+42
+kPic9		EQU       kE2BT2+43
+kPic0		EQU       kE2BT2+44
+kStatN		EQU       kE2BT2+45
+kXMean		EQU       kE2BT2+46
+;kconj           equ       kE2BT2+47
+;kreal           equ       kE2BT2+48
+;kfangle         equ       kE2BT2+49
+kLCM            equ       kE2BT2+50
+kGCD            equ       kE2BT2+51
+kRandInt        equ       kE2BT2+52
+kCoin           equ       kE2BT2+53
+kDice           equ       kE2BT2+54
+kRemainder      equ       kE2BT2+55
+kYMean          equ       kE2BT2+56
+kStdX           equ       kE2BT2+57
+kStdX1          equ       kE2BT2+58
+kw0             equ       kE2BT2+59
+kMatf           equ       kE2BT2+60
+kMatg           equ       kE2BT2+61
+kMatrh          equ       kE2BT2+62
+kMati           equ       kE2BT2+63
+kMatj           equ       kE2BT2+64
+kYMean1         equ       kE2BT2+65
+kStdY           equ       kE2BT2+66
+kStdY1          equ       kE2BT2+67
+kMaTtoLst       equ       kE2BT2+68
+kLstToMat       equ       kE2BT2+69
+kCumSum         equ       kE2BT2+70
+kDeltaLst       equ       kE2BT2+71
+kStdDev         equ       kE2BT2+72
+kVariance       equ       kE2BT2+73
+kLength         equ       kE2BT2+74
+kEquToStrng     equ       kE2BT2+75
+kStrngToEqu     equ       kE2BT2+76
+kExpr           equ       kE2BT2+77
+kSubStrng       equ       kE2BT2+78
+kInStrng        equ       kE2BT2+79
+kStr1           equ       kE2BT2+80
+kStr2           equ       kE2BT2+81
+kStr3           equ       kE2BT2+82
+kStr4           equ       kE2BT2+83
+kStr5           equ       kE2BT2+84
+kStr6           equ       kE2BT2+85
+kStr7           equ       kE2BT2+86
+kStr8           equ       kE2BT2+87
+kStr9           equ       kE2BT2+88
+kStr0           equ       kE2BT2+89
+kSimpFact       equ       kE2BT2+90
+kPictPlot       equ     kE2BT2+91
+kCirclePlot     equ     kE2BT2+92
+kStemPlot       equ     kE2BT2+93
+kBarPlot        equ     kE2BT2+94
+kSumX           equ       kE2BT2+102
+kSumX2          equ       kE2BT2+103
+
+kSumY           equ       kE2BT2+104
+kXRes           equ       kE2BT2+105
+
+kSumY2          equ       kE2BT2+106
+kSumXY          equ       kE2BT2+107
+kuXRes          equ       kE2BT2+108
+kModBox         equ       kE2BT2+109
+kNormProb       equ       kE2BT2+110
+
+kMinY           equ       kE2BT2+111   ; miny
+kRef            equ       kE2BT2+112
+kRRef           equ       kE2BT2+113
+kLRSqr          equ       kE2BT2+114
+kBRSqr          equ       kE2BT2+115
+kDiagOn         equ       kE2BT2+116
+kDiagOff        equ       kE2BT2+117
+;kun1            equ       kE2BT2+152   ; for rcl use when gotten from 82
+;kvn1            equ       kE2BT2+153   ; for rcl use when gotten from 82
+kE2BT2_end      equ       kDiagOff

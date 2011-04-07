@@ -1,0 +1,492 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+  <meta name="GENERATOR" content="Visual Page 1.0 for Windows">
+  <meta http-equiv="Content-Type" content="text/html;CHARSET=iso-8859-1">
+  <title>TI-73...92+/V200 TI Link Guide</title>
+</head>
+<body bgcolor="#ffffe8">
+<p><b>DBus hardware access </b>- From TI view (registers) </p>
+<center>
+<h2>
+<hr align="center">DBus hardware access (TI9x only)<br>
+</h2>
+</center>
+<p>Well, the whole doc is focused on link from a PC view. This topic
+add a TI view. <br>
+While I was working on TiEmu II, I had to fix linkport support which
+was quite broken. Unfortunately, I didn't know very much about how
+linkport works on TI side. This was quite annoying. Then, I decided to
+dis-assemble low-level linkport routines and the result of this work is
+below.<br>
+</p>
+<span style="font-weight: bold;">1&deg;) DBus registers in
+$600000 ports</span><br>
+<br>
+Informations below comes from Johan Eilert's j89hw.txt documentation
+and TI's TI89/TI92 Plus Developper Guide:<br>
+<br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr align="center">
+      <td colspan="16" rowspan="1" style="vertical-align: top;">DBus
+Control &amp; Status<br>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="8" rowspan="1"
+ style="vertical-align: top; text-align: center;">Control ($60000C)<br>
+      </td>
+      <td colspan="8" rowspan="1"
+ style="vertical-align: top; text-align: center;">Status ($60000D)</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; width: 15px;">15<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">14<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">13<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">12<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">11<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">10<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">9<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">8<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">7<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">6<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">5<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">4<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">3<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">2<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">1<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">0<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; width: 15px;">AE<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">LD<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">LTO<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;"><br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">CLE<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">CA<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">CTX<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">CRX<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">SLE<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">STX<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">SRX<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">SLI<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">SA<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">EA?<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;"><br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;"><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Control:<br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">AE<br>
+      </td>
+      <td style="vertical-align: top;">Autostart Enable<br>
+      </td>
+      <td style="vertical-align: top;">Bit set and bit 3 of $600005 set
+: wake-up calc on Dbus activity.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">LD<br>
+      </td>
+      <td style="vertical-align: top;">Link Disable<br>
+      </td>
+      <td style="vertical-align: top;">Set it to 1 when you want to use
+direct access to register $60000E. Disable byte sender/receiver.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">LTO<br>
+      </td>
+      <td style="vertical-align: top;">Link Time-out Disable<br>
+      </td>
+      <td style="vertical-align: top;">Disable link time-out (red/white
+are low for more than 2 seconds).<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">CLE<br>
+      </td>
+      <td style="vertical-align: top;">Link Error Interrupt Enable<br>
+      </td>
+      <td style="vertical-align: top;">Allow SLE to trigger interrupt.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">CA<br>
+      </td>
+      <td style="vertical-align: top;">AutoStart Interrupt Enable</td>
+      <td style="vertical-align: top;">Allow SA to trigger interrupt.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">CTX<br>
+      </td>
+      <td style="vertical-align: top;">TX buffer empty Interrupt Enable</td>
+      <td style="vertical-align: top;">Allow STX to trigger interrupt
+(and triggers interrupt <span style="font-style: italic;">immediately</span>
+given that STX is usually set).</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">CRX<br>
+      </td>
+      <td style="vertical-align: top;">RX buffer full Interrupt Enable</td>
+      <td style="vertical-align: top;">Allow SRX to trigger interrupt.</td>
+    </tr>
+  </tbody>
+</table>
+<span style="font-style: italic;"></span><br>
+Status:<br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">SLE<br>
+      </td>
+      <td style="vertical-align: top;">Link Error<br>
+      </td>
+      <td style="vertical-align: top;">Dbus error (timing or protocol
+violation).<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">STX<br>
+      </td>
+      <td style="vertical-align: top;">TX buffer empty<br>
+      </td>
+      <td style="vertical-align: top;">Transmit buffer is empty.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">SRX<br>
+      </td>
+      <td style="vertical-align: top;">RX buffer full<br>
+      </td>
+      <td style="vertical-align: top;">Receive buffer is empty.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">SLI<br>
+      </td>
+      <td style="vertical-align: top;">Link Interrupt<br>
+      </td>
+      <td style="vertical-align: top;">Never used (at least in TI AMS).
+SLI = SLE | STX | SRX | SA.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">SA<br>
+      </td>
+      <td style="vertical-align: top;">AutoStart<br>
+      </td>
+      <td style="vertical-align: top;">Link activity on DBus port.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">EA ?<br>
+      </td>
+      <td style="vertical-align: top;">External Activity ?<br>
+      </td>
+      <td style="vertical-align: top;">External activity (DBus lines
+are toggling). Used by AMS &gt;= 2.08<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Always 1.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Always 0.<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<span style="font-style: italic;">Warning:</span> reading this register
+resets it ! Take to read it once and store its value for subsequent
+operations.<br>
+<span style="font-style: italic;">Warning2:</span> this is what TI says
+in their SDK but I'm not sure that's true (at least in TiEmu).<br>
+<br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr align="center">
+      <td colspan="16" rowspan="1" style="vertical-align: top;">DBus
+Direct &amp; Data <br>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="8" rowspan="1"
+ style="vertical-align: top; text-align: center;">Direct ($60000E)<br>
+      </td>
+      <td colspan="8" rowspan="1"
+ style="vertical-align: top; text-align: center;">Data ($60000F)</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; width: 15px;">15<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">14<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">13<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">12<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">11<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">10<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">9<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">8<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">7<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">6<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">5<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">4<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">3<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">2<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">1<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">0<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; width: 15px;"><br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;"><br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;"><br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;"><br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">D1I<br>
+(white)<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">D0I<br>
+(red)<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">D1O<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15px;">D0O<br>
+      </td>
+      <td colspan="8" rowspan="1"
+ style="vertical-align: top; text-align: center; width: 15px;">RX/TX
+1-byte buffer<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Direct access:<br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">D1I<br>
+      </td>
+      <td style="vertical-align: top;">D1 input<br>
+      </td>
+      <td style="vertical-align: top;">Live status of
+D1/ring/white&nbsp; (1=pulled down).<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">D0I<br>
+      </td>
+      <td style="vertical-align: top;">D0 input<br>
+      </td>
+      <td style="vertical-align: top;">Live status of D0/tip/red&nbsp;
+(1=pulled down).<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">D1O<br>
+      </td>
+      <td style="vertical-align: top;">D1 output<br>
+      </td>
+      <td style="vertical-align: top;">Activate (pull down)
+D1/ring/white.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">D0O<br>
+      </td>
+      <td style="vertical-align: top;">D0 output<br>
+      </td>
+      <td style="vertical-align: top;">Activate (pull down)
+D1/ring/white.<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br style="font-weight: bold;">
+<span style="font-weight: bold;">2&deg;) Link behaviour</span><span
+ style="text-decoration: underline;"><br>
+</span><br>
+The link is interrupt-driven and relies on 2 circular buffers of 128
+bytes each. Each buffer is managed as a stucture.<br>
+In normal operating mode, AE, CLE, CA and CRX are enabled. CTX is set
+in the transmit routine. It is disabled at the end of the
+handler when
+no more chars have to be transmitted.<br>
+<br>
+Some informations comes from dis-assembling, some others comes from
+TIGCC documentation (after check-up).<br>
+<br>
+<span style="text-decoration: underline;">* AI4 handler :</span> it
+begins by checking some flags in the control register:<br>
+- SA=1 =&gt; exit,<br>
+- SLE=1 =&gt; reset link port ($E0, $8D in ctrl reg),<br>
+- SRX=1 =&gt; receive char from rx/tx register and put it in circular
+buffer,<br>
+AMS &lt; 2.08:<br>
+- STX=1 =&gt; transmit char from circular buffer (please note this step
+is blocking),<br>
+AMS &gt;= 2.08: (AMS208 add a bit check before entering into tx
+routine).<br>
+- EA = 0 =&gt; exit,<br>
+- STX=1 =&gt; transmit char.<br>
+<br>
+<br>
+<span style="text-decoration: underline;">* OSLinkReset :</span>
+OSLinkReset resets the link interface. It also resets all link
+variables and performs OSLinkClose. Ints are disabled during call.<br>
+<br>
+<span style="text-decoration: underline;">* OSLinkOpen :</span>
+OSLinkOpen clears both transmit and receive queues, then set a flag
+which tells that the communication is opened.<br>
+<br>
+<span style="text-decoration: underline;">* OSLinkClose :</span>
+OSLinkClose waits until eventual bytes waiting in transmit queue are
+sent out, then clears both transmit and receive queues, and clear a
+flag which tells that the communication is opened. Ints are disabled
+during call.<br>
+<br>
+<span style="text-decoration: underline;">* OSLinkTxQueueInquire :</span>
+OSLinkTxQueueInquire returns the number of free bytes in the link
+transmit buffer. Ints are disabled during call.<br>
+<br>
+<span style="text-decoration: underline;">* OSLinkTxQueueActive :</span>
+OSLinkTxQueueActive returns TRUE if the transmit queue is active, else
+returns FALSE. This function checks CTX bit. Ints are disabled during
+call.<br>
+<br>
+<span style="text-decoration: underline;">* OSWriteLinkBlock :</span>
+inserts <i>num</i> bytes from <i>buffer</i> into the link transmit
+buffer. Returns 0 if the operation was sucessful, else returns a
+non-zero value. <i>num</i> must be in the range 1-128. Ints are
+disabled during call.<br>
+Note: the routine enables TX interrupt by setting the CTX bit.
+Consequently, the AI4 handler will be called as soon as ints (SR) will
+be enabled given that STX is set.<br>
+&nbsp;<br>
+<span style="text-decoration: underline;">* OSCheckSilentLink :</span>
+OSCheckSilentLink returns an integer which determines the link state..<br>
+<br>
+<span style="text-decoration: underline;">* OSLinkCmd :</span> to do...<br>
+<br>
+Dis-assembled output: <a href="ti89/linkport.txt">here</a>. The output
+contains comments only. I can put source code, this is strictly
+forbidden by TI. I will not distribute it, neither here, nor by mail.<br>
+<br style="font-weight: bold;">
+<span style="font-weight: bold;">3&deg;) Remarks<br>
+<br>
+</span>Sending 4 bytes on the linkport sets the followinf flags : TRIA
+TRIA TRIA TRI TI ( T = STX, R = SRX, I = SLI and A = EA).<span
+ style="font-weight: bold;"><br>
+</span><span style="text-decoration: underline;"></span>
+<h4>More Information</h4>
+<p>You may find some informations in the TIGCC <a
+ href="http://tigcc.ticalc.org/">documentation</a>.
+</p>
+<p>
+<table border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr>
+      <td width="32%">
+      <p align="center"><a href="intro.html"><img
+ src="graphics/prevpage.gif" alt="[previous page]" align="bottom"
+ border="2" height="32" width="32"><br>
+Introduction</a> </p>
+      </td>
+      <td width="34%">
+      <p align="center"><a href="index.html"><img
+ src="graphics/home.gif" alt="[home]" align="bottom" border="2"
+ height="32" width="32"><br>
+Table of Contents</a> </p>
+      </td>
+      <td width="34%">
+      <p align="center"><a href="cable.html"><img
+ src="graphics/nextpage.gif" alt="[next page]" align="bottom" border="2"
+ height="32" width="32"><br>
+Link Cables</a> </p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<hr align="center"><i>Site maintained by Romain Li&eacute;vin (</i><a
+ href="mailto:roms@tilp.info"><i>roms@tilp.info</i></a><i>)
+and Tim Singer (</i><a href="mailto:tsinger@gladstone.uoregon.edu"><i>tsinger@gladstone.uoregon.edu</i></a><i>)</i>
+</body>
+</html>

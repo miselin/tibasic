@@ -1,0 +1,423 @@
+					*****************************
+					* Direct Cable(tm) protocol *
+					* by roms 2006				*
+					*****************************
+
+
+Based on preliminary work made by "Drake Wilson" <drake@libcom.com>. Thanks !
+
+
+The initialization sequence for the direct USB cable seems to always
+be setting the alternate interface to 0 and the configuration to 1.
+The endpoints used are 0x02 (for computer to calculator messages) and
+0x81 (for calculator to computer messages).  All messages are sent via
+bulk transfer.
+
+Data are sent on a per-block basis (URB = Usb Request Block).
+Block length is 256 bytes for TI84+ and Titanium.
+
+Please note this is different of packets below because URBs are managed by driver
+or lower layers (at least for Titanium).
+Packet length (chunck) is:
+- 255 bytes on TI84+,
+- 1023 bytes on Titanium.
+
+Clearly: 
+- on TI84+, a packet is always contained in an URBs (255 < 256),
+- on Titanium, a packet may be contained in one or more URBs (1023 > 256).
+
+If this is not clear for you, take a look at screenshot.log (SniffUsb) and screenshot.pkt.
+
+
+0°) Introduction
+----------------
+
+The generic format for packets is below:
+
+	| packet header    | data (250/1018 bytes max)							 |
+	|				   |  or												 |
+	| size		  | ty | size		 | code	 | data	(246/1012 bytes)		 |
+	|			  |    |			 |		 |								 |
+	| 00 00 00 10 | 04 | 00 00 00 0A | 00 01 | 00 03 00 01 00 00 00 00 07 D0 |	
+
+The following notation will be used in this doc: 
+
+	aabbccdd (type) xxyyzztt {code} [pure data]
+
+Note: on Titanium, the data part usually follows the packet header but it may be sent in
+another URB (fragmented) when the data part is huge (> 1012). In this case, the packet
+header is sent alone in URB and is next followed by a 1023-bytes chunk of data in a second URB.
+TI seems not to like easy things :-(
+
+
+1°) Packet Header (5 bytes)
+---------------------------
+
+Each packet starts with the following header (packet header):
+
+  HH HL LH LL	= four-byte big-endian length of non-header part
+					of packet (after opcode)
+  OO			= one-byte packet type
+  ...
+
+Packets will be represented as "(opcode) data" in the following text.
+
+Types of packets include:
+  01 = handshake (HSK)
+  02 = handshake response (ANS)
+  03 = data packet (DATA)
+  04 = last data packet (LAST)
+  05 = acknowledgement (ACK)
+
+The handshake consists of:
+
+  -> 00000004 (01) [00 00 04 00]
+  <- 00000004 (02) [00 00 00 fa] TI84+
+  <- 00000004 (02) [00 00 03 ff] Titanium
+  
+The acknowledgment (ACK) packet is packet type 05.  The data of the
+ACK packet is always E0 00 (if successful):
+
+	-> 00000002 (05) [E0 00]
+
+Types 01,02 have 4 bytes of data, type 05 has 2 bytes only.
+
+
+2°) Data header (6 bytes)
+-------------------------
+
+When sending any piece of data, the following header (data header) is 
+prepended on the _first_ data packet:
+
+  HH HL LH LL	= four-byte big-endian length of non-header part
+			  of data (after opcode)
+  OO OO			= two-byte opcode
+  ...
+
+On TI84+, the data is sent in 245-bytes chunks for the first packet or in 250-bytes
+chunks for the others. If data is greater than 245 bytes, then data is sent in several 
+packets (several data/ack steps).
+
+On Titanium, the data is sent in 1012-bytes chunks for the first packet or in 1018-bytes
+chunks for the others. If data is greater than 1012 bytes, then data is sent in several 
+packets (several data/ack steps).
+
+Packet type 03 is used for each of the packet except the last, and packet
+type 04 is used for the last packet.  Each data packet is acknowledged
+with packet type 05.  Thus, you have, for short data:
+
+  -> (04) header, data... 
+  <- ACK
+
+And for longer data, you might have:
+
+  -> (03) header, data...
+  <- ACK
+  -> (03) data...
+  <- ACK
+  -> (04) last part of data...
+  <- ACK
+
+Note: usually, the data header size is 7 bytes greater than the size of real data because
+7 bytes are prepended to data (4 bytes of request and 3 bytes of data size).
+
+3°) Type IDs (tid)
+------------------
+
+- 0022: screen
+- 0024: related to clock (???)
+- 0025: clock value
+- 0027: date format
+- 0028: time format (am/pm or 24h)
+
+
+4°) Op-codes (opc)
+------------------
+
+Data opcodes include:
+
+	0001 = unknown request (data = 00 03 00 01 00 00 00 00 07 D0)
+		Reply with opcode 0012 and data = 00 00 07 D0
+
+		Same for all calcs. Is an echo ?
+
+	0012 = ???
+		Answer of 0001
+		
+	0007 = request (REQ)
+
+		The format seems to be the following:
+		00 NN tid1 tid2 ... tidN	where NN is the number of requests and tidI the request on 2 bytes)
+		Replied with opcode 0008 below.
+
+		- screenshot with data = 00 01  00 22
+
+		- clock with data = 00 04  00 25  00 27  00 28  00 24		
+
+	0008 = request answer (VAR)
+
+		The format seems to be the following:
+		00 NN [tid1 size1 data1] [tid2 size2 data2] ... [tidN sizeN dataN]
+
+		where:
+		- NN is the number of request 
+		- tidI is the previous request tidI (2 bytes)
+		- sizeI is the size of data following (3 bytes)
+		- dataI is the data request by tidI (sizeI bytes)
+		and so on...
+
+	000e = request to send (RTS)
+	
+		The format is the following: tid size data
+		where tid is the type id, size is the size of data
+
+	aa00 = clear to send (CTS)
+		01
+
+	bb00 = clear to receive (CTR)
+  		00 01 d4 c0
+
+	dd00 = end of transmission (EOT)
+		no data
+
+	ee00 = error
+
+	    data = CC CC		where CCCC is a two-byte error code
+
+		Error codes include:
+		00 08 = transmission error or invalid code?
+		00 0c = out of memory?
+		00 0e = invalid name?
+
+////
+
+  0009 = Request directory from calculator
+    00 00 00 06 00 02 00 03 00 05 00 01 00 41 00 42
+    00 01 00 01 00 01 01
+
+  000a = Directory entry
+    LL LL name...	= big-endian length of name, followed by name
+
+    00 00 06 00 02 00
+    00 04 f0 07 00
+    TT			= type of variable
+    00 03 00 00 01
+    FF			= some kind of flags?
+                            bit 0 (0x01) = archived
+    00 05
+    GG			= more flags?
+			    bit 0 (0x01) = auxiliary data present
+
+    If auxiliary data present:
+      LL LL data...     = big-endian length of data, followed by data
+
+    00 01 00 00 04
+    SS SS SS SS		= big-endian size of variable in bytes
+    00 04 01 00 42 01
+
+  000b = Send variable to calculator
+    LL LL name...	= big-endian length of name, followed by name
+    00
+    SS SS SS SS		= big-endian size of variable in bytes
+    01 00
+    FF			= not sure what this is...
+			    FF = 0x03 for lists and programs
+                                 0x02 for flash applications
+    00 02 00 04 f0 07
+    00
+    TT			= type of variable
+    00 03 00 01 00
+
+    00 08 00 04 00	= don't know what this means?
+    00 00 00
+      ( The last 8 bytes did not appear during flash application
+        transfer, but they did during list and program transfer. )
+
+  000c = Request variable from calculator
+    LL LL name...	= big-endian length of name, followed by name
+    00 01 ff ff ff ff
+    00 02 00 03 00 08
+    00 01 00 11 00 04
+    f0 07 00
+    TT			= type of variable
+    00 00
+
+  000d = Variable data being transferred
+    (Format depends on type of variable; seems to be related to the
+     .8x? file types)
+    Programs:
+      SS SS		= little-endian size of data in bytes
+      ...		= tokenized data
+    Lists:
+      LL LL		= little-endian length of list in elements
+      ...		= packed real numbers in TI-83+ BCD format
+      
+  0010 = Delete variable from calculator
+    LL LL name...	= big-endian length of name, followed by name
+    00 00 02 00 01 00
+    f0 07 00
+    TT			= type of variable?
+    00 13 00 01 00 01
+    00 00 00 00
+    
+  0011 = ?
+  
+  0012 = ?
+  	00 00 07 D0 
+  	Answer of opcode 0001 (data contains the last 4 bytes of opcode 0001 ?!)
+    
+  dd00 = End of transmission (EOT)
+    (no data)
+
+
+4°) Communication Flow
+----------------------
+
+Communication flow for requesting directory from calculator:
+  -> Request directory
+  <- ACK
+  (
+    <- Directory entry | EOT
+    -> ACK
+  )*
+
+Communication flow for sending variable to calculator:
+  -> Send variable
+    <- ACK
+  <- CTS | Error
+    -> ACK
+  -> Variable data
+    <- ACK
+  <- CTS
+    -> ACK
+  ( Maybe jump back to earlier stage here if sending more
+    than one variable simultaneously? )
+  -> EOT
+    <- ACK
+
+Communication flow for requesting variable from calculator:
+  -> Request variable
+    <- ACK
+  <- Directory entry
+    -> ACK
+  <- Variable data
+    -> ACK
+  ( The USB endpoints were always reset after this transction, so
+    it's hard to tell whether there was supposed to be anything else
+    after this. )
+
+Communication flow for deleting variable from calculator:
+  -> Delete variable
+    <- ACK
+  <- CTS
+    -> ACK
+  ( USB endpoints reset after this... ? )
+
+
+10°) Unknown (all calcs)
+-----------------------
+
+This step is systematically done at startup after the HSK/RES.
+Moreover, it's needed for TI84+ else any other commands is rejected with error code 0008.
+
+	PC: Data	{0001} 00 03 00 01 00 00 00 00 07 D0
+	TI: Ack
+	
+	TI: Data	{0012} 00 00 07 D0
+	PC:	Ack
+
+
+5°) Screenshot (on Titanium)
+----------------------------
+
+Communication flow for requesting a screenshot (TI <-/-> PC):
+
+	PC: Handshake
+	TI: Response
+	
+	PC: Data	{0007} 00 01 00 22   
+	TI: Ack	
+
+---- 84+ ----
+	TI: Data	{bb00} 00 01 D4 C0
+	PC: Ack
+---- 84+ ----
+
+	TI: Data	{0008} 00 01 00 22 00 0F 00 [3840 bytes of screen] (*)
+	PC:	Ack
+
+	TI: Data	[3840 bytes of screen]
+	PC:	Ack
+
+	TI: Data	[3840 bytes of screen]
+	PC:	Ack
+
+	TI: Last	[3840 bytes of screen]
+	PC:	Ack
+
+(*) 00 0F = 3840 bytes -> size of screen
+
+
+6°) Getting clock (on TI84+)
+----------------------------
+
+Communication flow for requesting a screenshot (TI <-/-> PC):
+
+	PC: Handshake
+	TI: Response
+	
+	PC: Data	{0007} 00 04 00 25 00 27 00 28 00 24
+	TI: Ack	
+
+---- 84+ ----
+	TI: Data	{bb00} 00 01 D4 C0
+	PC: Ack
+---- 84+ ----
+
+	TI: Last	{0008} 00 04 00 25 00 00 04 10 15 16 74 00 27 00 00 01 01 00 28 00 00 01 00 00 24 00 00 01 01 (*)
+	PC:	Ack
+
+(*) 
+24 is followed by ???
+25 is followed by the the clock value
+27 is followed by the date formatting (1: MDY, 2: DMY, 0:YMD)
+28 is followed by the clock mode (0: am/pm or 1: 24h)
+
+
+7°) Setting clock (on TI84+)
+----------------------------
+
+	PC: Handshake
+	TI: Response
+	
+	PC: Data	{000e} 00 25 00 04 10 15 17 01 
+	TI: Ack	
+
+---- 84+ ----
+	TI: Data	{aa00} 01
+	PC: Ack
+---- 84+ ----
+
+	PC: Data	{000e} 00 27 00 01 01
+	TI: Ack	
+
+---- 84+ ----
+	TI: Data	{aa00} 01
+	PC: Ack
+---- 84+ ----
+
+	PC: Data	{000e} 00 28 00 01 00
+	TI: Ack	
+
+---- 84+ ----
+	TI: Data	{aa00} 01
+	PC: Ack
+---- 84+ ----
+
+	PC: Data	{000e} 00 24 00 01 01
+	TI: Ack	
+
+---- 84+ ----
+	TI: Data	{aa00} 01
+	PC: Ack
+---- 84+ ----

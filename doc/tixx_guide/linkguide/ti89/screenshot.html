@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="GENERATOR"
+ content="Mozilla/4.7 [en] (X11; I; Linux 2.4.0-test6 i586) [Netscape]">
+  <title>TI-89 Link Protocol Guide - Screenshots</title>
+</head>
+<body bgcolor="#ffffe8">
+<b>TI-89 Link Protocol Guide</b> - Screenshots
+<center>
+<h2>
+<hr align="center">Screenshots</h2>
+</center>
+The TI-89's screenshot ability is "silent," which means that the
+calculator
+does not need to be put in a special mode. Screenshots can be taken any
+time the calculator is ready to accept a keypress.
+<p>The protocol used for getting a screenshot is shown below. For
+information
+on packet formats, <a href="packet.html">click here</a>.
+<table bgcolor="#ffffff" border="1" cellspacing="0" width="92%">
+  <tbody>
+    <tr>
+      <th bgcolor="#008800" width="7%"><font color="#ffffff">Step</font></th>
+      <th colspan="3" bgcolor="#008800"><font color="#ffffff">Direction</font></th>
+      <th bgcolor="#008800" width="80%"><font color="#ffffff">Packet</font></th>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <center>1&nbsp;</center>
+      </td>
+      <td rowspan="4">
+      <center><img src="graphics/comp.gif" alt="Computer" align="bottom"
+ border="0" height="33" width="30"></center>
+      </td>
+      <td bgcolor="#ffffff">
+      <center><img src="graphics/right.gif" alt="===&gt;" align="bottom"
+ border="0" height="13" width="22"></center>
+      </td>
+      <td rowspan="4" bgcolor="#ffffff">
+      <center><img src="graphics/calc.gif" alt="Calculator"
+ align="bottom" border="0" height="35" width="60"></center>
+      </td>
+      <td bgcolor="#ffffff" width="80%">SCR</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <center>2&nbsp;</center>
+      </td>
+      <td bgcolor="#ffffff">
+      <center><img src="graphics/left.gif" alt="&lt;===" align="bottom"
+ border="0" height="13" width="22"></center>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <center>3&nbsp;</center>
+      </td>
+      <td bgcolor="#ffffff">
+      <center><img src="graphics/left.gif" alt="&lt;===" align="bottom"
+ border="0" height="13" width="22"></center>
+      </td>
+      <td bgcolor="#ffffff" width="80%">DATA - Format described below.</td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffffff" width="7%">
+      <center>4&nbsp;</center>
+      </td>
+      <td bgcolor="#ffffff">
+      <center><img src="graphics/right.gif" alt="===&gt;" align="bottom"
+ border="0" height="13" width="22"></center>
+      </td>
+      <td bgcolor="#ffffff" width="80%">ACK</td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<p>The data packet contains a 3840-byte monochrome bitmap (1 bit per
+pixel).
+Each bit has a value of 1 if the corresponding pixel is dark or a value
+of 0 if the corresponding pixel is light.
+</p>
+<p>The pixel order is left-to-right, then top-to-bottom (See figure
+below).
+<br>
+Byte 0 defines the first 8 pixels in the left side of the top row of
+the screen. Bytes 1-29 define the rest of the first row, bytes 30-59
+define
+the second row, etc.
+</p>
+<p><u>Example:</u>
+<table border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>08 6D 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Screenshot request</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">TI:</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>98 56 00 00</tt></b></td>
+      <td bgcolor="#ffcccc" width="50%"><i>Acknowledgement of request</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ffcccc">&nbsp;</td>
+      <td bgcolor="#ffcccc" width="50%"><b><tt>98 15 00 0F </tt></b>&lt;3840
+bytes plus 2 byte checksum&gt;</td>
+      <td bgcolor="#ffcccc" width="50%"><i>Screen data</i></td>
+    </tr>
+    <tr>
+      <td bgcolor="#ccffcc">PC:</td>
+      <td bgcolor="#ccffcc" width="50%"><b><tt>08 56 00 00</tt></b></td>
+      <td bgcolor="#ccffcc" width="50%"><i>Acknowledgement of data</i></td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<p>The following figure demonstrates byte ordering of the pixels if the
+bitmap is in a 3840-element array data[]:
+</p>
+<p><img src="graphics/scrnshot.gif" alt="[pixel grid diagram]"
+ align="bottom" border="0" height="467" width="776"></p>
+<p>Remark: contrary to the TI92/92+ calculator, only the 160x100 upper
+rectangle is visible on the TI89. The remaining bytes are usable (in
+assembler
+for instance) but they are not visible. So, a clipping is necessary
+once
+the screenshot have been got.
+</p>
+<p>Note that this format is different from the standard Windows bitmap
+format, which specifies a value of 1 if the pixel is light and
+bottom-to-top
+row order.
+<br>
+&nbsp;
+<table border="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr>
+      <td width="32%">
+      <center><a href="packet.html"><img src="graphics/prevpage.gif"
+ alt="[previous page]" align="bottom" border="2" height="32" width="32"></a><br>
+      <a href="packet.html">Packet Formats</a></center>
+      </td>
+      <td width="34%">
+      <center><a href="index.html"><img src="graphics/home.gif"
+ alt="[home]" align="bottom" border="2" height="32" width="32"></a><br>
+      <a href="index.html">Table of Contents</a></center>
+      </td>
+      <td width="34%">
+      <center><a href="manual.html"><img src="graphics/nextpage.gif"
+ alt="[next page]" align="bottom" border="2" height="32" width="32"></a><br>
+      <a href="manual.html">Manual Transfers</a></center>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</p>
+<hr align="center"><i>Site maintained by Romain Li&eacute;vin (<a
+ href="mailto:roms@lpg.ticalc.org">roms@lpg.ticalc.org</a>)
+and Tim Singer (<a href="mailto:tsinger@gladstone.uoregon.edu">tsinger@gladstone.uoregon.edu</a>)</i>
+</body>
+</html>
