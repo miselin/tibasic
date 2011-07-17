@@ -52,6 +52,8 @@ void log(LogSeverity severity, const char *out)
 
 void stripExtension(const char *in, char *out, size_t len)
 {
+    if(strrchr(in, '.') == NULL)
+        return;
     strncpy(out, in, len);
     *strrchr(out, '.') = 0;
 }

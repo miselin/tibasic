@@ -130,12 +130,17 @@ bool Compiler::compile(string inFile, string outFile)
     if(n == inFile.npos) n = outFile.find_last_of('\\');
     if(n == inFile.npos) n = 0; else n++;
     for(; (i < 8) && (n < inFile.length() - 4); n++)
+    {
+        if(outFile[n] == '.')
+            break;
         ventry.name[i++] = toupper(outFile[n]);
+    }
 
     // Begin writing to file.
     FILE *out = fopen(outFile.c_str(), "wb");
     fwrite(&phdr, sizeof(phdr), 1, out);
     fwrite(&ventry, sizeof(ventry), 1, out);
+    fwrite(&outputSize, 2, 1, out);
 
     // Sum of all bytes for checksum purposes.
     size_t sum = 0;
@@ -149,10 +154,9 @@ bool Compiler::compile(string inFile, string outFile)
     }
 
     // Perform a checksum and write to file.
-    sum += sumBytes(reinterpret_cast<const char*>(&phdr), sizeof(phdr));
     sum += sumBytes(reinterpret_cast<const char*>(&ventry), sizeof(ventry));
-    unsigned char checksum = doChecksum(sum);
-    fwrite(&checksum, 1, 1, out);
+    unsigned short checksum = doChecksum(sum);
+    fwrite(&checksum, 2, 1, out);
 
     fclose(out);
 
@@ -179,6 +183,9 @@ bool Compiler::decompile(string inFile, string outFile)
     struct VariableEntry ventry;
     fread(&ventry, sizeof(ventry), 1, fp);
 
+    size_t tokenLength = 0;
+    fread(&tokenLength, 2, 1, fp);
+
     size_t nBytesRead = 0;
     unsigned short temp;
     
@@ -186,7 +193,7 @@ bool Compiler::decompile(string inFile, string outFile)
 
     bool bAsmProgram = false;
 
-    while((!feof(fp)) && (nBytesRead < ventry.length2))
+    while((!feof(fp)) && (nBytesRead < tokenLength))
     {
         fread(&temp, 1, 2, fp);
 

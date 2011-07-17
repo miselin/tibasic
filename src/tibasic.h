@@ -88,6 +88,8 @@ class Compiler
         /// Perform a checksum over a region of data.
         size_t sumBytes(const char *data, size_t len);
         unsigned char doChecksum(size_t sum);
+
+#pragma pack(push, 1)
         
         /// 8xp file header
         struct ProgramHeader
@@ -109,6 +111,8 @@ class Compiler
             char flags;
             unsigned short length2;
         };
+
+#pragma pack(pop)
 };
 
 #endif
