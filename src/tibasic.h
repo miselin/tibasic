@@ -19,6 +19,12 @@
 
 #include <string>
 
+#ifdef _MSC_VER
+#define PACKED
+#else
+#define PACKED __attribute__((packed))
+#endif
+
 /// Stores a token to be written and the size of that token.
 typedef struct
 {
@@ -89,8 +95,10 @@ class Compiler
         size_t sumBytes(const char *data, size_t len);
         unsigned char doChecksum(size_t sum);
 
+#ifdef _MSC_VER
 #pragma pack(push, 1)
-        
+#endif
+
         /// 8xp file header
         struct ProgramHeader
         {
@@ -98,7 +106,7 @@ class Compiler
             char extsig[3];
             char comment[42];
             unsigned short datalen;
-        };
+        } PACKED;
 
         /// Variable entry
         struct VariableEntry
@@ -110,9 +118,11 @@ class Compiler
             char ver;
             char flags;
             unsigned short length2;
-        };
+        } PACKED;
 
+#ifdef _MSC_VER
 #pragma pack(pop)
+#endif
 };
 
 #endif

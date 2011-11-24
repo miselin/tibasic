@@ -46,7 +46,7 @@ size_t Compiler::sumBytes(const char *data, size_t len)
 bool Compiler::compile(string inFile, string outFile)
 {
     ifstream f(inFile.c_str(), ifstream::in);
-    
+
     string tmpLine;
 
     // Output information ready for writing the compiled code to a file.
@@ -115,15 +115,15 @@ bool Compiler::compile(string inFile, string outFile)
     memset(&phdr, 0, sizeof(ProgramHeader));
     memset(&ventry, 0, sizeof(VariableEntry));
 
-    phdr.extsig[0] = 0x1A; phdr.extsig[1] = 0x0A; phdr.extsig[1] = 0;
     phdr.datalen = sizeof(VariableEntry) + outputSize;
     strcpy(phdr.sig, "**TI83F*");
+    phdr.extsig[0] = 0x1A; phdr.extsig[1] = 0x0A; phdr.extsig[2] = 0;
 
     /// \todo Magic numbers!
     ventry.start = 0x0D;
     ventry.length1 = ventry.length2 = outputSize;
     ventry.type = 0x05;
-    
+
     // Convoluted magic to get the filename. Minus the extension. :)
     size_t i = 0;
     size_t n = outFile.find_last_of('/');
@@ -139,8 +139,11 @@ bool Compiler::compile(string inFile, string outFile)
     // Begin writing to file.
     FILE *out = fopen(outFile.c_str(), "wb");
     fwrite(&phdr, sizeof(phdr), 1, out);
+    cout << "file is at " << ftell(out) << endl;
     fwrite(&ventry, sizeof(ventry), 1, out);
+    cout << "file is at " << ftell(out) << endl;
     fwrite(&outputSize, 2, 1, out);
+    cout << "file is at " << ftell(out) << endl;
 
     // Sum of all bytes for checksum purposes.
     size_t sum = 0;
@@ -188,7 +191,7 @@ bool Compiler::decompile(string inFile, string outFile)
 
     size_t nBytesRead = 0;
     unsigned short temp;
-    
+
     string sOutput = "";
 
     bool bAsmProgram = false;
@@ -244,7 +247,7 @@ bool Compiler::decompile(string inFile, string outFile)
     }
 
     fclose(fp);
-    
+
     // Write the output now.
     ofstream f(outFile.c_str());
     f << sOutput;

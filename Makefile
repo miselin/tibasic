@@ -12,7 +12,7 @@ CXX := g++
 all: tibasic
 
 tibasic: $(OBJFILES)
-	g++ -o tibasic $?
+	g++ -o tibasic $(OBJFILES)
 
 -include $(DEPFILES)
 
