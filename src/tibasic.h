@@ -93,7 +93,7 @@ class Compiler
 
         /// Perform a checksum over a region of data.
         size_t sumBytes(const char *data, size_t len);
-        unsigned char doChecksum(size_t sum);
+        unsigned short doChecksum(size_t sum);
 
 #ifdef _MSC_VER
 #pragma pack(push, 1)
