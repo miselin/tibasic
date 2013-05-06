@@ -728,7 +728,7 @@ struct Token StandardTokens[] = {
 	{ CTL_END,			"End"		},
 	{ CTL_PAUSE,		"Pause "	},
 	{ CTL_PAUSE,		"Pause"		},
-	{ LABEL,			"Label "	},
+	{ LABEL,			"Lbl "		},
 	{ CTL_GOTO,			"Goto "		},
 	{ INCSKIPIFHIGH,	"IS>("		},
 	{ DECSKIPIFLOW,		"DS<("		},
