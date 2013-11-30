@@ -78,19 +78,11 @@ class Compiler
         Compiler() {}
         virtual ~Compiler() {}
 
-        inline void verbosity(bool is)
-        {
-            m_bVerbose = is;
-        }
-
         bool compile(std::string inFile, std::string outFile);
 
         bool decompile(std::string inFile, std::string outFile);
 
     private:
-        /// Whether to be verbose when compiling.
-        bool m_bVerbose;
-
         /// Perform a checksum over a region of data.
         size_t sumBytes(const char *data, size_t len);
         unsigned short doChecksum(size_t sum);

@@ -64,7 +64,7 @@ int main( int argc, char* argv[] )
 	if((argc < 2) || (argv[1] == NULL))
 	{
 		// Inform the user
-        log(Error, "Usage: tibasic.exe [options] filename\nOptions:\n\t-v:\tVerbose mode");
+        log(Error, "Usage: tibasic.exe [options] filename\nOptions:\n\t-d\t\tDecompile\n\t-o filename\tOutput file");
 		return 1;
 	}
 
@@ -87,8 +87,6 @@ int main( int argc, char* argv[] )
             }
             outFile = argv[i + 1];
         }
-        else if(!strcmp(argv[i], "-v"))
-            pCompiler->verbosity(true);
         else if(!strcmp(argv[i], "-d"))
             bDecompile = true;
         else if(!inFile.length())
