@@ -75,22 +75,27 @@ int main( int argc, char* argv[] )
     bool bDecompile = false;
 
     // Parse arguments
-    for(int i = 1; i < argc; i++)
+    inFile = argv[argc - 1]; // Last argument is always filename
+    for(int i = 1; i < argc - 1; i++)
     {
         if(!strcmp(argv[i], "-o") && !outFile.length())
         {
+            i++; // Next argument is filename
             // Output filename
-            if((i + 1) >= argc)
+            if(i >= argc - 1)
             {
                 log(Error, "-o requires a parameter (output filename).");
                 return 1;
             }
-            outFile = argv[i + 1];
+            outFile = argv[i];
         }
         else if(!strcmp(argv[i], "-d"))
             bDecompile = true;
-        else if(!inFile.length())
-            inFile = argv[i];
+        else
+        {
+            log(Error, "Unknown option specified");
+            return 1;
+        }
     }
 
     // If no output was given, rename the input with .8xp instead of .tib and
