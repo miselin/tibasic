@@ -46,7 +46,7 @@ struct ConvertRule {
 
 /// References to lists defined after functions.
 extern struct Token StandardTokens[199];
-extern struct TwoByte CalcVars[302];
+extern struct TwoByte CalcVars[303];
 extern struct ConvertRule Replacements[39];
 
 /// string -> token mapping
@@ -935,6 +935,7 @@ struct TwoByte CalcVars[] = {
 	// AsmPrgm (uncompiled)
 	{ 0x6CBB,			"AsmPrgm"	},
 	{ 0x6DBB,			"AsmPrgm"	}, // this means decompilation works, but compilation won't hit this
+	{ 0x6ABB,			"Asm("		},
 
 	// SysVar
 	{ MAT_A,			"[A]"		},
