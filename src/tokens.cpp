@@ -715,6 +715,7 @@ bool lookupToken(unsigned short in, string &out)
 #define ANOVA			0x59BB
 #define MODBOXPLOT		0x5ABB
 #define NORMPROBPLOT	0x5BBB
+#define ASM				0x6ABB
 
 // Standard Tokens are any token that can be used anywhere in the line.
 struct Token StandardTokens[] = {
@@ -935,7 +936,6 @@ struct TwoByte CalcVars[] = {
 	// AsmPrgm (uncompiled)
 	{ 0x6CBB,			"AsmPrgm"	},
 	{ 0x6DBB,			"AsmPrgm"	}, // this means decompilation works, but compilation won't hit this
-	{ 0x6ABB,			"Asm("		},
 
 	// SysVar
 	{ MAT_A,			"[A]"		},
@@ -1244,6 +1244,7 @@ struct TwoByte CalcVars[] = {
 	{ ANOVA,			"ANOVA("		},
 	{ MODBOXPLOT,		"ModBoxPlot"	},
 	{ NORMPROBPLOT,		"NormProbPlot"	},
+	{ ASM,				"Asm("},
 };
 
 // Replacements
