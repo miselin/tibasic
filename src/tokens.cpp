@@ -46,7 +46,7 @@ struct ConvertRule {
 
 /// References to lists defined after functions.
 extern struct Token StandardTokens[199];
-extern struct TwoByte CalcVars[302];
+extern struct TwoByte CalcVars[303];
 extern struct ConvertRule Replacements[39];
 
 /// string -> token mapping
@@ -715,6 +715,7 @@ bool lookupToken(unsigned short in, string &out)
 #define ANOVA			0x59BB
 #define MODBOXPLOT		0x5ABB
 #define NORMPROBPLOT	0x5BBB
+#define ASM				0x6ABB
 
 // Standard Tokens are any token that can be used anywhere in the line.
 struct Token StandardTokens[] = {
@@ -1243,6 +1244,7 @@ struct TwoByte CalcVars[] = {
 	{ ANOVA,			"ANOVA("		},
 	{ MODBOXPLOT,		"ModBoxPlot"	},
 	{ NORMPROBPLOT,		"NormProbPlot"	},
+	{ ASM,				"Asm("},
 };
 
 // Replacements
