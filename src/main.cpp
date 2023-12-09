@@ -63,8 +63,11 @@ int main( int argc, char* argv[] )
 	// check for valid number of arguments
 	if((argc < 2) || (argv[1] == NULL))
 	{
-		// Inform the user
-        log(Error, "Usage: tibasic.exe [options] filename\nOptions:\n\t-d\t\tDecompile\n\t-o filename\tOutput file");
+	
+        // Error string, with some minor formatting
+        string errorstring = "Usage: " + string(argv[0]) + " [options] filename\nOptions:\n\t-d\t\tDecompile\n\t-o filename\tOutput file";
+        // Inform the user
+        log(Error, errorstring.c_str());
 		return 1;
 	}
 
