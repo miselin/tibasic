@@ -3,7 +3,7 @@ name: lint
 on: [push]
 
 jobs:
-  build:
+  cppcheck:
     runs-on: ubuntu-latest
 
     steps:
@@ -13,4 +13,4 @@ jobs:
       run: sudo apt install cppcheck
 
     - name: Run cppcheck
-      run: cppcheck --enable=all --suppress=missingIncludeSystem src/
+      run: cppcheck --enable=all --suppress=missingIncludeSystem --error-exitcode=1 src/
