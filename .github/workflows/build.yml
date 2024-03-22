@@ -1,0 +1,75 @@
+name: build
+
+on:
+  - push
+
+jobs:
+  build-and-test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            release_suffix: ubuntu
+          - os: macos-latest
+            release_suffix: mac
+          - os: windows-latest
+            release_suffix: windows
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install CMake
+        run: |
+          sudo apt install build-essential cmake
+          cmake -E make_directory ${{runner.workspace}}/build
+
+      - name: Configure CMake
+        working-directory: ${{runner.workspace}}/build
+        run: cmake ${{runner.workspace}} -DCMAKE_BUILD_TYPE=Debug
+
+      - name: Build Compiler
+        working-directory: ${{runner.workspace}}/build
+        run: cmake --build .
+
+      - name: Test
+        working-directory: ${{runner.workspace}}/build
+        run: ctest -C Debug
+
+  release-build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            release_suffix: ubuntu
+          - os: macos-latest
+            release_suffix: mac
+          - os: windows-latest
+            release_suffix: windows
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install CMake
+        run: |
+          sudo apt install build-essential cmake
+          cmake -E make_directory ${{runner.workspace}}/build
+
+      - name: Configure CMake
+        working-directory: ${{runner.workspace}}/build
+        run: cmake ${{runner.workspace}} -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build Compiler
+        working-directory: ${{runner.workspace}}/build
+        run: cmake --build .
+
+      - name: Test
+        working-directory: ${{runner.workspace}}/build
+        run: ctest -C Release
