@@ -1,6 +1,6 @@
 add_library(cmake_cpp_tibasic_compiler_options INTERFACE)
 
-option(WARNINGS_ARE_ERRORS "Disallow warnings by treating them as errors" ON)
+option(WARNINGS_ARE_ERRORS "Disallow warnings by treating them as errors" OFF)
 option(ASAN "Enable address sanitizer" OFF)
 option(MSAN "Enable memory sanitizer" OFF)
 option(TSAN "Enable thread sanitizer" OFF)
