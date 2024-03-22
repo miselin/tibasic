@@ -13,12 +13,15 @@ jobs:
           - os: ubuntu-latest
             src: tibasic
             target: ubuntu
+            content_type: application/octet-stream
           - os: macos-latest
             filename: tibasic
             target: macos
+            content_type: application/octet-stream
           - os: windows-latest
             filename: tibasic.exe
             target: windows
+            content_type: application/octet-stream
 
     runs-on: ${{ matrix.os }}
 
@@ -47,3 +50,4 @@ jobs:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: ${{runner.workspace}}/build/src/${{ matrix.filename }}
           asset_name: ${{ matrix.target }}-${{ matrix.filename }}
+          asset_content_type: ${{ matrix.content_type }}
