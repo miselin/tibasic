@@ -1,6 +1,12 @@
 name: lint
 
-on: [push]
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+    branches:
+    - master
 
 jobs:
   cppcheck:
@@ -12,5 +18,8 @@ jobs:
     - name: Install cppcheck
       run: sudo apt install cppcheck
 
-    - name: Run cppcheck
+    - name: cppcheck
       run: cppcheck --enable=all --suppress=missingIncludeSystem --suppress=missingInclude --suppress=unmatchedSuppression --error-exitcode=1 src/
+
+    - name: formatting
+      run: find src -iname '*.h' -o -iname '*.cpp' -print0 | xargs -0 clang-format --dry-run --Werror

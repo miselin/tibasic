@@ -1,7 +1,12 @@
 name: build
 
 on:
-  - push
+  push:
+    branches:
+      - "**"
+  pull_request:
+    branches:
+    - master
 
 jobs:
   build-and-test:
@@ -38,38 +43,3 @@ jobs:
       - name: Test
         working-directory: ${{runner.workspace}}/build
         run: ctest -C Debug
-
-  release-build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        include:
-          - os: ubuntu-latest
-            release_suffix: ubuntu
-          - os: macos-latest
-            release_suffix: mac
-          - os: windows-latest
-            release_suffix: windows
-
-    runs-on: ${{ matrix.os }}
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - uses: lukka/get-cmake@latest
-
-      - name: Create build directory
-        run: cmake -E make_directory ${{runner.workspace}}/build
-
-      - name: Configure CMake
-        working-directory: ${{runner.workspace}}/build
-        run: cmake ${{ github.workspace }} -DCMAKE_BUILD_TYPE=Release
-
-      - name: Build Compiler
-        working-directory: ${{runner.workspace}}/build
-        run: cmake --build .
-
-      - name: Test
-        working-directory: ${{runner.workspace}}/build
-        run: ctest -C Release
