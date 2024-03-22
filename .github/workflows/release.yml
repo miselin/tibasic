@@ -6,7 +6,7 @@ name: create release
 on:
   push:
     tags:        
-      - '*'
+      - 'v*'
 
 jobs:
   release:
@@ -20,14 +20,12 @@ jobs:
         REPO: ${{ github.repository }}
 
     - name: Create Release
-      uses: actions/create-release@latest
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
         body: |
           ${{ steps.changelog.outputs.changelog }}
         # toggle out of draft/pre-release to build artifacts & publish.
         draft: true
         prerelease: true
+        generate_release_notes: true

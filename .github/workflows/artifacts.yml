@@ -2,7 +2,7 @@ name: upload artifacts
 
 on:
   release:
-    types: [released]
+    types: [published]
 
 jobs:
   build-and-upload:
@@ -11,7 +11,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         include:
           - os: ubuntu-latest
-            src: tibasic
+            filename: tibasic
             target: ubuntu
             content_type: application/octet-stream
           - os: macos-latest
