@@ -1,0 +1,32 @@
+# This workflow will create a GH Releaes whenever a tag is pushed.
+# A separate workflow will actually build and upload binaries to the release.
+
+name: create release
+
+on:
+  push:
+    tags:        
+      - '*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Changelog
+      uses: scottbrenner/generate-changelog-action@master
+      id: changelog
+      env:
+        REPO: ${{ github.repository }}
+
+    - name: Create Release
+      uses: actions/create-release@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: |
+          ${{ steps.changelog.outputs.changelog }}
+        draft: false
+        prerelease: false
