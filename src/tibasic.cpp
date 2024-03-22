@@ -16,6 +16,7 @@
 
 #include "tibasic.h"
 
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -34,8 +35,9 @@ unsigned short Compiler::doChecksum(size_t sum) {
 }
 
 size_t Compiler::sumBytes(const char *data, size_t len) {
+  const unsigned char *bytes = reinterpret_cast<const unsigned char *>(data);
   size_t ret = 0;
-  for (size_t i = 0; i < len; i++) ret += data[i];
+  for (size_t i = 0; i < len; i++) ret += bytes[i];
   return ret;
 }
 
@@ -68,7 +70,7 @@ bool Compiler::compile(string inFile, string outFile) {
 
       // Special case for alphabet characters
       if (!s.length() && isalpha(tmpLine[0])) {
-        token.token = toupper(tmpLine[0]);
+        token.token = static_cast<unsigned short>(toupper(tmpLine[0]));
         token.sz = 1;
 
         s = tmpLine.substr(0, 1);
@@ -123,7 +125,7 @@ bool Compiler::compile(string inFile, string outFile) {
     n++;
   for (; (i < 8) && (n < inFile.length() - 4); n++) {
     if (outFile[n] == '.') break;
-    ventry.name[i++] = toupper(outFile[n]);
+    ventry.name[i++] = static_cast<char>(toupper(outFile[n]));
   }
 
   // Begin writing to file.
@@ -185,8 +187,8 @@ bool Compiler::decompile(string inFile, string outFile) {
 
     // If we're in assembly mode, just copy the bytes straight in a numbers.
     if (bAsmProgram) {
-      if (((temp & 0xFF) == 0x3F)) sOutput += "\n";
-      sOutput += temp & 0xFF;
+      if (((temp & 0xFFU) == 0x3F)) sOutput += "\n";
+      sOutput += static_cast<char>(temp & 0xFFU);
 
       fseek(fp, -1, SEEK_CUR);
       nBytesRead++;

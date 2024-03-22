@@ -36,7 +36,8 @@ using namespace std;
 /// Helper function to convert a string to uppercase.
 char *strtoupper(char *str) {
   for (size_t i = 0; i < strlen(str); i++) {
-    if (!(isupper(str[i])) && isalpha(str[i])) str[i] = _toupper(str[i]);
+    if (!(isupper(str[i])) && isalpha(str[i]))
+      str[i] = static_cast<char>(toupper(str[i]));
   }
   return str;
 }
