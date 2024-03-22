@@ -23,6 +23,7 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ github.ref }}
+        release_name: ${{ github.ref }}
         body: |
           ${{ steps.changelog.outputs.changelog }}
         # toggle out of draft/pre-release to build artifacts & publish.
