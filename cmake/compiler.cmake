@@ -7,7 +7,7 @@ option(TSAN "Enable thread sanitizer" OFF)
 option(UBSAN "Enable undefined behavior sanitizer" OFF)
 
 if (MSVC)
-  target_compile_options(cmake_cpp_boilerplate_compiler_options INTERFACE /W4 "/permissive-")
+  target_compile_options(cmake_cpp_tibasic_compiler_options INTERFACE /W4 "/permissive-")
 
   if (WARNINGS_ARE_ERRORS)
     target_compile_options(cmake_cpp_tibasic_compiler_options INTERFACE /WX)
