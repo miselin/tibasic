@@ -22,10 +22,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install CMake
-        run: |
-          sudo apt install build-essential cmake
-          cmake -E make_directory ${{runner.workspace}}/build
+      - uses: lukka/get-cmake@latest
+
+      - name: Create build directory
+        run: cmake -E make_directory ${{runner.workspace}}/build
 
       - name: Configure CMake
         working-directory: ${{runner.workspace}}/build
@@ -57,10 +57,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install CMake
-        run: |
-          sudo apt install build-essential cmake
-          cmake -E make_directory ${{runner.workspace}}/build
+      - uses: lukka/get-cmake@latest
+
+      - name: Create build directory
+        run: cmake -E make_directory ${{runner.workspace}}/build
 
       - name: Configure CMake
         working-directory: ${{runner.workspace}}/build
