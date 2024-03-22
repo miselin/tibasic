@@ -75,7 +75,7 @@ int main(int argc, const char *argv[]) {
     } else if (!strcmp(argv[i], "-d"))
       bDecompile = true;
     else {
-          log(Error, "Unknown option specified");
+      log(Error, "Unknown option specified");
       return 1;
     }
   }
