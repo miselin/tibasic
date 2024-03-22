@@ -26,19 +26,13 @@
 #endif
 
 /// Stores a token to be written and the size of that token.
-typedef struct
-{
-    unsigned short token;
-    size_t sz;
+typedef struct {
+  unsigned short token;
+  size_t sz;
 } token_t;
 
 /// Log severities
-enum LogSeverity
-{
-    Error,
-    Info,
-    Debug
-};
+enum LogSeverity { Error, Info, Debug };
 
 void stripExtension(const char *in, char *out, size_t len);
 
@@ -49,68 +43,63 @@ size_t getLongestToken();
 bool lookupToken(std::string in, token_t &ret);
 bool lookupToken(unsigned short in, std::string &out);
 
-inline const char *severityToString(LogSeverity s)
-{
-    switch(s)
-    {
-        case Error:
-            return "Error";
-            break;
-        case Info:
-            return "Info";
-            break;
-        case Debug:
-            return "Debug";
-            break;
-        default:
-            return "!";
-            break;
-    };
+inline const char *severityToString(LogSeverity s) {
+  switch (s) {
+    case Error:
+      return "Error";
+      break;
+    case Info:
+      return "Info";
+      break;
+    case Debug:
+      return "Debug";
+      break;
+    default:
+      return "!";
+      break;
+  };
 }
 
 /// Log function
 void log(LogSeverity, const char *);
 
 /// Compilation class.
-class Compiler
-{
-    public:
-        Compiler() {}
-        virtual ~Compiler() {}
+class Compiler {
+ public:
+  Compiler() {}
+  virtual ~Compiler() {}
 
-        bool compile(std::string inFile, std::string outFile);
+  bool compile(std::string inFile, std::string outFile);
 
-        bool decompile(std::string inFile, std::string outFile);
+  bool decompile(std::string inFile, std::string outFile);
 
-    private:
-        /// Perform a checksum over a region of data.
-        size_t sumBytes(const char *data, size_t len);
-        unsigned short doChecksum(size_t sum);
+ private:
+  /// Perform a checksum over a region of data.
+  size_t sumBytes(const char *data, size_t len);
+  unsigned short doChecksum(size_t sum);
 
 #ifdef _MSC_VER
 #pragma pack(push, 1)
 #endif
 
-        /// 8xp file header
-        struct ProgramHeader
-        {
-            char sig[8];
-            char extsig[3];
-            char comment[42];
-            unsigned short datalen;
-        } PACKED;
+  /// 8xp file header
+  struct ProgramHeader {
+    char sig[8];
+    char extsig[3];
+    char comment[42];
+    unsigned short datalen;
+  } PACKED;
 
-        /// Variable entry
-        struct VariableEntry
-        {
-            unsigned short start;
-            unsigned short length1;
-            unsigned char type;
-            char name[8];
-            char ver;
-            char flags;
-            unsigned short length2;
-        } PACKED;
+  /// Variable entry
+  struct VariableEntry {
+    unsigned short start;
+    unsigned short length1;
+    unsigned char type;
+    char name[8];
+    char ver;
+    char flags;
+    unsigned short length2;
+  } PACKED;
 
 #ifdef _MSC_VER
 #pragma pack(pop)
