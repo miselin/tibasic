@@ -69,9 +69,9 @@ class Compiler {
   Compiler() {}
   virtual ~Compiler() {}
 
-  bool compile(std::string inFile, std::string outFile);
+  bool compile(const std::string &inFile, const std::string &outFile);
 
-  bool decompile(std::string inFile, std::string outFile);
+  bool decompile(const std::string &inFile, const std::string &outFile);
 
  private:
   /// Perform a checksum over a region of data.

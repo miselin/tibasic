@@ -33,15 +33,6 @@
 
 using namespace std;
 
-/// Helper function to convert a string to uppercase.
-char *strtoupper(char *str) {
-  for (size_t i = 0; i < strlen(str); i++) {
-    if (!(isupper(str[i])) && isalpha(str[i]))
-      str[i] = static_cast<char>(toupper(str[i]));
-  }
-  return str;
-}
-
 /// Logs output from the build
 void log(LogSeverity severity, const char *out) {
   cout << severityToString(severity) << ": " << out << endl;
@@ -53,7 +44,7 @@ void stripExtension(const char *in, char *out, size_t len) {
   *strrchr(out, '.') = 0;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, const char *argv[]) {
   // check for valid number of arguments
   if ((argc < 2) || (argv[1] == NULL)) {
     // Inform the user

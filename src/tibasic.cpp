@@ -25,8 +25,6 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 /// \todo More error handling.
 
 unsigned short Compiler::doChecksum(size_t sum) {
@@ -41,17 +39,17 @@ size_t Compiler::sumBytes(const char *data, size_t len) {
   return ret;
 }
 
-bool Compiler::compile(string inFile, string outFile) {
-  ifstream f(inFile.c_str(), ifstream::in);
+bool Compiler::compile(const std::string &inFile, const std::string &outFile) {
+  std::ifstream f(inFile.c_str(), std::ifstream::in);
 
-  string tmpLine;
+  std::string tmpLine;
 
   // Output information ready for writing the compiled code to a file.
-  vector<token_t> output;
+  std::vector<token_t> output;
   unsigned short outputSize = 0;
 
   while (!f.eof()) {
-    getline(f, tmpLine, '\n');
+    std::getline(f, tmpLine, '\n');
 
     if (!tmpLine.length()) continue;
 
@@ -60,12 +58,12 @@ bool Compiler::compile(string inFile, string outFile) {
 
     while (tmpLine.length()) {
       // Grab the longest possible token we can from the input.
-      string s = tmpLine.substr(0, getLongestToken());
+      std::string s = tmpLine.substr(0, getLongestToken());
 
       bool validToken = false;
       while (!validToken && s.length()) {
         validToken = lookupToken(s, token);
-        if (!validToken) s = s.substr(0, s.length() - 1);
+        if (!validToken) s.pop_back();
       }
 
       // Special case for alphabet characters
@@ -104,7 +102,7 @@ bool Compiler::compile(string inFile, string outFile) {
   memset(&ventry, 0, sizeof(VariableEntry));
 
   phdr.datalen = sizeof(VariableEntry) + outputSize + sizeof(outputSize);
-  strcpy(phdr.sig, "**TI83F*");
+  strncpy(phdr.sig, "**TI83F*", 8);
   phdr.extsig[0] = 0x1A;
   phdr.extsig[1] = 0x0A;
   phdr.extsig[2] = 0;
@@ -137,10 +135,9 @@ bool Compiler::compile(string inFile, string outFile) {
   // Sum of all bytes for checksum purposes.
   size_t sum = 0;
 
-  for (vector<token_t>::iterator it = output.begin(); it != output.end();
-       ++it) {
-    fwrite(&(it->token), it->sz, 1, out);
-    sum += it->token;
+  for (const auto &it : output) {
+    fwrite(&(it.token), it.sz, 1, out);
+    sum += it.token;
   }
 
   // Perform a checksum and write to file.
@@ -154,7 +151,8 @@ bool Compiler::compile(string inFile, string outFile) {
   return true;
 }
 
-bool Compiler::decompile(string inFile, string outFile) {
+bool Compiler::decompile(const std::string &inFile,
+                         const std::string &outFile) {
   // Parse the file.
   FILE *fp = fopen(inFile.c_str(), "rb");
   if (!fp) {
@@ -178,7 +176,7 @@ bool Compiler::decompile(string inFile, string outFile) {
   size_t nBytesRead = 0;
   unsigned short temp;
 
-  string sOutput = "";
+  std::string sOutput = "";
 
   bool bAsmProgram = false;
 
@@ -197,7 +195,7 @@ bool Compiler::decompile(string inFile, string outFile) {
     }
 
     // Convoluted.
-    string conv;
+    std::string conv;
     bool bIsFound = lookupToken(temp, conv);
     if (!bIsFound) bIsFound = lookupToken(temp & 0xFF, conv);
 
@@ -225,7 +223,7 @@ bool Compiler::decompile(string inFile, string outFile) {
   fclose(fp);
 
   // Write the output now.
-  ofstream f(outFile.c_str());
+  std::ofstream f(outFile.c_str());
   f << sOutput;
   f.close();
 
