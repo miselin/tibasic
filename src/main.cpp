@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2011 Matthew Iselin
  *
  * Permission to use, copy, modify, and distribute this software for any
@@ -20,10 +20,10 @@
 #define DEBUG
 #endif
 
+#include <string.h>
+
 #include <iostream>
 #include <string>
-
-#include <string.h>
 
 #include "tibasic.h"
 
@@ -33,29 +33,15 @@
 
 using namespace std;
 
-/// Helper function to convert a string to uppercase.
-char* strtoupper(char* str)
-{
-	for( size_t i = 0; i < strlen( str ); i++ )
-	{
-		if( ! ( isupper( str[i] ) ) && isalpha( str[i] ) )
-			str[i] = _toupper( str[i] );
-	}
-	return str;
-}
-
 /// Logs output from the build
-void log(LogSeverity severity, const char *out)
-{
-    cout << severityToString(severity) << ": " << out << endl;
+void log(LogSeverity severity, const char *out) {
+  cout << severityToString(severity) << ": " << out << endl;
 }
 
-void stripExtension(const char *in, char *out, size_t len)
-{
-    if(strrchr(in, '.') == NULL)
-        return;
-    strncpy(out, in, len);
-    *strrchr(out, '.') = 0;
+void stripExtension(const char *in, char *out, size_t len) {
+  if (strrchr(in, '.') == NULL) return;
+  strncpy(out, in, len);
+  *strrchr(out, '.') = 0;
 }
 
 int main( int argc, char* argv[] )
@@ -100,46 +86,42 @@ int main( int argc, char* argv[] )
             return 1;
         }
     }
+  }
 
-    // If no output was given, rename the input with .8xp instead of .tib and
-    // use that as the output.
-    if(!outFile.length())
-    {
-        char *tmp = new char[inFile.length()];
-        stripExtension(inFile.c_str(), tmp, inFile.length());
+  // If no output was given, rename the input with .8xp instead of .tib and
+  // use that as the output.
+  if (!outFile.length()) {
+    char *tmp = new char[inFile.length()];
+    stripExtension(inFile.c_str(), tmp, inFile.length());
 
-        outFile = tmp;
-        if(bDecompile)
-            outFile += ".tib";
-        else
-            outFile += ".8xp";
-
-        delete [] tmp;
-    }
-
-    // Make sure we have tokens to work with!
-    initialiseTokens();
-
-    // Compile time!
-    if(inFile.length() && outFile.length())
-    {
-        bool res = false;
-        if(bDecompile)
-            res = pCompiler->decompile(inFile, outFile);
-        else
-            res = pCompiler->compile(inFile, outFile);
-
-        if(!res)
-        {
-            log(Error, "Compilation failed.");
-            return 1;
-        }
-    }
+    outFile = tmp;
+    if (bDecompile)
+      outFile += ".tib";
     else
-    {
-        log(Error, "Either an input or output filename was not given.");
-        return 1;
-    }
+      outFile += ".8xp";
 
-    return 0;
+    delete[] tmp;
+  }
+
+  // Make sure we have tokens to work with!
+  initialiseTokens();
+
+  // Compile time!
+  if (inFile.length() && outFile.length()) {
+    bool res = false;
+    if (bDecompile)
+      res = pCompiler->decompile(inFile, outFile);
+    else
+      res = pCompiler->compile(inFile, outFile);
+
+    if (!res) {
+      log(Error, "Compilation failed.");
+      return 1;
+    }
+  } else {
+    log(Error, "Either an input or output filename was not given.");
+    return 1;
+  }
+
+  return 0;
 }

@@ -1,8 +1,14 @@
-CVS
-build-etc/Debug
-build-etc/Release
-build-etc/ipch
-build-etc/*sdf
-build-etc/*suo
-build-etc/*vcxproj.*
-src/*.o
+build/
+
+# CMake
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
