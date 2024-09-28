@@ -44,48 +44,43 @@ void stripExtension(const char *in, char *out, size_t len) {
   *strrchr(out, '.') = 0;
 }
 
-int main( int argc, char* argv[] )
-{
-	// check for valid number of arguments
-	if((argc < 2) || (argv[1] == NULL))
-	{
-	
-        // Error string, with some minor formatting
-        string errorstring = "Usage: " + string(argv[0]) + " [options] filename\nOptions:\n\t-d\t\tDecompile\n\t-o filename\tOutput file";
-        // Inform the user
-        log(Error, errorstring.c_str());
-		return 1;
-	}
+int main(int argc, char *argv[]) {
+  // check for valid number of arguments
+  if ((argc < 2) || (argv[1] == NULL)) {
+    // Error string, with some minor formatting
+    string errorstring =
+        "Usage: " + string(argv[0]) +
+        " [options] filename\nOptions:\n\t-d\t\tDecompile\n\t-o "
+        "filename\tOutput file";
+    // Inform the user
+    log(Error, errorstring.c_str());
+    return 1;
+  }
 
-    Compiler compiler;
+  Compiler compiler;
 
-    string inFile, outFile;
+  string inFile, outFile;
 
-    bool bDecompile = false;
+  bool bDecompile = false;
 
-    // Parse arguments
-    inFile = argv[argc - 1]; // Last argument is always filename
-    for(int i = 1; i < argc - 1; i++)
-    {
-        if(!strcmp(argv[i], "-o") && !outFile.length())
-        {
-            i++; // Next argument is filename
-            // Output filename
-            if(i >= argc - 1)
-            {
-                log(Error, "-o requires a parameter (output filename).");
-                return 1;
-            }
-            outFile = argv[i];
-        }
-        else if(!strcmp(argv[i], "-d"))
-            bDecompile = true;
-        else
-        {
-            log(Error, "Unknown option specified");
-            return 1;
-        }
+  // Parse arguments
+  inFile = argv[argc - 1];  // Last argument is always filename
+  for (int i = 1; i < argc - 1; i++) {
+    if (!strcmp(argv[i], "-o") && !outFile.length()) {
+      i++;  // Next argument is filename
+      // Output filename
+      if (i >= argc - 1) {
+        log(Error, "-o requires a parameter (output filename).");
+        return 1;
+      }
+      outFile = argv[i];
+    } else if (!strcmp(argv[i], "-d"))
+      bDecompile = true;
+    else {
+      log(Error, "Unknown option specified");
+      return 1;
     }
+  }
 
   // If no output was given, rename the input with .8xp instead of .tib and
   // use that as the output.
