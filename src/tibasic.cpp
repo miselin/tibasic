@@ -19,6 +19,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 
 #include <fstream>
 #include <iostream>
@@ -46,7 +47,7 @@ bool Compiler::compile(const std::string &inFile, const std::string &outFile) {
 
   // Output information ready for writing the compiled code to a file.
   std::vector<token_t> output;
-  unsigned short outputSize = 0;
+  size_t outputSize = 0;
 
   while (!f.eof()) {
     std::getline(f, tmpLine, '\n');
@@ -101,8 +102,15 @@ bool Compiler::compile(const std::string &inFile, const std::string &outFile) {
   memset(&phdr, 0, sizeof(ProgramHeader));
   memset(&ventry, 0, sizeof(VariableEntry));
 
-  phdr.datalen = sizeof(VariableEntry) + outputSize + sizeof(outputSize);
-  strncpy(phdr.sig, "**TI83F*", 8);
+  if (outputSize > 0xFFFF) {
+    log(Error, "program is too large");
+    return false;
+  }
+
+  uint16_t outputSize16 = outputSize & 0xFFFF;
+
+  phdr.datalen = sizeof(VariableEntry) + outputSize16 + sizeof(outputSize16);
+  memcpy(phdr.sig, "**TI83F*", 8);
   phdr.extsig[0] = 0x1A;
   phdr.extsig[1] = 0x0A;
   phdr.extsig[2] = 0;
@@ -110,7 +118,7 @@ bool Compiler::compile(const std::string &inFile, const std::string &outFile) {
 
   /// \todo Magic numbers!
   ventry.start = 0x0D;
-  ventry.length1 = ventry.length2 = outputSize + sizeof(outputSize);
+  ventry.length1 = ventry.length2 = outputSize16 + sizeof(outputSize16);
   ventry.type = 0x05;
 
   // Convoluted magic to get the filename. Minus the extension. :)

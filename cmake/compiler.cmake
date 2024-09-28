@@ -14,8 +14,8 @@ if (MSVC)
   endif ()
 else ()
   target_compile_options(cmake_cpp_tibasic_compiler_options INTERFACE
-    -Wall -Wextra -Wpedantic -Wundef -Wshadow -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wstrict-overflow=5
-    -Wwrite-strings -Waggregate-return -Wcast-qual -Wswitch-default -Wswitch-enum -Wconversion -Wunreachable-code
+    -Wall -Wextra -Wpedantic -Wundef -Wshadow -Wpointer-arith -Wcast-align -Wstrict-overflow=5
+    -Wwrite-strings -Wno-aggregate-return -Wcast-qual -Wswitch-default -Wswitch-enum -Wconversion -Wunreachable-code
     -Wformat=2 -Winit-self)
   target_compile_definitions(cmake_cpp_tibasic_compiler_options INTERFACE _POSIX_C_SOURCE=200809L _XOPEN_SOURCE=700 _DEFAULT_SOURCE)
 

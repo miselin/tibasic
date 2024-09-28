@@ -57,7 +57,7 @@ int main( int argc, char* argv[] )
 		return 1;
 	}
 
-    Compiler compiler; Compiler *pCompiler = &compiler;
+    Compiler compiler;
 
     string inFile, outFile;
 
@@ -86,7 +86,6 @@ int main( int argc, char* argv[] )
             return 1;
         }
     }
-  }
 
   // If no output was given, rename the input with .8xp instead of .tib and
   // use that as the output.
@@ -110,9 +109,9 @@ int main( int argc, char* argv[] )
   if (inFile.length() && outFile.length()) {
     bool res = false;
     if (bDecompile)
-      res = pCompiler->decompile(inFile, outFile);
+      res = compiler.decompile(inFile, outFile);
     else
-      res = pCompiler->compile(inFile, outFile);
+      res = compiler.compile(inFile, outFile);
 
     if (!res) {
       log(Error, "Compilation failed.");
