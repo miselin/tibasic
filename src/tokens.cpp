@@ -46,7 +46,7 @@ struct ConvertRule {
 
 /// References to lists defined after functions.
 extern struct Token StandardTokens[199];
-extern struct TwoByte CalcVars[303];
+extern struct TwoByte CalcVars[304];
 extern struct ConvertRule Replacements[39];
 
 /// string -> token mapping
@@ -1194,6 +1194,7 @@ struct TwoByte CalcVars[] = {
     {TOPOLAR, "->Polar"},
     {VAR_E, "[e]"},  // e by itself is impossible, and dangerous (imagine Disp
                      // "Hello"!)
+    {IMAG_I, "[i]"}, // Lower case i for imaginary numbers
     {SINREG, "SinReg "},
     {LOGISTIC, "Logistic "},
     {LINREGTTEST, "LinRegTTest "},
