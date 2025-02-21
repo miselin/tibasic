@@ -25,6 +25,7 @@ There are a few symbols that could not be directly transferred to the language a
 - theta --> `[theta]`
 - powers --> `^` (for instance, 5 squared would be `5^2`)
 - `e` constant --> `[e]`
+- `i` imaginary number --> `[i]`
 - Store --> `->` (same for such things as `>DMS`: `->DMS`)
 - Roots --> `[root]^` (for instance, square root would be `[root]^2`)
 
