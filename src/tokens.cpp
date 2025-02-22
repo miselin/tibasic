@@ -1192,9 +1192,9 @@ struct TwoByte CalcVars[] = {
     {RREF, "rref("},
     {TORECT, "->Rect"},
     {TOPOLAR, "->Polar"},
-    {VAR_E, "[e]"},  // e by itself is impossible, and dangerous (imagine Disp
-                     // "Hello"!)
-    {IMAG_I, "[i]"}, // Lower case i for imaginary numbers
+    {VAR_E, "[e]"},   // e by itself is impossible, and dangerous (imagine Disp
+                      // "Hello"!)
+    {IMAG_I, "[i]"},  // Lower case i for imaginary numbers
     {SINREG, "SinReg "},
     {LOGISTIC, "Logistic "},
     {LINREGTTEST, "LinRegTTest "},
